@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState, useMemo, useCallback } from
 import {
   TIME_PERIODS,
   DAYS_OF_WEEK,
-  CURRENT_USER,
 } from '../data/dummyData';
 
 const TimeFlowContext = createContext(null);
@@ -25,9 +24,9 @@ export function TimeFlowProvider({ children }) {
   const [attendanceSessions, setAttendanceSessions] = useState([]);
   const [recurringRules, setRecurringRules] = useState([]);
 
-  // Auth state
-  const [user, setUser] = useState(CURRENT_USER);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // Auth state - Production-ready empty initial state
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Global Notification / Toast message
   const [toast, setToast] = useState(null);
@@ -42,8 +41,9 @@ export function TimeFlowProvider({ children }) {
   // Login / Logout
   const login = (role, email) => {
     setUser({
-      ...CURRENT_USER,
-      email: email || CURRENT_USER.email,
+      id: `user-${Date.now()}`,
+      name: role === 'HOD' ? 'HOD User' : 'Faculty User',
+      email: email || 'user@cdgi.edu.in',
       role: role || 'Admin',
     });
     setIsAuthenticated(true);

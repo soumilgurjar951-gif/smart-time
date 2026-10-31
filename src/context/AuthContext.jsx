@@ -1,4 +1,4 @@
-// src/context/AuthContext.jsx
+// src/context/AuthContext.jsx - Production-ready
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const isHod = user?.role === 'HOD';
-  const isFaculty = user?.role === 'Faculty';
+  const isFaculty = user?.role === 'FACULTY' || user?.role === 'Faculty';
   const isAuthenticated = Boolean(user && token);
 
   const value = {
@@ -71,4 +71,3 @@ export function useAuth() {
 }
 
 export default AuthContext;
-
