@@ -1,0 +1,100 @@
+from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from accounts.models import User
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = User.USERNAME_FIELD
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"] = serializers.EmailField()
+        self.fields["password"] = serializers.CharField(write_only=True)
+        self.fields.pop("username", None)
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token["role"] = user.role
+        token["email"] = user.email
+        token["full_name"] = user.full_name
+        return token
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+        user = authenticate(request=self.context.get("request"), username=email, password=password)
+        if not user:
+            raise AuthenticationFailed("Invalid email or password.")
+        if not user.is_active:
+            raise AuthenticationFailed("This account is inactive.")
+        refresh = self.get_token(user)
+        data = {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": UserProfileSerializer(user, context=self.context).data,
+        }
+        return data
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        try:
+            token = RefreshToken(attrs["refresh"])
+            token.blacklist()
+        except Exception as exc:
+            raise serializers.ValidationError({"refresh": "Invalid or expired refresh token."}) from exc
+        return attrs
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    faculty_profile_id = serializers.IntegerField(source="faculty_profile.id", read_only=True, default=None)
+    employee_id = serializers.CharField(source="faculty_profile.employee_id", read_only=True, default=None)
+    designation = serializers.CharField(source="faculty_profile.designation", read_only=True, default=None)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "email",
+            "full_name",
+            "role",
+            "is_active",
+            "date_joined",
+            "faculty_profile_id",
+            "employee_id",
+            "designation",
+        )
+        read_only_fields = fields
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate_new_password(self, value):
+        validate_password(value, self.context["request"].user)
+        return value
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+        if not user.check_password(attrs["current_password"]):
+            raise serializers.ValidationError({"current_password": "Current password is incorrect."})
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.context["request"].user
+        user.set_password(self.validated_data["new_password"])
+        user.save(update_fields=["password"])
+        return user
+
+
+class TokenRefreshResponseSerializer(TokenRefreshSerializer):
+    pass

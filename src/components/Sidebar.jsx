@@ -10,10 +10,9 @@ import {
   GraduationCap,
   CalendarClock,
   LogOut,
-  Clock,
   ShieldCheck,
-  ChevronRight,
   X,
+  Sparkles,
 } from 'lucide-react';
 import { useTimeFlow } from '../context/TimeFlowContext';
 
@@ -32,6 +31,13 @@ export default function Sidebar({ isOpen, onClose }) {
       label: 'Dashboard',
       icon: LayoutDashboard,
       badge: null,
+    },
+    {
+      to: '/automation',
+      label: 'Automation Suite',
+      icon: Sparkles,
+      badge: '10 AI Tools',
+      badgeColor: 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-2xs font-extrabold',
     },
     {
       to: '/timetable-builder',
@@ -91,25 +97,34 @@ export default function Sidebar({ isOpen, onClose }) {
       >
         {/* Top: Logo & Brand */}
         <div>
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-100">
-                <Clock className="w-5 h-5 stroke-[2.5]" />
+          <div className="flex items-center justify-between px-4 py-4 border-b border-slate-100">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center p-1 shrink-0">
+                <img
+                  src="/cdgi-logo.png"
+                  alt="Chameli Devi Group of Institutions"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <div>
-                <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
-                  TimeFlow
-                  <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+              <div className="min-w-0">
+                <h1
+                  className="text-[13px] font-bold tracking-tight text-slate-900 leading-tight truncate font-['Plus_Jakarta_Sans',sans-serif]"
+                  title="Chameli Devi Group of Institutions"
+                >
+                  Chameli Devi
                 </h1>
-                <p className="text-[11px] font-medium text-slate-600 tracking-wide uppercase">
-                  College Timetable
+                <p className="text-[11px] font-semibold text-indigo-600 tracking-wide uppercase truncate">
+                  Group of Institutions
+                </p>
+                <p className="text-[10px] text-slate-500 font-medium truncate">
+                  Indore • TimeFlow
                 </p>
               </div>
             </div>
             {/* Close button for mobile */}
             <button
               onClick={onClose}
-              className="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg"
+              className="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg shrink-0 ml-1"
             >
               <X className="w-5 h-5" />
             </button>

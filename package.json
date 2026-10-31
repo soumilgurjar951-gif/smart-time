@@ -16,7 +16,9 @@
     "postcss": "^8.5.31",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-is": "^19.3.1",
     "react-router-dom": "^7.18.4",
+    "recharts": "^3.10.1",
     "tailwindcss": "^3.4.19"
   },
   "devDependencies": {

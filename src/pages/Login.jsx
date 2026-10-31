@@ -1,11 +1,11 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Clock, ShieldCheck, User, GraduationCap, Lock, Mail, ArrowRight } from 'lucide-react';
+import { ShieldCheck, User, GraduationCap, Lock, Mail, ArrowRight } from 'lucide-react';
 import { useTimeFlow } from '../context/TimeFlowContext';
 
 export default function Login() {
-  const [email, setEmail] = useState('admin@timeflow.college.edu');
+  const [email, setEmail] = useState('admin@cdgi.edu.in');
   const [password, setPassword] = useState('••••••••••');
   const [role, setRole] = useState('Admin');
   const { login } = useTimeFlow();
@@ -30,17 +30,24 @@ export default function Login() {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main card */}
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/80 p-8 sm:p-10 relative z-10 backdrop-blur-sm">
+      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200/90 shadow-2xl shadow-indigo-100/50 p-8 sm:p-10 relative z-10 backdrop-blur-sm">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 mb-4 transform hover:scale-105 transition-transform">
-            <Clock className="w-7 h-7 stroke-[2.5]" />
+          <div className="w-24 h-24 rounded-2xl bg-white p-2 shadow-lg shadow-indigo-100 border border-slate-200/80 mb-4 flex items-center justify-center transform hover:scale-105 transition-transform">
+            <img
+              src="/cdgi-logo.png"
+              alt="Chameli Devi Group of Institutions, Indore"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-['Plus_Jakarta_Sans',sans-serif]">
-            TimeFlow Portal
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-['Plus_Jakarta_Sans',sans-serif]">
+            Chameli Devi Group of Institutions
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            College Timetable & Faculty Substitution Management
+          <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mt-1">
+            CDGI Indore • Timetable Portal
+          </p>
+          <p className="text-xs text-slate-500 mt-1 max-w-xs">
+            College Timetable & Faculty Substitution Management System
           </p>
         </div>
 
@@ -87,7 +94,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@college.edu"
+                placeholder="name@cdgi.edu.in"
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:bg-white transition-all"
               />
             </div>
@@ -145,8 +152,8 @@ export default function Login() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-8 text-center text-xs text-slate-600">
-        TimeFlow Academic Suite • Version 2.4.0
+      <footer className="mt-8 text-center text-xs text-slate-500">
+        Chameli Devi Group of Institutions, Indore • TimeFlow Suite v2.4
       </footer>
     </div>
   );

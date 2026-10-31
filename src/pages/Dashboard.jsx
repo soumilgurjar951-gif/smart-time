@@ -8,12 +8,12 @@ import {
   UserX,
   CalendarCheck,
   ArrowRight,
-  Clock,
   MapPin,
   CheckCircle2,
   AlertCircle,
   PlusCircle,
   ArrowLeftRight,
+  Sparkles,
 } from 'lucide-react';
 import { useTimeFlow } from '../context/TimeFlowContext';
 import StatCard from '../components/StatCard';
@@ -25,7 +25,6 @@ export default function Dashboard() {
     classList,
     absences,
     substitutions,
-    facultyList,
     timePeriods,
   } = useTimeFlow();
 
@@ -67,21 +66,37 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-indigo-100 text-xs font-semibold backdrop-blur-xs mb-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            Academic Timetable Operational • Monday Schedule Active
+      <div className="bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-100 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="flex items-center gap-4 sm:gap-5 relative z-10">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-2 shadow-lg shadow-indigo-900/40 shrink-0 flex items-center justify-center">
+            <img
+              src="/cdgi-logo.png"
+              alt="Chameli Devi Group of Institutions Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-['Plus_Jakarta_Sans',sans-serif]">
-            Welcome to TimeFlow Admin
-          </h2>
-          <p className="text-indigo-100 text-sm mt-1 max-w-xl">
-            Real-time schedule monitoring, faculty absence tracking, and instant automated substitute faculty recommendations.
-          </p>
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-indigo-100 text-xs font-semibold backdrop-blur-xs mb-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              CDGI Indore • Academic Session Active
+            </div>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight font-['Plus_Jakarta_Sans',sans-serif]">
+              Chameli Devi Group of Institutions
+            </h2>
+            <p className="text-indigo-100 text-xs sm:text-sm mt-1 max-w-xl">
+              Academic Timetable & Faculty Substitution System • Real-time schedule monitoring, absence tracking, and automated substitute recommendations.
+            </p>
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 relative z-10 shrink-0">
+          <Link
+            to="/automation"
+            className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs transition-all shadow-md shadow-amber-400/20 flex items-center gap-2"
+          >
+            <Sparkles className="w-4 h-4 text-slate-950" />
+            <span>🤖 10 Automation Features</span>
+          </Link>
           <Link
             to="/timetable-builder"
             className="px-4 py-2.5 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 font-semibold text-xs transition-colors shadow-sm flex items-center gap-2"

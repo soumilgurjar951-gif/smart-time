@@ -1,0 +1,1 @@
+# Reports are generated from other apps; this module keeps Django app loading consistent.

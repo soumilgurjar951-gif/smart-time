@@ -1,33 +1,40 @@
 // src/pages/Substitutions.jsx
 import React, { useState, useMemo } from 'react';
 import {
-  ArrowLeftRight,
   UserX,
   Sparkles,
-  Calendar,
   AlertCircle,
   CheckCircle2,
   Clock,
-  MapPin,
-  BookOpen,
-  Filter,
-  Layers,
+  Zap,
+  PlusCircle,
 } from 'lucide-react';
 import { useTimeFlow } from '../context/TimeFlowContext';
 import SubstitutionCard from '../components/SubstitutionCard';
+import Modal from '../components/Modal';
 
 export default function Substitutions() {
   const {
     absences,
     substitutions,
+    facultyList,
+    daysOfWeek,
     getAvailableSubstitutes,
     assignSubstitution,
+    autoAssignAllSubstitutions,
+    markFacultyAbsent,
   } = useTimeFlow();
 
   // Selected Absent Faculty ID
   const [selectedAbsenceId, setSelectedAbsenceId] = useState(
     absences.length > 0 ? absences[0].id : ''
   );
+
+  // Absence modal state
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [absFacultyId, setAbsFacultyId] = useState(facultyList[0]?.id || '');
+  const [absDay, setAbsDay] = useState('Monday');
+  const [absReason, setAbsReason] = useState('Medical Leave - High Fever');
 
   const selectedAbsence = absences.find((a) => a.id === selectedAbsenceId);
 
@@ -38,6 +45,20 @@ export default function Substitutions() {
       (l) => l.status !== 'Substituted'
     ).length || 0;
   }, [selectedAbsence]);
+
+  const handleReportAbsence = (e) => {
+    e.preventDefault();
+    if (!absFacultyId) return;
+    const newAbs = markFacultyAbsent({
+      facultyId: absFacultyId,
+      day: absDay,
+      reason: absReason,
+    });
+    if (newAbs) {
+      setSelectedAbsenceId(newAbs.id);
+    }
+    setIsReportModalOpen(false);
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -89,23 +110,43 @@ export default function Substitutions() {
             </p>
           </div>
 
-          <div className="relative sm:w-80">
-            <select
-              value={selectedAbsenceId}
-              onChange={(e) => setSelectedAbsenceId(e.target.value)}
-              className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 cursor-pointer pr-10 shadow-xs"
-            >
-              {absences.map((abs) => (
-                <option key={abs.id} value={abs.id}>
-                  {abs.facultyName} ({abs.affectedLectures?.length} affected lectures)
-                </option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-              </svg>
+          <div className="flex flex-wrap items-center gap-2.5 sm:w-auto">
+            <div className="relative flex-1 sm:w-72">
+              <select
+                value={selectedAbsenceId}
+                onChange={(e) => setSelectedAbsenceId(e.target.value)}
+                className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 cursor-pointer pr-10 shadow-xs"
+              >
+                {absences.map((abs) => (
+                  <option key={abs.id} value={abs.id}>
+                    {abs.facultyName} ({abs.affectedLectures?.length} affected lectures)
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
             </div>
+
+            <button
+              onClick={() => setIsReportModalOpen(true)}
+              className="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Report Absence</span>
+            </button>
+
+            {selectedAbsence && pendingLecturesCount > 0 && (
+              <button
+                onClick={() => autoAssignAllSubstitutions(selectedAbsence.id)}
+                className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-sm shadow-indigo-200 transition-all cursor-pointer"
+              >
+                <Zap className="w-4 h-4 text-amber-300" />
+                <span>1-Click Auto Substitute All</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -281,6 +322,69 @@ export default function Substitutions() {
           </div>
         )}
       </div>
+
+      {/* Modal: Report Faculty Absence */}
+      <Modal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        title="Report Faculty Absence"
+      >
+        <form onSubmit={handleReportAbsence} className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Select Faculty Member:</label>
+            <select
+              value={absFacultyId}
+              onChange={(e) => setAbsFacultyId(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+            >
+              {facultyList.map((f) => (
+                <option key={f.id} value={f.id}>{f.name} ({f.deptCode || 'CSE'})</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Absence Day:</label>
+            <select
+              value={absDay}
+              onChange={(e) => setAbsDay(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+            >
+              {daysOfWeek.map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Reason for Absence:</label>
+            <input
+              type="text"
+              value={absReason}
+              onChange={(e) => setAbsReason(e.target.value)}
+              placeholder="e.g. Medical emergency, Conference"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800"
+              required
+            />
+          </div>
+
+          <div className="pt-2 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setIsReportModalOpen(false)}
+              className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-bold"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold"
+            >
+              Report Absence & Scan Slots
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

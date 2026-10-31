@@ -1,0 +1,5 @@
+DEPARTMENT_CSIT = "CSIT"
+SEMESTER_FIFTH = 5
+SECTION_CHOICES = (("A", "Section A"), ("B", "Section B"))
+ALLOWED_SECTIONS = {"A", "B"}
+YEAR_THIRD = 3

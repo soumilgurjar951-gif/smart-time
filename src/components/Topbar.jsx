@@ -2,14 +2,10 @@
 import React from 'react';
 import {
   Menu,
-  Bell,
   Calendar,
-  Building2,
   CheckCircle2,
   AlertTriangle,
   Info,
-  X,
-  Search,
 } from 'lucide-react';
 import { useTimeFlow } from '../context/TimeFlowContext';
 import { Link } from 'react-router-dom';
@@ -34,13 +30,22 @@ export default function Topbar({ onToggleSidebar }) {
               <Menu className="w-5 h-5" />
             </button>
 
-            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
-              <span className="flex items-center gap-1 font-medium text-slate-700">
-                <Building2 className="w-3.5 h-3.5 text-indigo-600" />
-                {user?.college || 'College Admin Portal'}
+            <div className="flex items-center gap-2.5 text-xs text-slate-500">
+              <span className="flex items-center gap-2 font-medium text-slate-800 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-xl shadow-2xs">
+                <img
+                  src="/cdgi-logo.png"
+                  alt="CDGI Logo"
+                  className="w-5 h-5 object-contain rounded-full"
+                />
+                <span className="font-semibold text-slate-800 hidden md:inline">
+                  {user?.college || 'Chameli Devi Group of Institutions, Indore'}
+                </span>
+                <span className="font-semibold text-slate-800 md:hidden">
+                  CDGI Indore
+                </span>
               </span>
-              <span>/</span>
-              <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md font-semibold text-[11px]">
+              <span className="hidden sm:inline text-slate-300">/</span>
+              <span className="hidden sm:inline-block bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg font-semibold text-[11px]">
                 {user?.academicSession || 'Session 2026-27'}
               </span>
             </div>
