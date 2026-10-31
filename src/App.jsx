@@ -1,65 +1,69 @@
 // src/App.jsx
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { TimeFlowProvider } from './context/TimeFlowContext';
-import Sidebar from './components/Sidebar';
-import Topbar from './components/Topbar';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { OdrmsProvider } from './context/OdrmsContext';
+
+// Layout
+import AppLayout from './components/layout/AppLayout';
 
 // Pages
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import ManageFaculty from './pages/ManageFaculty';
-import ManageSubjects from './pages/ManageSubjects';
-import ManageClasses from './pages/ManageClasses';
-import TimetableBuilder from './pages/TimetableBuilder';
-import Substitutions from './pages/Substitutions';
-import FacultyTimetable from './pages/FacultyTimetable';
+import Login from './pages/auth/Login';
+import HodDashboard from './pages/hod/HodDashboard';
+import FacultyDashboard from './pages/faculty/FacultyDashboard';
+import FacultyManagement from './pages/faculty/FacultyManagement';
+import LectureManagement from './pages/lectures/LectureManagement';
+import AttendanceManagement from './pages/attendance/AttendanceManagement';
+import TaskManagement from './pages/tasks/TaskManagement';
+import AchievementManagement from './pages/achievements/AchievementManagement';
+import ResourceManagement from './pages/resources/ResourceManagement';
+import ReportsAnalytics from './pages/reports/ReportsAnalytics';
+import AutomationHub from './pages/AutomationHub';
 
-// Dashboard Layout wrapper containing Sidebar and Topbar
-function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex">
-      {/* Sidebar Navigation */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-64 transition-all duration-300">
-        <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          <Outlet />
-        </main>
-      </div>
-    </div>
+function RoleBasedHomeRedirect() {
+  const { user, isHod } = useAuth();
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return isHod ? (
+    <Navigate to="/hod/dashboard" replace />
+  ) : (
+    <Navigate to="/faculty/dashboard" replace />
   );
 }
 
 export default function App() {
   return (
-    <TimeFlowProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Login Route */}
-          <Route path="/login" element={<Login />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <OdrmsProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Route */}
+              <Route path="/login" element={<Login />} />
 
-          {/* Authenticated Dashboard Routes */}
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="timetable-builder" element={<TimetableBuilder />} />
-            <Route path="substitutions" element={<Substitutions />} />
-            <Route path="faculty" element={<ManageFaculty />} />
-            <Route path="subjects" element={<ManageSubjects />} />
-            <Route path="classes" element={<ManageClasses />} />
-            <Route path="faculty-timetable" element={<FacultyTimetable />} />
-          </Route>
+              {/* Protected App Routes */}
+              <Route path="/" element={<AppLayout />}>
+                <Route index element={<RoleBasedHomeRedirect />} />
+                <Route path="hod/dashboard" element={<HodDashboard />} />
+                <Route path="faculty/dashboard" element={<FacultyDashboard />} />
+                <Route path="faculty" element={<FacultyManagement />} />
+                <Route path="lectures" element={<LectureManagement />} />
+                <Route path="attendance" element={<AttendanceManagement />} />
+                <Route path="tasks" element={<TaskManagement />} />
+                <Route path="achievements" element={<AchievementManagement />} />
+                <Route path="resources" element={<ResourceManagement />} />
+                <Route path="reports" element={<ReportsAnalytics />} />
+                <Route path="automation" element={<AutomationHub />} />
+              </Route>
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </TimeFlowProvider>
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
+        </OdrmsProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
