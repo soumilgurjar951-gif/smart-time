@@ -1,17 +1,6 @@
 // src/context/TimeFlowContext.jsx
 import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import {
-  INITIAL_FACULTY,
-  INITIAL_SUBJECTS,
-  INITIAL_CLASSES,
-  INITIAL_TIMETABLE,
-  INITIAL_ABSENCES,
-  INITIAL_SUBSTITUTIONS,
-  INITIAL_ROOMS,
-  INITIAL_LEAVES,
-  INITIAL_NOTIFICATIONS,
-  INITIAL_ATTENDANCE_SESSIONS,
-  INITIAL_RECURRING_RULES,
   TIME_PERIODS,
   DAYS_OF_WEEK,
   CURRENT_USER,
@@ -20,21 +9,22 @@ import {
 const TimeFlowContext = createContext(null);
 
 export function TimeFlowProvider({ children }) {
+  // Production-ready - empty initial state
   // Core Entities State
-  const [facultyList, setFacultyList] = useState(INITIAL_FACULTY);
-  const [subjectList, setSubjectList] = useState(INITIAL_SUBJECTS);
-  const [classList, setClassList] = useState(INITIAL_CLASSES);
-  const [timetableEntries, setTimetableEntries] = useState(INITIAL_TIMETABLE);
-  const [absences, setAbsences] = useState(INITIAL_ABSENCES);
-  const [substitutions, setSubstitutions] = useState(INITIAL_SUBSTITUTIONS);
+  const [facultyList, setFacultyList] = useState([]);
+  const [subjectList, setSubjectList] = useState([]);
+  const [classList, setClassList] = useState([]);
+  const [timetableEntries, setTimetableEntries] = useState([]);
+  const [absences, setAbsences] = useState([]);
+  const [substitutions, setSubstitutions] = useState([]);
 
   // Automation Entities State
-  const [roomsList, setRoomsList] = useState(INITIAL_ROOMS);
-  const [leaveApplications, setLeaveApplications] = useState(INITIAL_LEAVES);
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
-  const [attendanceSessions, setAttendanceSessions] = useState(INITIAL_ATTENDANCE_SESSIONS);
-  const [recurringRules, setRecurringRules] = useState(INITIAL_RECURRING_RULES);
-  
+  const [roomsList, setRoomsList] = useState([]);
+  const [leaveApplications, setLeaveApplications] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [attendanceSessions, setAttendanceSessions] = useState([]);
+  const [recurringRules, setRecurringRules] = useState([]);
+
   // Auth state
   const [user, setUser] = useState(CURRENT_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -481,7 +471,7 @@ export function TimeFlowProvider({ children }) {
       facultyWorkloadMap[f.id] = 0;
     });
 
-    const activeRooms = roomsList.length > 0 ? roomsList : INITIAL_ROOMS;
+    const activeRooms = roomsList.length > 0 ? roomsList : [];
 
     // Days & Periods to schedule
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -576,7 +566,7 @@ export function TimeFlowProvider({ children }) {
   // ==========================================
   const autoAllocateRooms = () => {
     let reallocatedCount = 0;
-    const rooms = roomsList.length > 0 ? roomsList : INITIAL_ROOMS;
+    const rooms = roomsList.length > 0 ? roomsList : [];
 
     const updated = timetableEntries.map((entry) => {
       const cls = classList.find((c) => c.id === entry.classId);

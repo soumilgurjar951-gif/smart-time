@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import { INITIAL_FACULTY } from '../utils/storage';
 
 const AuthContext = createContext(null);
 
@@ -44,15 +43,6 @@ export function AuthProvider({ children }) {
     setToken(null);
   }, []);
 
-  // Quick switcher for demo convenience between HOD and Faculty
-  const switchUserRole = (role) => {
-    const target = role === 'HOD' ? INITIAL_FACULTY[0] : INITIAL_FACULTY[1];
-    authService.login(target.email, 'password123').then((res) => {
-      setUser(res.user);
-      setToken(res.token);
-    });
-  };
-
   const isHod = user?.role === 'HOD';
   const isFaculty = user?.role === 'Faculty';
   const isAuthenticated = Boolean(user && token);
@@ -67,7 +57,6 @@ export function AuthProvider({ children }) {
     isFaculty,
     login,
     logout,
-    switchUserRole,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

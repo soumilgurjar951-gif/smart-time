@@ -1,11 +1,11 @@
-// src/utils/storage.js
+// src/utils/storage.js - Clean Storage (No Demo Data)
 import {
   DEPARTMENT_INFO,
   CSIT_5TH_SEM_SUBJECTS,
   TIME_SLOTS,
 } from './constants';
 
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   TOKEN: 'odrms_token',
   USER: 'odrms_user',
   FACULTY: 'odrms_faculty',
@@ -18,679 +18,71 @@ const STORAGE_KEYS = {
   THEME: 'odrms_theme',
 };
 
-// Initial Faculty Data (Exclusively CSIT 3rd Year / 5th Sem)
-const INITIAL_FACULTY = [
-  {
-    id: 'fac-1',
-    employeeId: 'EMP-CSIT-001',
-    name: 'Dr. Rajiv Sharma',
-    email: 'hod.csit@cdgi.edu.in',
-    username: 'hod.csit',
-    role: 'HOD',
-    designation: 'Professor & Head of Department',
-    department: 'CSIT',
-    contact: '+91 98260 11223',
-    cabin: 'Room 305, CSIT Department Wing',
-    assignedSubjects: ['Theory of Computation'],
-    assignedSections: ['Section A', 'Section B'],
-    status: 'Active',
-    qualification: 'Ph.D. in Computer Science & Engineering (IIT Kanpur)',
-    experienceYears: 18,
-    avatar: 'RS',
-  },
-  {
-    id: 'fac-2',
-    employeeId: 'EMP-CSIT-002',
-    name: 'Dr. Ananya Mukherjee',
-    email: 'ananya.mukherjee@cdgi.edu.in',
-    username: 'ananya.m',
-    role: 'Faculty',
-    designation: 'Associate Professor',
-    department: 'CSIT',
-    contact: '+91 98260 22334',
-    cabin: 'Room 308-A, Faculty Block',
-    assignedSubjects: ['Database Management Systems', 'DBMS & SQL Laboratory'],
-    assignedSections: ['Section A'],
-    status: 'Active',
-    qualification: 'Ph.D. in Distributed Systems & Databases',
-    experienceYears: 12,
-    avatar: 'AM',
-  },
-  {
-    id: 'fac-3',
-    employeeId: 'EMP-CSIT-003',
-    name: 'Prof. Vikramaditya Rathore',
-    email: 'vikram.rathore@cdgi.edu.in',
-    username: 'vikram.r',
-    role: 'Faculty',
-    designation: 'Assistant Professor & Sec B Mentor',
-    department: 'CSIT',
-    contact: '+91 98260 33445',
-    cabin: 'Room 308-B, Faculty Block',
-    assignedSubjects: ['Design & Analysis of Algorithms', 'Algorithms & Python Laboratory'],
-    assignedSections: ['Section B'],
-    status: 'Active',
-    qualification: 'M.Tech in Algorithmics (MANIT Bhopal)',
-    experienceYears: 8,
-    avatar: 'VR',
-  },
-  {
-    id: 'fac-4',
-    employeeId: 'EMP-CSIT-004',
-    name: 'Prof. Sneha Patel',
-    email: 'sneha.patel@cdgi.edu.in',
-    username: 'sneha.p',
-    role: 'Faculty',
-    designation: 'Assistant Professor',
-    department: 'CSIT',
-    contact: '+91 98260 44556',
-    cabin: 'Room 309, Faculty Block',
-    assignedSubjects: ['Software Engineering & Agile'],
-    assignedSections: ['Section A', 'Section B'],
-    status: 'Active',
-    qualification: 'M.Tech in Software Systems (BITS Pilani)',
-    experienceYears: 7,
-    avatar: 'SP',
-  },
-  {
-    id: 'fac-5',
-    employeeId: 'EMP-CSIT-005',
-    name: 'Dr. Amitav Banerjee',
-    email: 'amitav.banerjee@cdgi.edu.in',
-    username: 'amitav.b',
-    role: 'Faculty',
-    designation: 'Associate Professor',
-    department: 'CSIT',
-    contact: '+91 98260 55667',
-    cabin: 'Room 306, Faculty Block',
-    assignedSubjects: ['Web Technologies & Cloud Computing'],
-    assignedSections: ['Section A', 'Section B'],
-    status: 'Active',
-    qualification: 'Ph.D. in Cloud Computing & Edge Networks',
-    experienceYears: 11,
-    avatar: 'AB',
-  },
-  {
-    id: 'fac-6',
-    employeeId: 'EMP-CSIT-006',
-    name: 'Prof. Neha Gupta',
-    email: 'neha.gupta@cdgi.edu.in',
-    username: 'neha.g',
-    role: 'Faculty',
-    designation: 'Assistant Professor & Project Incharge',
-    department: 'CSIT',
-    contact: '+91 98260 66778',
-    cabin: 'Room 307, Faculty Block',
-    assignedSubjects: ['Minor Project & Seminar Stage-I'],
-    assignedSections: ['Section A', 'Section B'],
-    status: 'Active',
-    qualification: 'M.Tech in Information Security',
-    experienceYears: 6,
-    avatar: 'NG',
-  },
-];
+// Empty Initial Data - Production Ready
+export const INITIAL_FACULTY = [];
+export const INITIAL_LECTURES = [];
+export const INITIAL_ATTENDANCE = [];
+export const INITIAL_TASKS = [];
+export const INITIAL_ACHIEVEMENTS = [];
+export const INITIAL_RESOURCES = [];
+export const INITIAL_BOOKINGS = [];
 
-// Initial Resources exclusively for CSIT Department
-const INITIAL_RESOURCES = [
-  {
-    id: 'res-1',
-    name: 'CSIT Smart Classroom 301',
-    type: 'Classroom',
-    location: 'Block A, 3rd Floor',
-    capacity: 75,
-    features: ['Epson Interactive Projector', 'Acoustic Sound System', 'High-Speed Wi-Fi', 'Air Conditioned'],
-    status: 'Available',
-    dedicatedFor: 'Section A (3rd Year CSIT)',
-    manager: 'CSIT Department Staff',
-  },
-  {
-    id: 'res-2',
-    name: 'CSIT Smart Classroom 302',
-    type: 'Classroom',
-    location: 'Block A, 3rd Floor',
-    capacity: 75,
-    features: ['Digital Interactive Board', 'Podium Mic', 'LAN Ports', 'Dual Projector Screen'],
-    status: 'Available',
-    dedicatedFor: 'Section B (3rd Year CSIT)',
-    manager: 'CSIT Department Staff',
-  },
-  {
-    id: 'res-3',
-    name: 'Advanced Computing Lab 1',
-    type: 'Laboratory',
-    location: 'Turing Block, 1st Floor',
-    capacity: 45,
-    features: ['45 High-Spec PCs (i7/32GB RAM)', 'Gigabit LAN', 'Ubuntu Linux & Windows 11 Dual-boot', 'Python/GCC Dev Tools'],
-    status: 'Booked',
-    dedicatedFor: 'Algorithms & Python Lab',
-    manager: 'Lab Tech Mr. Verma',
-  },
-  {
-    id: 'res-4',
-    name: 'Database & Cloud Lab 2',
-    type: 'Laboratory',
-    location: 'Ada Lovelace Block, 2nd Floor',
-    capacity: 40,
-    features: ['40 Workstations', 'Oracle 21c Database Server', 'Docker Container Sandbox', 'Full UPS Backup'],
-    status: 'Available',
-    dedicatedFor: 'DBMS Lab & Cloud Computing',
-    manager: 'Lab Tech Mrs. Joshi',
-  },
-  {
-    id: 'res-5',
-    name: 'CSIT Department Seminar Hall',
-    type: 'Seminar Hall',
-    location: 'Central Academic Block, 3rd Floor',
-    capacity: 120,
-    features: ['Stage Audio System', 'Dual 4K Projectors', 'Wireless Lapel Mics', 'Live Streaming Rig'],
-    status: 'Available',
-    dedicatedFor: 'Departmental Workshops & Minor Project Reviews',
-    manager: 'CSIT Department Office',
-  },
-  {
-    id: 'res-6',
-    name: 'Sony 4K Mobile Projector Unit',
-    type: 'Projector',
-    location: 'CSIT Resource Inventory (Room 304)',
-    capacity: 1,
-    features: ['Wireless HDMI Screen Cast', '4000 ANSI Lumens', 'Tripod Stand & Remote'],
-    status: 'Available',
-    dedicatedFor: 'Special Lectures & Lab Demonstrations',
-    manager: 'CSIT Inventory Custodian',
-  },
-  {
-    id: 'res-7',
-    name: 'Department AI/GPU Workstation Rig',
-    type: 'Equipment',
-    location: 'CSIT Research Cell',
-    capacity: 1,
-    features: ['NVIDIA RTX 4090 24GB', 'AMD Threadripper 64-Core', 'CUDA 12 Toolkit', 'JupyterHub Server'],
-    status: 'Available',
-    dedicatedFor: 'Minor Projects & Faculty Research',
-    manager: 'Dr. Rajiv Sharma',
-  },
-];
+// Storage utilities
+export const storage = {
+  getToken: () => localStorage.getItem(STORAGE_KEYS.TOKEN),
+  setToken: (token) => localStorage.setItem(STORAGE_KEYS.TOKEN, token),
+  removeToken: () => localStorage.removeItem(STORAGE_KEYS.TOKEN),
 
-// Initial Lectures for CSIT 3rd Year 5th Sem (Sections A & B)
-const INITIAL_LECTURES = [
-  {
-    id: 'lec-101',
-    subjectCode: 'CSIT-501',
-    subjectName: 'Theory of Computation',
-    facultyId: 'fac-1',
-    facultyName: 'Dr. Rajiv Sharma',
-    section: 'Section A',
-    day: 'Monday',
-    date: '2026-11-02',
-    timeSlot: '09:00 AM - 10:00 AM',
-    period: 1,
-    classroom: 'CSIT Smart Classroom 301',
-    lectureType: 'Theory',
-    topic: 'Pumping Lemma for Regular Languages and Proof Techniques',
-    status: 'Completed',
-    attendanceMarked: true,
+  getUser: () => {
+    const user = localStorage.getItem(STORAGE_KEYS.USER);
+    return user ? JSON.parse(user) : null;
   },
-  {
-    id: 'lec-102',
-    subjectCode: 'CSIT-502',
-    subjectName: 'Database Management Systems',
-    facultyId: 'fac-2',
-    facultyName: 'Dr. Ananya Mukherjee',
-    section: 'Section A',
-    day: 'Monday',
-    date: '2026-11-02',
-    timeSlot: '10:00 AM - 11:00 AM',
-    period: 2,
-    classroom: 'CSIT Smart Classroom 301',
-    lectureType: 'Theory',
-    topic: 'Relational Algebra & Tuple Relational Calculus (TRC)',
-    status: 'Completed',
-    attendanceMarked: true,
-  },
-  {
-    id: 'lec-103',
-    subjectCode: 'CSIT-503',
-    subjectName: 'Design & Analysis of Algorithms',
-    facultyId: 'fac-3',
-    facultyName: 'Prof. Vikramaditya Rathore',
-    section: 'Section B',
-    day: 'Monday',
-    date: '2026-11-02',
-    timeSlot: '10:00 AM - 11:00 AM',
-    period: 2,
-    classroom: 'CSIT Smart Classroom 302',
-    lectureType: 'Theory',
-    topic: 'Dynamic Programming: 0/1 Knapsack Problem & Memoization',
-    status: 'Completed',
-    attendanceMarked: true,
-  },
-  {
-    id: 'lec-104',
-    subjectCode: 'CSIT-504',
-    subjectName: 'Software Engineering & Agile',
-    facultyId: 'fac-4',
-    facultyName: 'Prof. Sneha Patel',
-    section: 'Section A',
-    day: 'Monday',
-    date: '2026-11-02',
-    timeSlot: '11:15 AM - 12:15 PM',
-    period: 3,
-    classroom: 'CSIT Smart Classroom 301',
-    lectureType: 'Theory',
-    topic: 'Sprint Planning, Scrum Ceremonies & User Story Estimation',
-    status: 'Scheduled',
-    attendanceMarked: false,
-  },
-  {
-    id: 'lec-105',
-    subjectCode: 'CSIT-505',
-    subjectName: 'Web Technologies & Cloud Computing',
-    facultyId: 'fac-5',
-    facultyName: 'Dr. Amitav Banerjee',
-    section: 'Section B',
-    day: 'Monday',
-    date: '2026-11-02',
-    timeSlot: '11:15 AM - 12:15 PM',
-    period: 3,
-    classroom: 'CSIT Smart Classroom 302',
-    lectureType: 'Theory',
-    topic: 'RESTful API Architecture & JWT Token Authentication',
-    status: 'Scheduled',
-    attendanceMarked: false,
-  },
-  {
-    id: 'lec-106',
-    subjectCode: 'CSIT-507',
-    subjectName: 'Algorithms & Python Laboratory',
-    facultyId: 'fac-3',
-    facultyName: 'Prof. Vikramaditya Rathore',
-    section: 'Section B',
-    day: 'Monday',
-    date: '2026-11-02',
-    timeSlot: '02:00 PM - 04:00 PM',
-    period: 5,
-    classroom: 'Advanced Computing Lab 1',
-    lectureType: 'Lab',
-    topic: 'Implementation of Dijkstra and Bellman-Ford Shortest Paths in Python',
-    status: 'Scheduled',
-    attendanceMarked: false,
-  },
-  {
-    id: 'lec-107',
-    subjectCode: 'CSIT-506',
-    subjectName: 'DBMS & SQL Laboratory',
-    facultyId: 'fac-2',
-    facultyName: 'Dr. Ananya Mukherjee',
-    section: 'Section A',
-    day: 'Tuesday',
-    date: '2026-11-03',
-    timeSlot: '02:00 PM - 04:00 PM',
-    period: 5,
-    classroom: 'Database & Cloud Lab 2',
-    lectureType: 'Lab',
-    topic: 'Complex Nested SQL Queries and PL/SQL Stored Procedures',
-    status: 'Scheduled',
-    attendanceMarked: false,
-  },
-  {
-    id: 'lec-108',
-    subjectCode: 'CSIT-508',
-    subjectName: 'Minor Project & Seminar Stage-I',
-    facultyId: 'fac-6',
-    facultyName: 'Prof. Neha Gupta',
-    section: 'Section A',
-    day: 'Wednesday',
-    date: '2026-11-04',
-    timeSlot: '02:00 PM - 04:00 PM',
-    period: 5,
-    classroom: 'CSIT Department Seminar Hall',
-    lectureType: 'Practical',
-    topic: 'Literature Review & Architecture Diagram Milestone Evaluation',
-    status: 'Scheduled',
-    attendanceMarked: false,
-  },
-];
+  setUser: (user) => localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user)),
+  removeUser: () => localStorage.removeItem(STORAGE_KEYS.USER),
 
-// Student Rosters for CSIT 3rd Year 5th Sem
-const generateStudents = (section, startRoll, count) => {
-  const firstNames = ['Aarav', 'Aditi', 'Ananya', 'Aryan', 'Bhavya', 'Devansh', 'Diya', 'Ishaan', 'Kavya', 'Manish', 'Neha', 'Pranav', 'Rhea', 'Rohan', 'Sakshi', 'Sameer', 'Shreya', 'Tanmay', 'Varun', 'Yash'];
-  const lastNames = ['Sharma', 'Verma', 'Gupta', 'Patel', 'Singh', 'Mishra', 'Jain', 'Mehta', 'Chouhan', 'Tiwari', 'Pandey', 'Nair', 'Reddy', 'Saxena', 'Dubey'];
-  
-  return Array.from({ length: count }, (_, idx) => {
-    const f = firstNames[idx % firstNames.length];
-    const l = lastNames[(idx * 3) % lastNames.length];
-    const rollNum = `0827CS231${String(startRoll + idx).padStart(3, '0')}`;
-    return {
-      rollNo: rollNum,
-      enrollmentNo: `EN23CSIT0${startRoll + idx}`,
-      name: `${f} ${l}`,
-      section,
-      year: '3rd Year',
-      semester: '5th Semester',
-      status: 'Present',
-    };
-  });
+  getTheme: () => localStorage.getItem(STORAGE_KEYS.THEME) || 'light',
+  setTheme: (theme) => localStorage.setItem(STORAGE_KEYS.THEME, theme),
+
+  // Generic get/set for any key
+  get: (key) => {
+    const data = localStorage.getItem(STORAGE_KEYS[key.toUpperCase()]);
+    return data ? JSON.parse(data) : null;
+  },
+  set: (key, value) => {
+    localStorage.setItem(STORAGE_KEYS[key.toUpperCase()], JSON.stringify(value));
+  },
+
+  // Clear all app data
+  clearAll: () => {
+    Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
+  },
 };
 
-const STUDENTS_SEC_A = generateStudents('Section A', 1, 60);
-const STUDENTS_SEC_B = generateStudents('Section B', 61, 60);
+// Seed data function (optional - can be called manually if needed)
+export const initializeStorage = () => seedInitialData();
 
-// Initial Attendance Records
-const INITIAL_ATTENDANCE = [
-  {
-    id: 'att-lec-101',
-    lectureId: 'lec-101',
-    subjectCode: 'CSIT-501',
-    subjectName: 'Theory of Computation',
-    facultyName: 'Dr. Rajiv Sharma',
-    section: 'Section A',
-    date: '2026-11-02',
-    timeSlot: '09:00 AM - 10:00 AM',
-    totalStudents: 60,
-    presentCount: 56,
-    absentCount: 3,
-    onLeaveCount: 1,
-    attendanceRate: 93.3,
-    records: STUDENTS_SEC_A.map((s, idx) => ({
-      ...s,
-      status: idx === 12 || idx === 25 || idx === 41 ? 'Absent' : idx === 30 ? 'On Leave' : 'Present',
-    })),
-  },
-  {
-    id: 'att-lec-102',
-    lectureId: 'lec-102',
-    subjectCode: 'CSIT-502',
-    subjectName: 'Database Management Systems',
-    facultyName: 'Dr. Ananya Mukherjee',
-    section: 'Section A',
-    date: '2026-11-02',
-    timeSlot: '10:00 AM - 11:00 AM',
-    totalStudents: 60,
-    presentCount: 54,
-    absentCount: 5,
-    onLeaveCount: 1,
-    attendanceRate: 90.0,
-    records: STUDENTS_SEC_A.map((s, idx) => ({
-      ...s,
-      status: idx % 11 === 0 ? 'Absent' : idx === 30 ? 'On Leave' : 'Present',
-    })),
-  },
-  {
-    id: 'att-lec-103',
-    lectureId: 'lec-103',
-    subjectCode: 'CSIT-503',
-    subjectName: 'Design & Analysis of Algorithms',
-    facultyName: 'Prof. Vikramaditya Rathore',
-    section: 'Section B',
-    date: '2026-11-02',
-    timeSlot: '10:00 AM - 11:00 AM',
-    totalStudents: 60,
-    presentCount: 57,
-    absentCount: 2,
-    onLeaveCount: 1,
-    attendanceRate: 95.0,
-    records: STUDENTS_SEC_B.map((s, idx) => ({
-      ...s,
-      status: idx === 8 || idx === 47 ? 'Absent' : idx === 22 ? 'On Leave' : 'Present',
-    })),
-  },
-];
-
-// Initial Tasks
-const INITIAL_TASKS = [
-  {
-    id: 'task-1',
-    title: 'NAAC Criteria 2.3 Course File Preparation (DBMS & Lab)',
-    description: 'Compile updated course outcomes (COs), CO-PO articulation matrices, previous year question paper solutions, and lecture delivery proof for CSIT 5th Sem DBMS.',
-    assignedBy: 'Dr. Rajiv Sharma (HOD)',
-    assignedToId: 'fac-2',
-    assignedToName: 'Dr. Ananya Mukherjee',
-    section: 'Section A',
-    priority: 'High',
-    deadline: '2026-11-15',
-    category: 'Accreditation',
-    status: 'In Progress',
-    progressPct: 65,
-    completionReport: 'All 5 CO definitions and question banks mapped. Lab manual formatting pending final check.',
-    submittedDate: null,
-  },
-  {
-    id: 'task-2',
-    title: 'Finalize Mid-Semester Examination Papers (DAA & TOC)',
-    description: 'Set two distinct sets of questions with Bloom taxonomy level tags for 3rd Year CSIT Section A and Section B midterm evaluation.',
-    assignedBy: 'Dr. Rajiv Sharma (HOD)',
-    assignedToId: 'fac-3',
-    assignedToName: 'Prof. Vikramaditya Rathore',
-    section: 'Section B',
-    priority: 'High',
-    deadline: '2026-11-05',
-    category: 'Exam Duty',
-    status: 'Pending',
-    progressPct: 20,
-    completionReport: '',
-    submittedDate: null,
-  },
-  {
-    id: 'task-3',
-    title: 'Advanced Computing Lab 1 Workstation Python Environment Audit',
-    description: 'Verify Python 3.12, JupyterLab, NumPy, and Graphviz installations across all 45 systems in Turing Block Lab 1 for upcoming DAA practicals.',
-    assignedBy: 'Dr. Rajiv Sharma (HOD)',
-    assignedToId: 'fac-4',
-    assignedToName: 'Prof. Sneha Patel',
-    section: 'Section A & B',
-    priority: 'Medium',
-    deadline: '2026-11-12',
-    category: 'Lab Setup',
-    status: 'Under Review',
-    progressPct: 90,
-    completionReport: '43 systems verified and cloned. 2 systems had network interface driver issues, replaced with spare NICs.',
-    submittedDate: '2026-10-30',
-  },
-  {
-    id: 'task-4',
-    title: 'AWS Cloud Architecture Guest Session Coordination',
-    description: 'Coordinate schedule, auditorium tech check, and student attendance guidelines for visiting AWS Solution Architect lecture on Microservices.',
-    assignedBy: 'Dr. Rajiv Sharma (HOD)',
-    assignedToId: 'fac-5',
-    assignedToName: 'Dr. Amitav Banerjee',
-    section: 'Section A & B',
-    priority: 'Medium',
-    deadline: '2026-11-20',
-    category: 'Academic Activity',
-    status: 'In Progress',
-    progressPct: 40,
-    completionReport: 'Speaker confirmed for Nov 22 at 11 AM in CSIT Seminar Hall.',
-    submittedDate: null,
-  },
-  {
-    id: 'task-5',
-    title: 'Minor Project Stage-I Synopsis Approval & Guide Allocation',
-    description: 'Scrutinize student synopsis forms, eliminate duplicate project topics across Section A and B, and assign faculty mentors equitably.',
-    assignedBy: 'Dr. Rajiv Sharma (HOD)',
-    assignedToId: 'fac-6',
-    assignedToName: 'Prof. Neha Gupta',
-    section: 'Section A & B',
-    priority: 'High',
-    deadline: '2026-11-10',
-    category: 'Project Mentorship',
-    status: 'Completed',
-    progressPct: 100,
-    completionReport: 'Total 28 project teams verified and approved. Guide allocation notice dispatched on departmental board.',
-    submittedDate: '2026-10-29',
-  },
-];
-
-// Initial Faculty Achievements
-const INITIAL_ACHIEVEMENTS = [
-  {
-    id: 'ach-1',
-    facultyId: 'fac-1',
-    facultyName: 'Dr. Rajiv Sharma',
-    designation: 'Professor & HOD',
-    category: 'Awards',
-    title: 'Distinguished Academician & Researcher Award 2026',
-    issuingBody: 'Indian Society for Technical Education (ISTE)',
-    date: '2026-09-15',
-    description: 'Awarded for exceptional leadership in establishing industry-aligned CSIT curriculum and guiding funded research projects.',
-    certificateUrl: '/certificates/cert-iste-sharma.pdf',
-    status: 'Approved',
-    approvedBy: 'Governing Council',
-    reviewedOn: '2026-09-18',
-  },
-  {
-    id: 'ach-2',
-    facultyId: 'fac-2',
-    facultyName: 'Dr. Ananya Mukherjee',
-    designation: 'Associate Professor',
-    category: 'Patents',
-    title: 'Published Patent: Adaptive Distributed Locking for Hybrid Multi-Cloud DBMS',
-    issuingBody: 'Indian Patent Office (Application No: 202621049281)',
-    date: '2026-10-12',
-    description: 'Novel consensus algorithm for fault-tolerant query transactions across distributed database clusters.',
-    certificateUrl: '/certificates/patent-202621049281.pdf',
-    status: 'Approved',
-    approvedBy: 'Dr. Rajiv Sharma (HOD)',
-    reviewedOn: '2026-10-14',
-  },
-  {
-    id: 'ach-3',
-    facultyId: 'fac-3',
-    facultyName: 'Prof. Vikramaditya Rathore',
-    designation: 'Assistant Professor',
-    category: 'Certifications',
-    title: 'NPTEL Elite + Gold Certification in Advanced Graph Algorithms',
-    issuingBody: 'IIT Madras (Top 1% Candidate)',
-    date: '2026-10-05',
-    description: 'Completed 12-week rigorous advanced algorithmic coursework with score of 94%.',
-    certificateUrl: '/certificates/nptel-algorithms-rathore.pdf',
-    status: 'Approved',
-    approvedBy: 'Dr. Rajiv Sharma (HOD)',
-    reviewedOn: '2026-10-07',
-  },
-  {
-    id: 'ach-4',
-    facultyId: 'fac-5',
-    facultyName: 'Dr. Amitav Banerjee',
-    designation: 'Associate Professor',
-    category: 'Publications',
-    title: 'Research Paper: Serverless Edge Inference for Autonomous IoT in 5G Networks',
-    issuingBody: 'IEEE Transactions on Cloud Computing (Impact Factor: 6.8)',
-    date: '2026-10-24',
-    description: 'Indexed in SCI and Scopus Q1. Proposed lightweight micro-runtime for edge AI models.',
-    certificateUrl: '/certificates/ieee-tcc-banerjee.pdf',
-    status: 'Under Review',
-    approvedBy: null,
-    reviewedOn: null,
-  },
-  {
-    id: 'ach-5',
-    facultyId: 'fac-4',
-    facultyName: 'Prof. Sneha Patel',
-    designation: 'Assistant Professor',
-    category: 'FDPs',
-    title: 'National AICTE-ATAL FDP on Modern DevOps & CI/CD Pipelines',
-    issuingBody: 'AICTE Training and Learning Academy',
-    date: '2026-10-18',
-    description: 'Completed 5 days intensive hands-on training on Kubernetes, Docker, and Jenkins automated workflows.',
-    certificateUrl: '/certificates/atal-fdp-devops.pdf',
-    status: 'Under Review',
-    approvedBy: null,
-    reviewedOn: null,
-  },
-];
-
-// Initial Resource Booking Requests
-const INITIAL_BOOKINGS = [
-  {
-    id: 'book-1',
-    resourceId: 'res-3',
-    resourceName: 'Advanced Computing Lab 1',
-    requestedById: 'fac-3',
-    requestedByName: 'Prof. Vikramaditya Rathore',
-    section: 'Section B',
-    date: '2026-11-02',
-    timeSlot: '02:00 PM - 04:00 PM',
-    purpose: 'DAA Python Shortest Paths Practical Exam Practice',
-    attendeesCount: 58,
-    status: 'Approved',
-    approvedBy: 'Dr. Rajiv Sharma (HOD)',
-    requestedOn: '2026-10-28 11:30 AM',
-    decisionNotes: 'Approved. Turing Block Lab 1 reserved for Sec B.',
-  },
-  {
-    id: 'book-2',
-    resourceId: 'res-5',
-    resourceName: 'CSIT Department Seminar Hall',
-    requestedById: 'fac-5',
-    requestedByName: 'Dr. Amitav Banerjee',
-    section: 'Section A & B',
-    date: '2026-11-22',
-    timeSlot: '11:00 AM - 01:00 PM',
-    purpose: 'AWS Cloud Architecture Expert Guest Lecture for 3rd Year CSIT',
-    attendeesCount: 115,
-    status: 'Pending',
-    approvedBy: null,
-    requestedOn: '2026-10-30 04:15 PM',
-    decisionNotes: '',
-  },
-  {
-    id: 'book-3',
-    resourceId: 'res-6',
-    resourceName: 'Sony 4K Mobile Projector Unit',
-    requestedById: 'fac-2',
-    requestedByName: 'Dr. Ananya Mukherjee',
-    section: 'Section A',
-    date: '2026-11-03',
-    timeSlot: '10:00 AM - 11:00 AM',
-    purpose: 'Interactive SQL Query Optimization Visualizer Live Demo',
-    attendeesCount: 60,
-    status: 'Approved',
-    approvedBy: 'Dr. Rajiv Sharma (HOD)',
-    requestedOn: '2026-10-29 02:00 PM',
-    decisionNotes: 'Collect HDMI connector kit from store.',
-  },
-];
-
-// Helper to seed localStorage if empty
-export function initializeStorage() {
-  if (!localStorage.getItem(STORAGE_KEYS.FACULTY)) {
-    localStorage.setItem(STORAGE_KEYS.FACULTY, JSON.stringify(INITIAL_FACULTY));
+export const seedInitialData = () => {
+  if (!storage.get('FACULTY') || storage.get('FACULTY').length === 0) {
+    storage.set('FACULTY', INITIAL_FACULTY);
   }
-  if (!localStorage.getItem(STORAGE_KEYS.RESOURCES)) {
-    localStorage.setItem(STORAGE_KEYS.RESOURCES, JSON.stringify(INITIAL_RESOURCES));
+  if (!storage.get('LECTURES') || storage.get('LECTURES').length === 0) {
+    storage.set('LECTURES', INITIAL_LECTURES);
   }
-  if (!localStorage.getItem(STORAGE_KEYS.LECTURES)) {
-    localStorage.setItem(STORAGE_KEYS.LECTURES, JSON.stringify(INITIAL_LECTURES));
+  if (!storage.get('ATTENDANCE') || storage.get('ATTENDANCE').length === 0) {
+    storage.set('ATTENDANCE', INITIAL_ATTENDANCE);
   }
-  if (!localStorage.getItem(STORAGE_KEYS.ATTENDANCE)) {
-    localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(INITIAL_ATTENDANCE));
+  if (!storage.get('TASKS') || storage.get('TASKS').length === 0) {
+    storage.set('TASKS', INITIAL_TASKS);
   }
-  if (!localStorage.getItem(STORAGE_KEYS.TASKS)) {
-    localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(INITIAL_TASKS));
+  if (!storage.get('ACHIEVEMENTS') || storage.get('ACHIEVEMENTS').length === 0) {
+    storage.set('ACHIEVEMENTS', INITIAL_ACHIEVEMENTS);
   }
-  if (!localStorage.getItem(STORAGE_KEYS.ACHIEVEMENTS)) {
-    localStorage.setItem(STORAGE_KEYS.ACHIEVEMENTS, JSON.stringify(INITIAL_ACHIEVEMENTS));
+  if (!storage.get('RESOURCES') || storage.get('RESOURCES').length === 0) {
+    storage.set('RESOURCES', INITIAL_RESOURCES);
   }
-  if (!localStorage.getItem(STORAGE_KEYS.BOOKINGS)) {
-    localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(INITIAL_BOOKINGS));
+  if (!storage.get('BOOKINGS') || storage.get('BOOKINGS').length === 0) {
+    storage.set('BOOKINGS', INITIAL_BOOKINGS);
   }
-  if (!localStorage.getItem(STORAGE_KEYS.USER)) {
-    // Default to HOD user
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(INITIAL_FACULTY[0]));
-    localStorage.setItem(STORAGE_KEYS.TOKEN, 'mock-jwt-token-hod-csit-2026');
-  }
-}
-
-export {
-  STORAGE_KEYS,
-  INITIAL_FACULTY,
-  INITIAL_RESOURCES,
-  INITIAL_LECTURES,
-  INITIAL_ATTENDANCE,
-  INITIAL_TASKS,
-  INITIAL_ACHIEVEMENTS,
-  INITIAL_BOOKINGS,
-  STUDENTS_SEC_A,
-  STUDENTS_SEC_B,
 };
 
+export default storage;
