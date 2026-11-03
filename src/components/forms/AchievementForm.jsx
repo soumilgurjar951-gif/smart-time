@@ -49,7 +49,7 @@ export default function AchievementForm({
           <select
             value={formData.category}
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {ACHIEVEMENT_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
@@ -68,7 +68,7 @@ export default function AchievementForm({
             required
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           />
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function AchievementForm({
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           placeholder="e.g. Published Research Paper in IEEE Transactions or NPTEL Elite Gold"
-          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+          className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
         />
       </div>
 
@@ -97,7 +97,7 @@ export default function AchievementForm({
           value={formData.issuingBody}
           onChange={(e) => setFormData({ ...formData, issuingBody: e.target.value })}
           placeholder="e.g. IEEE, Springer, AICTE, IIT Madras, Patent Office"
-          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+          className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
         />
       </div>
 
@@ -111,7 +111,7 @@ export default function AchievementForm({
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           placeholder="Summary of research impact, indexation (SCI/Scopus), or certificate details..."
-          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+          className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
         />
       </div>
 
@@ -120,7 +120,7 @@ export default function AchievementForm({
         <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
           Upload Supporting Certificate / Paper Proof (PDF / Image) *
         </label>
-        <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-4 text-center bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100/50 transition-colors">
+        <div className="border-2 border-dashed border-slate-300 dark:border-midnight-700 rounded-2xl p-4 text-center bg-offwhite dark:bg-midnight-800/40 hover:bg-slate-100/50 transition-colors">
           <input
             type="file"
             id="cert-upload"
@@ -129,7 +129,7 @@ export default function AchievementForm({
             className="hidden"
           />
           <label htmlFor="cert-upload" className="cursor-pointer">
-            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-xs font-bold text-electric-600 dark:text-electric-400">
               {simulatedFileUploaded
                 ? `Attached: ${formData.certificateFileName}`
                 : 'Click to select certificate file (PDF/JPEG)'}
@@ -141,7 +141,7 @@ export default function AchievementForm({
         </div>
       </div>
 
-      <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+      <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex items-center justify-end gap-2.5">
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

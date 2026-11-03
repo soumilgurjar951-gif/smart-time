@@ -170,7 +170,7 @@ export default function ResourceManagement() {
           <Button
             onClick={() => setIsBookingModalOpen(true)}
             icon={Calendar}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="bg-electric-600 hover:bg-electric-700 text-white"
           >
             Request Resource Booking
           </Button>
@@ -188,12 +188,12 @@ export default function ResourceManagement() {
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 w-fit">
+      <div className="flex bg-slate-100 dark:bg-midnight-800 p-1 rounded-2xl border border-slate-200 dark:border-midnight-700 w-fit">
         <button
           onClick={() => setActiveTab('resources')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'resources'
-              ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-2xs'
+              ? 'bg-white dark:bg-midnight-900 text-electric-600 dark:text-electric-400 shadow-2xs'
               : 'text-slate-600 dark:text-slate-400'
           }`}
         >
@@ -203,7 +203,7 @@ export default function ResourceManagement() {
           onClick={() => setActiveTab('bookings')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
             activeTab === 'bookings'
-              ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-2xs'
+              ? 'bg-white dark:bg-midnight-900 text-electric-600 dark:text-electric-400 shadow-2xs'
               : 'text-slate-600 dark:text-slate-400'
           }`}
         >
@@ -217,7 +217,7 @@ export default function ResourceManagement() {
       {activeTab === 'resources' ? (
         <>
           {/* Filters */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             <div className="flex-1 max-w-md">
               <SearchInput
                 value={search}
@@ -230,7 +230,7 @@ export default function ResourceManagement() {
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+                className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
               >
                 <option value="All">All Resource Types</option>
                 {RESOURCE_TYPES.map((t) => (
@@ -243,7 +243,7 @@ export default function ResourceManagement() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+                className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
               >
                 <option value="All">All Availability</option>
                 <option value="Available">Available</option>
@@ -266,12 +266,12 @@ export default function ResourceManagement() {
               {filteredResources.map((res) => (
                 <div
                   key={res.id}
-                  className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all"
+                  className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-electric-300 dark:hover:border-electric-700 transition-all"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-electric-50 dark:bg-electric-950 text-electric-700 dark:text-electric-300 border border-electric-200 dark:border-electric-800">
                           {res.type}
                         </span>
                         <h3 className="text-sm font-bold text-slate-900 dark:text-white mt-1.5 leading-snug">
@@ -289,13 +289,13 @@ export default function ResourceManagement() {
                       <div className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300">
                         <span>Capacity: {res.capacity} Students / Workstations</span>
                       </div>
-                      <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
+                      <p className="text-[11px] text-electric-600 dark:text-electric-400 font-medium">
                         Dedicated: {res.dedicatedFor}
                       </p>
                     </div>
 
                     {/* Features Badges */}
-                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <div className="pt-2 border-t border-slate-100 dark:border-midnight-800">
                       <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
                         Equipment & Highlights:
                       </span>
@@ -303,7 +303,7 @@ export default function ResourceManagement() {
                         {res.features?.map((f, i) => (
                           <span
                             key={i}
-                            className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                            className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-midnight-800 text-slate-600 dark:text-slate-300"
                           >
                             {f}
                           </span>
@@ -312,14 +312,14 @@ export default function ResourceManagement() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex items-center justify-between">
                     <span className="text-[10px] text-slate-400">
                       Mgr: {res.manager || 'CSIT Office'}
                     </span>
                     {isHod && (
                       <button
                         onClick={() => setEditingResource(res)}
-                        className="px-2.5 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 rounded-lg flex items-center gap-1"
+                        className="px-2.5 py-1 text-xs font-bold text-electric-600 dark:text-electric-400 hover:bg-electric-50 dark:hover:bg-electric-950/60 rounded-lg flex items-center gap-1"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                         <span>Edit Facility</span>
@@ -333,7 +333,7 @@ export default function ResourceManagement() {
         </>
       ) : (
         /* Booking Requests Table */
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
@@ -348,7 +348,7 @@ export default function ResourceManagement() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
+                <tr className="border-b border-slate-200 dark:border-midnight-800 bg-offwhite dark:bg-midnight-800/60 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                   <th className="py-3 px-4">Facility Name</th>
                   <th className="py-3 px-4">Requested By</th>
                   <th className="py-3 px-4">Section</th>
@@ -358,16 +358,16 @@ export default function ResourceManagement() {
                   {isHod && <th className="py-3 px-4 text-right">HOD Approval</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-midnight-800">
                 {bookings.map((bkg) => (
-                  <tr key={bkg.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                  <tr key={bkg.id} className="hover:bg-offwhite dark:hover:bg-midnight-800/40">
                     <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">
                       {bkg.resourceName}
                     </td>
                     <td className="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">
                       {bkg.requestedByName}
                     </td>
-                    <td className="py-3 px-4 font-bold text-indigo-600 dark:text-indigo-400">
+                    <td className="py-3 px-4 font-bold text-electric-600 dark:text-electric-400">
                       {bkg.section}
                     </td>
                     <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
@@ -474,7 +474,7 @@ export default function ResourceManagement() {
       >
         {reviewingBooking && (
           <div className="space-y-4 text-xs">
-            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+            <div className="p-3 rounded-2xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 space-y-1">
               <p><strong>Faculty:</strong> {reviewingBooking.requestedByName}</p>
               <p><strong>Section:</strong> {reviewingBooking.section}</p>
               <p><strong>Date & Time:</strong> {reviewingBooking.date} • {reviewingBooking.timeSlot}</p>
@@ -489,11 +489,11 @@ export default function ResourceManagement() {
                 type="text"
                 value={decisionNotes}
                 onChange={(e) => setDecisionNotes(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
               />
             </div>
 
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-2">
+            <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex justify-end gap-2">
               <Button
                 variant="danger"
                 size="sm"

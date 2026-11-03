@@ -1,8 +1,8 @@
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 
 from achievements.views import FacultyAchievementViewSet
 
-router = DefaultRouter()
+router = SimpleRouter()
 router.register("", FacultyAchievementViewSet, basename="achievement")
 
 urlpatterns = router.urls

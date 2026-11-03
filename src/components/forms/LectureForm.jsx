@@ -80,7 +80,7 @@ export default function LectureForm({
           <select
             value={formData.subjectCode}
             onChange={(e) => handleSubjectChange(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {CSIT_5TH_SEM_SUBJECTS.map((s) => (
               <option key={s.code} value={s.code}>
@@ -98,7 +98,7 @@ export default function LectureForm({
           <select
             value={formData.facultyId}
             onChange={(e) => handleFacultyChange(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {facultyList.map((f) => (
               <option key={f.id} value={f.id}>
@@ -118,7 +118,7 @@ export default function LectureForm({
           <select
             value={formData.section}
             onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {SECTIONS.map((sec) => (
               <option key={sec} value={sec}>
@@ -136,7 +136,7 @@ export default function LectureForm({
           <select
             value={formData.lectureType}
             onChange={(e) => setFormData({ ...formData, lectureType: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             <option value="Theory">Theory Lecture</option>
             <option value="Lab">Lab Practical</option>
@@ -153,7 +153,7 @@ export default function LectureForm({
           <select
             value={formData.day}
             onChange={(e) => setFormData({ ...formData, day: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {DAYS_OF_WEEK.map((d) => (
               <option key={d} value={d}>
@@ -173,7 +173,7 @@ export default function LectureForm({
           <select
             value={formData.timeSlot}
             onChange={(e) => handleTimeSlotChange(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {TIME_SLOTS.map((s) => (
               <option key={s.id} value={s.label}>
@@ -194,7 +194,7 @@ export default function LectureForm({
             value={formData.classroom}
             onChange={(e) => setFormData({ ...formData, classroom: e.target.value })}
             placeholder="e.g. CSIT Smart Classroom 301 or Lab 1"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           />
         </div>
       </div>
@@ -210,12 +210,12 @@ export default function LectureForm({
           value={formData.topic}
           onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
           placeholder="e.g. Dynamic Programming: Longest Common Subsequence"
-          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+          className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
         />
       </div>
 
       {/* Action Buttons */}
-      <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+      <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex items-center justify-end gap-2.5">
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

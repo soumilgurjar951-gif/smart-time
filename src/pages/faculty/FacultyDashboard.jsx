@@ -1,18 +1,14 @@
 // src/pages/faculty/FacultyDashboard.jsx
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import {
   CalendarDays,
   ClipboardCheck,
   CheckSquare,
   Award,
   Clock,
-  ArrowRight,
-  BookOpen,
   MapPin,
   Building2,
-  AlertCircle,
-  PlusCircle,
   Sparkles,
 } from 'lucide-react';
 import StatCard from '../../components/common/StatCard';
@@ -42,11 +38,7 @@ export default function FacultyDashboard() {
         ]);
 
         // Filter lectures assigned to this faculty
-        const assignedLecs = lecs.filter(
-          (l) => l.facultyId === user?.id || (user?.assignedSubjects && user.assignedSubjects.includes(l.subjectName))
-        );
-
-        setMyLectures(assignedLecs.length > 0 ? assignedLecs : lecs.slice(0, 3));
+        setMyLectures(lecs);
         setMyTasks(tsks);
         setMyAchievements(achs);
       } catch (err) {
@@ -58,21 +50,26 @@ export default function FacultyDashboard() {
     loadFacultyData();
   }, [user]);
 
+  // First-login enforcement: faculty must complete onboarding before dashboard access.
+  if (user?.profile_status === 'INCOMPLETE') {
+    return <Navigate to="/faculty/onboarding" replace />;
+  }
+
   if (loading) {
     return <LoadingSpinner message="Loading your teaching portal..." />;
   }
 
-  const todayLectures = myLectures.slice(0, 2);
-  const upcomingLectures = myLectures.slice(2);
-  const pendingTasks = myTasks.filter((t) => t.status !== 'Completed');
+  const todayLectures = (Array.isArray(myLectures) ? myLectures : []).slice(0, 2);
+  const upcomingLectures = (Array.isArray(myLectures) ? myLectures : []).slice(2);
+  const pendingTasks = (Array.isArray(myTasks) ? myTasks : []).filter((t) => t.status !== 'Completed');
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-200">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-indigo-900/40">
+      <div className="bg-gradient-to-r from-midnight-950 via-midnight-800 to-midnight-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-midnight-600/40">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-500/30 mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-electric-500/20 text-electric-300 text-xs font-semibold border border-electric-500/30 mb-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
               <span>{DEPARTMENT_INFO.department} Faculty Portal • {DEPARTMENT_INFO.year} / {DEPARTMENT_INFO.semester}</span>
             </div>
@@ -130,8 +127,8 @@ export default function FacultyDashboard() {
 
         <StatCard
           title="Department Attendance Rate"
-          value="93.3%"
-          subtitle="Average across lectures"
+          value="—"
+          subtitle="No attendance summary loaded"
           icon={ClipboardCheck}
           color="emerald"
           badge="High"
@@ -142,7 +139,7 @@ export default function FacultyDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Today's Lectures & Quick Attendance Shortcut */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs">
+          <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
@@ -152,7 +149,7 @@ export default function FacultyDashboard() {
                   Select a lecture to record Section A or Section B student attendance
                 </p>
               </div>
-              <Link to="/lectures" className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+              <Link to="/timetable" className="text-xs font-bold text-electric-600 dark:text-electric-400 hover:underline">
                 View Weekly Timetable →
               </Link>
             </div>
@@ -161,11 +158,11 @@ export default function FacultyDashboard() {
               {todayLectures.map((lec) => (
                 <div
                   key={lec.id}
-                  className="rounded-2xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  className="rounded-2xl border border-slate-200 dark:border-midnight-800 p-4 bg-offwhite/50 dark:bg-midnight-800/40 hover:bg-offwhite dark:hover:bg-midnight-800/70 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-black text-electric-700 dark:text-electric-400 bg-electric-50 dark:bg-electric-950 px-2 py-0.5 rounded-md">
                         {lec.section}
                       </span>
                       <h4 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -178,7 +175,7 @@ export default function FacultyDashboard() {
 
                     <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400 pt-1">
                       <span className="flex items-center gap-1 font-medium">
-                        <Clock className="w-3.5 h-3.5 text-indigo-600" />
+                        <Clock className="w-3.5 h-3.5 text-electric-600" />
                         {lec.timeSlot}
                       </span>
                       <span>•</span>
@@ -209,7 +206,7 @@ export default function FacultyDashboard() {
           </div>
 
           {/* Upcoming Lectures This Week */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs">
+          <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs">
             <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif] mb-3">
               Upcoming Schedule (This Week)
             </h3>
@@ -217,11 +214,11 @@ export default function FacultyDashboard() {
               {upcomingLectures.map((lec) => (
                 <div
                   key={lec.id}
-                  className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60 space-y-1"
+                  className="p-3.5 rounded-2xl border border-slate-200 dark:border-midnight-800 bg-white dark:bg-midnight-800/60 space-y-1"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">{lec.day}</span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                    <span className="text-xs font-bold text-electric-600 dark:text-electric-400">{lec.day}</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-midnight-700 text-slate-600 dark:text-slate-300">
                       {lec.section}
                     </span>
                   </div>
@@ -236,12 +233,12 @@ export default function FacultyDashboard() {
         {/* Right: Assigned Tasks & Announcements */}
         <div className="space-y-6">
           {/* Assigned Tasks Card */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs">
+          <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
                 My Assigned Tasks
               </h3>
-              <Link to="/tasks" className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+              <Link to="/tasks" className="text-xs font-bold text-electric-600 dark:text-electric-400 hover:underline">
                 View All
               </Link>
             </div>
@@ -250,7 +247,7 @@ export default function FacultyDashboard() {
               {pendingTasks.slice(0, 3).map((tsk) => (
                 <div
                   key={tsk.id}
-                  className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 space-y-2"
+                  className="p-3.5 rounded-2xl border border-slate-200 dark:border-midnight-800 bg-offwhite/50 dark:bg-midnight-800/50 space-y-2"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
@@ -271,13 +268,13 @@ export default function FacultyDashboard() {
           </div>
 
           {/* Department Announcements Card */}
-          <div className="bg-indigo-900 text-white rounded-3xl p-6 shadow-xl space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-indigo-200 text-[11px] font-bold">
+          <div className="bg-midnight-900 text-white rounded-3xl p-6 shadow-xl space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-electric-200 text-[11px] font-bold">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>Department Bulletin</span>
             </div>
             <h4 className="text-sm font-bold">Mid-Semester Exam Schedule Notice</h4>
-            <p className="text-xs text-indigo-100 leading-relaxed">
+            <p className="text-xs text-electric-100 leading-relaxed">
               All faculty members teaching 5th Semester CSIT (Sections A & B) are requested to submit question papers with Bloom tags by Nov 5 to Dr. Rajiv Sharma.
             </p>
             <div className="pt-2">
@@ -294,4 +291,3 @@ export default function FacultyDashboard() {
     </div>
   );
 }
-

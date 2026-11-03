@@ -32,3 +32,7 @@ backend/*.pyc
 backend/db.sqlite3
 backend/media/
 backend/staticfiles/
+
+# AI tooling / scratch artifacts
+.agents/
+dev-output.txt

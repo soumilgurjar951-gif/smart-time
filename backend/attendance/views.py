@@ -1,13 +1,17 @@
+from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from accounts.permissions import IsHOD
 from attendance.models import AttendanceRecord, AttendanceRoster
-from attendance.serializers import AttendanceRecordSerializer, AttendanceRosterSerializer
+from attendance.serializers import AttendanceRecordSerializer, AttendanceRosterSerializer, BulkAttendanceSerializer
+from classes import permissions as class_perms
+from django.db.models import Q
 from lectures.models import Lecture
 
 
@@ -59,7 +63,15 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
         profile = getattr(user, "faculty_profile", None)
         if not profile:
             return qs.none()
-        return qs.filter(lecture__assigned_faculty=profile)
+        # Class access enforcement: only authorized classes (or legacy
+        # unlinked records) for the faculty's own marked lectures.
+        ids = class_perms.accessible_class_ids(user)
+        return qs.filter(
+            Q(lecture__assigned_faculty=profile)
+            & (
+                Q(lecture__academic_class_id__in=ids) | Q(lecture__academic_class__isnull=True)
+            )
+        )
 
     def create(self, request, *args, **kwargs):
         lecture_id = request.data.get("lecture")
@@ -114,4 +126,57 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
                 },
                 "by_lecture": list(by_lecture),
             }
+        )
+class BulkAttendanceView(APIView):
+    """
+    POST /api/attendance/bulk/
+    Submit attendance for an entire lecture in one request.
+
+    Body:
+        {
+          "lecture": <int>,
+          "entries": [
+            {"roster": <int>, "status": "PRESENT|ABSENT|ON_LEAVE", "remarks": ""},
+            ...
+          ]
+        }
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = BulkAttendanceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        lecture = serializer.validated_data["lecture_obj"]
+        if not _can_mark_lecture(request.user, lecture):
+            raise PermissionDenied("You can only mark attendance for your assigned lectures.")
+
+        entries = serializer.validated_data["entries"]
+        created = []
+        updated = []
+
+        with transaction.atomic():
+            for entry in entries:
+                roster = entry["roster"]
+                att_status = entry["status"]
+                remarks = entry.get("remarks", "")
+                obj, was_created = AttendanceRecord.objects.update_or_create(
+                    lecture=lecture,
+                    roster=roster,
+                    defaults={"status": att_status, "remarks": remarks, "marked_by": request.user},
+                )
+                if was_created:
+                    created.append(obj.id)
+                else:
+                    updated.append(obj.id)
+
+        return Response(
+            {
+                "lecture": lecture.id,
+                "created": len(created),
+                "updated": len(updated),
+                "total": len(created) + len(updated),
+            },
+            status=status.HTTP_200_OK,
         )

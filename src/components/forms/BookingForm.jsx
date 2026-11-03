@@ -48,7 +48,7 @@ export default function BookingForm({
           <select
             value={formData.resourceId}
             onChange={(e) => handleResourceChange(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {resourceList.map((r) => (
               <option key={r.id} value={r.id}>
@@ -65,7 +65,7 @@ export default function BookingForm({
           <select
             value={formData.section}
             onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             <option value="Section A">Section A Only</option>
             <option value="Section B">Section B Only</option>
@@ -84,7 +84,7 @@ export default function BookingForm({
             required
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           />
         </div>
 
@@ -95,7 +95,7 @@ export default function BookingForm({
           <select
             value={formData.timeSlot}
             onChange={(e) => setFormData({ ...formData, timeSlot: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           >
             {TIME_SLOTS.map((s) => (
               <option key={s.id} value={s.label}>
@@ -119,7 +119,7 @@ export default function BookingForm({
             required
             value={formData.attendeesCount}
             onChange={(e) => setFormData({ ...formData, attendeesCount: e.target.value })}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
           />
         </div>
       </div>
@@ -134,11 +134,11 @@ export default function BookingForm({
           value={formData.purpose}
           onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
           placeholder="e.g. Extra Practical Lab Session on PL/SQL Triggers or Guest Lecture on DevOps..."
-          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+          className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
         />
       </div>
 
-      <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+      <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex items-center justify-end gap-2.5">
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

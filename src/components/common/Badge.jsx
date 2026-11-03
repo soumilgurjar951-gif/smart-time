@@ -9,14 +9,14 @@ export default function Badge({
   status,
   className = '',
 }) {
-  let colorClasses = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+  let colorClasses = 'bg-slate-100 text-slate-700 dark:bg-midnight-800 dark:text-slate-300 border-slate-200 dark:border-midnight-700';
 
   if (priority) {
     colorClasses = getPriorityBadgeColor(priority);
   } else if (status) {
     colorClasses = getStatusBadgeColor(status);
   } else if (variant === 'indigo') {
-    colorClasses = 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900';
+    colorClasses = 'bg-electric-50 text-electric-700 dark:bg-electric-950/60 dark:text-electric-400 border-electric-200 dark:border-electric-900';
   } else if (variant === 'emerald') {
     colorClasses = 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900';
   } else if (variant === 'amber') {

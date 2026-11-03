@@ -1,6 +1,8 @@
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from accounts.permissions import IsHOD
 from faculty.models import FacultyProfile
@@ -35,21 +37,48 @@ class FacultyViewSet(viewsets.ModelViewSet):
         serializer.save()
 
     def perform_destroy(self, instance):
-        if instance.user.is_hod:
+        if instance.user and instance.user.is_hod:
             raise ValidationError("The HOD account cannot be deleted.")
         if instance.lectures.exclude(status="CANCELLED").exists():
             raise ValidationError("Reassign or cancel lectures before deleting this faculty member.")
         user = instance.user
         instance.delete()
-        user.delete()
+        if user:
+            user.delete()
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         if request.user.is_faculty and instance.user_id != request.user.id:
             raise PermissionDenied("Faculty may only update their own profile.")
         if request.user.is_faculty:
-            allowed = {"contact_number", "full_name"}
+            allowed = {
+                "full_name",
+                "contact_number",
+                "qualifications",
+                "specialization",
+                "date_of_joining",
+            }
             extra = set(request.data.keys()) - allowed - {"password"}
             if extra:
-                raise PermissionDenied("Faculty may only update contact information and name.")
+                raise PermissionDenied(
+                    "Faculty may only update contact information, name, and onboarding details."
+                )
         return super().update(request, *args, **kwargs)
+
+    @action(detail=True, methods=["post"], url_path="review")
+    def review(self, request, pk=None):
+        instance = self.get_object()
+        if not request.user.is_hod:
+            raise PermissionDenied("Only the HOD can review faculty profiles.")
+        action = request.data.get("action")
+        if action == "VERIFY":
+            instance.profile_status = FacultyProfile.ProfileStatus.VERIFIED
+        elif action == "CHANGES_REQUESTED":
+            instance.profile_status = FacultyProfile.ProfileStatus.CHANGES_REQUESTED
+        else:
+            raise ValidationError({"action": "Must be VERIFY or CHANGES_REQUESTED."})
+        instance.save(update_fields=["profile_status", "updated_at"])
+        return Response(
+            FacultyProfileSerializer(instance, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+        )

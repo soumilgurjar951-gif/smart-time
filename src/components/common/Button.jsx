@@ -23,17 +23,17 @@ export default function Button({
 
   const variantClasses = {
     primary:
-      'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-600/30 focus:ring-indigo-500 border border-transparent',
+      'bg-electric-600 hover:bg-electric-700 text-white shadow-sm shadow-electric-600/30 focus:ring-electric-500 border border-transparent',
     secondary:
-      'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 focus:ring-slate-400 border border-transparent',
+      'bg-slate-100 hover:bg-slate-200 dark:bg-midnight-800 dark:hover:bg-midnight-700 text-slate-700 dark:text-slate-200 focus:ring-slate-400 border border-transparent',
     outline:
-      'bg-transparent hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 focus:ring-slate-400',
+      'bg-transparent hover:bg-offwhite dark:hover:bg-midnight-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-midnight-700 focus:ring-slate-400',
     danger:
       'bg-rose-600 hover:bg-rose-700 text-white shadow-sm shadow-rose-600/30 focus:ring-rose-500 border border-transparent',
     success:
       'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-600/30 focus:ring-emerald-500 border border-transparent',
     ghost:
-      'bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-transparent',
+      'bg-transparent hover:bg-slate-100 dark:hover:bg-midnight-800 text-slate-600 dark:text-slate-300 border border-transparent',
   };
 
   return (

@@ -32,6 +32,7 @@ class FacultyProfileSerializer(serializers.ModelSerializer):
             "user_id",
             "role",
             "employee_id",
+            "faculty_code",
             "full_name",
             "email",
             "designation",
@@ -41,6 +42,10 @@ class FacultyProfileSerializer(serializers.ModelSerializer):
             "assigned_subject_names",
             "assigned_sections",
             "account_status",
+            "profile_status",
+            "qualifications",
+            "specialization",
+            "date_of_joining",
             "password",
             "created_at",
             "updated_at",
@@ -74,8 +79,44 @@ class FacultyProfileSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if not self.instance and not attrs.get("password"):
             raise serializers.ValidationError({"password": "Password is required when creating a faculty account."})
+        if self.instance and not self.instance.user and attrs.get("password"):
+            if not attrs.get("email", self.instance.email) or not attrs.get("full_name", self.instance.full_name):
+                raise serializers.ValidationError(
+                    {"email": "Email and full name are required before enabling a faculty account."}
+                )
+        if (
+            self.instance
+            and not self.instance.user
+            and attrs.get("account_status", self.instance.account_status) == FacultyProfile.AccountStatus.ACTIVE
+            and not attrs.get("password")
+        ):
+            raise serializers.ValidationError(
+                {"password": "Set a password when activating a faculty profile without an account."}
+            )
+        if self.instance and not self.instance.user:
+            activating = attrs.get("account_status", self.instance.account_status) == FacultyProfile.AccountStatus.ACTIVE
+            if activating:
+                required = {
+                    "full_name": attrs.get("full_name", self.instance.full_name),
+                    "employee_id": attrs.get("employee_id", self.instance.employee_id),
+                    "email": attrs.get("email", self.instance.email),
+                    "designation": attrs.get("designation", self.instance.designation),
+                }
+                missing = [field for field, value in required.items() if not value]
+                if missing:
+                    raise serializers.ValidationError(
+                        {field: "Complete this profile field before activation." for field in missing}
+                    )
         if request and request.user.is_faculty and self.instance:
-            forbidden = {"employee_id", "email", "designation", "account_status", "assigned_subjects", "assigned_sections", "department"}
+            forbidden = {
+                "employee_id",
+                "faculty_code",
+                "account_status",
+                "assigned_subjects",
+                "assigned_sections",
+                "department",
+                "role",
+            }
             attempted = set(attrs.keys()) & forbidden
             if attempted:
                 raise serializers.ValidationError(
@@ -112,15 +153,44 @@ class FacultyProfileSerializer(serializers.ModelSerializer):
         instance.save()
 
         user = instance.user
-        user.email = instance.email
-        user.full_name = instance.full_name
-        if instance.account_status != FacultyProfile.AccountStatus.ACTIVE:
-            user.is_active = False
-        else:
-            user.is_active = True
-        if password:
-            user.set_password(password)
-        user.save()
+        if user:
+            if instance.email:
+                user.email = instance.email
+            if instance.full_name:
+                user.full_name = instance.full_name
+            user.is_active = instance.account_status == FacultyProfile.AccountStatus.ACTIVE
+            if password:
+                user.set_password(password)
+            user.save()
+        elif password:
+            user = User.objects.create_user(
+                email=instance.email,
+                password=password,
+                full_name=instance.full_name,
+                role=User.Role.FACULTY,
+                is_active=instance.account_status == FacultyProfile.AccountStatus.ACTIVE,
+            )
+            instance.user = user
+            instance.save(update_fields=["user", "updated_at"])
         if subjects is not None:
             instance.assigned_subjects.set(subjects)
+
+        # Faculty self-service onboarding: INCOMPLETE -> SUBMITTED on profile completion.
+        # Faculty may only update name/contact/onboarding details; College ID, official
+        # email, designation and role stay assigned by the HOD and are not updatable here.
+        request = self.context.get("request")
+        if request and request.user.is_faculty and instance.profile_status == FacultyProfile.ProfileStatus.INCOMPLETE:
+            onboarding_fields = (
+                "full_name",
+                "contact_number",
+                "qualifications",
+                "specialization",
+                "date_of_joining",
+            )
+            if any(field in validated_data for field in onboarding_fields):
+                instance.profile_status = FacultyProfile.ProfileStatus.SUBMITTED
+                instance.account_status = FacultyProfile.AccountStatus.ACTIVE
+                instance.save(update_fields=["profile_status", "account_status", "updated_at"])
+                user.is_active = True
+                user.save(update_fields=["is_active", "updated_at"])
         return instance

@@ -7,3 +7,13 @@ python-dotenv>=1.0,<1.2
 PyMySQL>=1.1,<1.2
 cryptography>=43.0
 gunicorn>=23.0,<24.0
+
+# Async task queue (Celery + Redis)
+celery>=5.3,<5.5
+redis>=5.0,<6.0
+django-celery-beat>=2.6,<2.8
+
+# Google Gmail API (OAuth 2.0)
+google-api-python-client>=2.0,<3.0
+google-auth-httplib2>=0.8,<1.0
+google-auth-oauthlib>=1.2,<2.0

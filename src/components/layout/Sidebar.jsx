@@ -14,6 +14,7 @@ import {
   X,
   BookOpen,
   Sparkles,
+  GraduationCap,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useOdrms } from '../../context/OdrmsContext';
@@ -39,15 +40,27 @@ export default function Sidebar({ isOpen, onClose }) {
           badge: null,
         },
         {
+          to: '/classes',
+          label: 'Class Management',
+          icon: GraduationCap,
+          badge: null,
+        },
+        {
           to: '/faculty',
           label: 'Faculty Management',
           icon: Users,
           badge: counts.facultyCount ? `${counts.facultyCount} Active` : null,
-          badgeColor: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
+          badgeColor: 'bg-electric-50 text-electric-700 dark:bg-electric-950 dark:text-electric-300',
         },
         {
           to: '/lectures',
           label: 'Lecture Management',
+          icon: CalendarDays,
+          badge: null,
+        },
+        {
+          to: '/timetable',
+          label: 'Timetable & Assignments',
           icon: CalendarDays,
           badge: null,
         },
@@ -94,7 +107,13 @@ export default function Sidebar({ isOpen, onClose }) {
           badge: null,
         },
         {
-          to: '/lectures',
+          to: '/classes',
+          label: 'My Classes',
+          icon: GraduationCap,
+          badge: null,
+        },
+        {
+          to: '/timetable',
           label: 'My Lectures & Timetable',
           icon: CalendarDays,
           badge: null,
@@ -139,21 +158,21 @@ export default function Sidebar({ isOpen, onClose }) {
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-xs lg:hidden animate-in fade-in"
+          className="fixed inset-0 z-40 bg-midnight-950/60 backdrop-blur-xs lg:hidden animate-in fade-in"
         />
       )}
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 sm:w-72 bg-white dark:bg-slate-900 border-r border-slate-200/90 dark:border-slate-800 transition-transform duration-200 ease-in-out lg:translate-x-0 flex flex-col justify-between ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 sm:w-72 bg-midnight-900 border-r border-midnight-700/60 transition-transform duration-200 ease-in-out lg:translate-x-0 flex flex-col justify-between ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Top: Logo & System Header */}
         <div>
-          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-midnight-700/60">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-2xs">
+              <div className="w-10 h-10 rounded-xl bg-white border border-white/20 p-1 flex items-center justify-center shrink-0 shadow-2xs">
                 <img
                   src="/cdgi-logo.png"
                   alt="CDGI Logo"
@@ -161,13 +180,13 @@ export default function Sidebar({ isOpen, onClose }) {
                 />
               </div>
               <div className="min-w-0">
-                <h1 className="text-sm font-black tracking-tight text-slate-900 dark:text-white truncate font-['Plus_Jakarta_Sans',sans-serif]">
+                <h1 className="text-sm font-black tracking-tight text-white truncate font-['Plus_Jakarta_Sans',sans-serif]">
                   ODRMS • CSIT
                 </h1>
-                <p className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 truncate">
+                <p className="text-[11px] font-bold text-electric-400 truncate">
                   3rd Year / 5th Sem
                 </p>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate">
+                <p className="text-[10px] text-midnight-300 font-medium truncate">
                   Sections A & B
                 </p>
               </div>
@@ -175,7 +194,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
             <button
               onClick={onClose}
-              className="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"
+              className="lg:hidden p-1.5 text-midnight-300 hover:text-white rounded-lg"
             >
               <X className="w-5 h-5" />
             </button>
@@ -183,7 +202,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
           {/* Navigation Links */}
           <nav className="p-3.5 space-y-1">
-            <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+            <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-midnight-300/80">
               {isHod ? 'Department Administration' : 'Faculty Teaching & Duties'}
             </div>
 
@@ -199,8 +218,8 @@ export default function Sidebar({ isOpen, onClose }) {
                   className={({ isActive }) =>
                     `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
-                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-electric-600 text-white shadow-sm shadow-electric-600/40'
+                        : 'text-midnight-200 hover:bg-midnight-800 hover:text-white'
                     }`
                   }
                 >
@@ -212,7 +231,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   {item.badge && (
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        item.badgeColor || 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                        item.badgeColor || 'bg-slate-100 text-slate-700 dark:bg-midnight-800 dark:text-slate-300'
                       }`}
                     >
                       {item.badge}
@@ -225,17 +244,17 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
 
         {/* Bottom User Card & Logout */}
-        <div className="p-4 border-t border-slate-100 dark:border-slate-800">
-          <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/60 p-3 flex items-center justify-between gap-3">
+        <div className="p-4 border-t border-midnight-700/60">
+          <div className="rounded-2xl bg-midnight-800/70 p-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-electric-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
                 {user?.avatar || (isHod ? 'RS' : 'AM')}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-bold text-slate-800 dark:text-white truncate">
+                <p className="text-xs font-bold text-white truncate">
                   {user?.name || 'User'}
                 </p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-[10px] text-midnight-300 truncate">
                   {user?.role} • {DEPARTMENT_INFO.department}
                 </p>
               </div>
@@ -243,7 +262,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
             <button
               onClick={handleLogout}
-              className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg transition-colors"
+              className="p-1.5 text-midnight-300 hover:text-rose-400 rounded-lg transition-colors"
               title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
@@ -254,4 +273,3 @@ export default function Sidebar({ isOpen, onClose }) {
     </>
   );
 }
-

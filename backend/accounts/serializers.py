@@ -15,6 +15,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         super().__init__(*args, **kwargs)
         self.fields["email"] = serializers.EmailField()
         self.fields["password"] = serializers.CharField(write_only=True)
+        self.fields["designation"] = serializers.CharField(required=False, allow_blank=True)
         self.fields.pop("username", None)
 
     @classmethod
@@ -28,11 +29,24 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         email = attrs.get("email")
         password = attrs.get("password")
+        designation = (attrs.get("designation") or "").strip() or None
         user = authenticate(request=self.context.get("request"), username=email, password=password)
         if not user:
             raise AuthenticationFailed("Invalid email or password.")
         if not user.is_active:
             raise AuthenticationFailed("This account is inactive.")
+        # Designation-based access control: faculty may only access using the
+        # designation assigned to them by the HOD. HOD role is server-assigned.
+        if user.role == User.Role.FACULTY and designation:
+            try:
+                profile = user.faculty_profile
+            except Exception:
+                profile = None
+            assigned = getattr(profile, "designation", None) if profile else None
+            if not assigned or assigned != designation:
+                raise AuthenticationFailed(
+                    "The selected designation does not match the designation assigned to you. Please contact the HOD."
+                )
         refresh = self.get_token(user)
         data = {
             "access": str(refresh.access_token),
@@ -58,6 +72,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     faculty_profile_id = serializers.IntegerField(source="faculty_profile.id", read_only=True, default=None)
     employee_id = serializers.CharField(source="faculty_profile.employee_id", read_only=True, default=None)
     designation = serializers.CharField(source="faculty_profile.designation", read_only=True, default=None)
+    profile_status = serializers.CharField(source="faculty_profile.profile_status", read_only=True, default=None)
+    contact_number = serializers.CharField(source="faculty_profile.contact_number", read_only=True, default=None)
 
     class Meta:
         model = User
@@ -71,6 +87,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "faculty_profile_id",
             "employee_id",
             "designation",
+            "profile_status",
+            "contact_number",
         )
         read_only_fields = fields
 

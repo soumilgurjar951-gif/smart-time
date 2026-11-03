@@ -7,6 +7,7 @@ import {
 
 export const STORAGE_KEYS = {
   TOKEN: 'odrms_token',
+  REFRESH_TOKEN: 'odrms_refresh_token',
   USER: 'odrms_user',
   FACULTY: 'odrms_faculty',
   LECTURES: 'odrms_lectures',
@@ -16,6 +17,7 @@ export const STORAGE_KEYS = {
   RESOURCES: 'odrms_resources',
   BOOKINGS: 'odrms_bookings',
   THEME: 'odrms_theme',
+  SELECTED_CLASS: 'odrms_selected_class_id',
 };
 
 // Empty Initial Data - Production Ready

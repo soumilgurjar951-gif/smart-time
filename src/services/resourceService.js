@@ -6,7 +6,8 @@ export const resourceService = {
   async getAllResources(filters = {}) {
     try {
       const response = await apiClient.get('/resources/', { params: filters });
-      return response.data;
+      const data = response.data;
+      return Array.isArray(data) ? data : data?.results || [];
     } catch {
       await mockDelay(150);
       let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.RESOURCES) || JSON.stringify(INITIAL_RESOURCES));
@@ -87,7 +88,8 @@ export const resourceService = {
   async getAllBookings(filters = {}) {
     try {
       const response = await apiClient.get('/resources/bookings/', { params: filters });
-      return response.data;
+      const data = response.data;
+      return Array.isArray(data) ? data : data?.results || [];
     } catch {
       await mockDelay(150);
       let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || JSON.stringify(INITIAL_BOOKINGS));

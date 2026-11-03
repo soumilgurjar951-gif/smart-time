@@ -1,125 +1,113 @@
-// src/services/facultyService.js
-import apiClient, { mockDelay } from './api';
-import { STORAGE_KEYS, INITIAL_FACULTY } from '../utils/storage';
+import apiClient from './api';
+
+const listData = (data) => (Array.isArray(data) ? data : data.results || []);
+const statusToUi = { ACTIVE: 'Active', INACTIVE: 'Inactive', SUSPENDED: 'Suspended' };
+const statusToApi = { Active: 'ACTIVE', Inactive: 'INACTIVE', Suspended: 'SUSPENDED' };
+const profileStatusToUi = {
+  INCOMPLETE: 'Incomplete',
+  SUBMITTED: 'Submitted',
+  VERIFIED: 'Verified',
+  CHANGES_REQUESTED: 'Changes Requested',
+};
+
+function mapFaculty(profile) {
+  return {
+    id: String(profile.id),
+    userId: profile.user_id,
+    role: profile.role,
+    name: profile.full_name || profile.faculty_code || 'Profile incomplete',
+    fullName: profile.full_name || '',
+    facultyCode: profile.faculty_code || '',
+    employeeId: profile.employee_id || '',
+    email: profile.email || '',
+    designation: profile.designation || '',
+    department: profile.department,
+    contact: profile.contact_number || '',
+    assignedSubjects: profile.assigned_subject_names || [],
+    assignedSubjectIds: profile.assigned_subject_ids || [],
+    assignedSections: (profile.assigned_sections || []).map((section) => `Section ${section}`),
+    status: statusToUi[profile.account_status] || profile.account_status,
+    accountStatus: profile.account_status,
+    profileStatus: profileStatusToUi[profile.profile_status] || profile.profile_status || 'INCOMPLETE',
+  };
+}
+
+async function toApiPayload(formData) {
+  const payload = {};
+  const fields = {
+    full_name: 'name',
+    faculty_code: 'facultyCode',
+    employee_id: 'employeeId',
+    email: 'email',
+    designation: 'designation',
+    contact_number: 'contact',
+  };
+  for (const [apiField, formField] of Object.entries(fields)) {
+    if (formData[formField] !== undefined) payload[apiField] = formData[formField];
+  }
+  if (payload.faculty_code === '') payload.faculty_code = null;
+  if (formData.status) payload.account_status = statusToApi[formData.status] || formData.status;
+  if (formData.password) payload.password = formData.password;
+  if (formData.assignedSections) {
+    payload.assigned_sections = formData.assignedSections.map((section) => section.replace('Section ', ''));
+  }
+  if (formData.qualifications) payload.qualifications = formData.qualifications;
+  if (formData.specialization) payload.specialization = formData.specialization;
+  if (formData.dateOfJoining) payload.date_of_joining = formData.dateOfJoining;
+  if (formData.assignedSubjects) {
+    const { data } = await apiClient.get('/lectures/subjects/');
+    const subjects = listData(data);
+    const names = new Set(formData.assignedSubjects);
+    payload.assigned_subject_ids = subjects
+      .filter((subject) => names.has(subject.name) || names.has(subject.code))
+      .map((subject) => subject.id);
+  }
+  return payload;
+}
 
 export const facultyService = {
   async getAllFaculty(filters = {}) {
-    try {
-      const response = await apiClient.get('/faculty/', { params: filters });
-      return response.data;
-    } catch {
-      await mockDelay(150);
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.FACULTY) || JSON.stringify(INITIAL_FACULTY));
-      
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        list = list.filter(
-          (f) =>
-            f.name.toLowerCase().includes(q) ||
-            f.employeeId.toLowerCase().includes(q) ||
-            f.email.toLowerCase().includes(q) ||
-            f.assignedSubjects.some((s) => s.toLowerCase().includes(q))
-        );
-      }
-
-      if (filters.status && filters.status !== 'All') {
-        list = list.filter((f) => f.status === filters.status);
-      }
-
-      if (filters.section && filters.section !== 'All') {
-        list = list.filter((f) => f.assignedSections.includes(filters.section));
-      }
-
-      return list;
+    const params = { ...filters };
+    if (params.status && params.status !== 'All') {
+      params.account_status = statusToApi[params.status] || params.status;
+      delete params.status;
     }
+    if (params.section === 'All') delete params.section;
+    const { data } = await apiClient.get('/faculty/', { params });
+    const profiles = listData(data).map(mapFaculty);
+    if (filters.section && filters.section !== 'All') {
+      return profiles.filter((profile) => profile.assignedSections.includes(filters.section));
+    }
+    return profiles;
   },
 
   async getFacultyById(id) {
-    try {
-      const response = await apiClient.get(`/faculty/${id}/`);
-      return response.data;
-    } catch {
-      await mockDelay(100);
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.FACULTY) || JSON.stringify(INITIAL_FACULTY));
-      const found = list.find((f) => f.id === id);
-      if (!found) throw new Error('Faculty member not found.');
-      return found;
-    }
+    const { data } = await apiClient.get(`/faculty/${id}/`);
+    return mapFaculty(data);
   },
 
   async createFaculty(facultyData) {
-    try {
-      const response = await apiClient.post('/faculty/', facultyData);
-      return response.data;
-    } catch {
-      await mockDelay(200);
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.FACULTY) || JSON.stringify(INITIAL_FACULTY));
-      
-      const newFaculty = {
-        id: `fac-${Date.now()}`,
-        employeeId: facultyData.employeeId || `EMP-CSIT-${String(list.length + 1).padStart(3, '0')}`,
-        name: facultyData.name,
-        email: facultyData.email,
-        username: facultyData.username || facultyData.email.split('@')[0],
-        role: facultyData.role || 'Faculty',
-        designation: facultyData.designation || 'Assistant Professor',
-        department: 'CSIT',
-        contact: facultyData.contact || '+91 98260 00000',
-        cabin: facultyData.cabin || 'CSIT Faculty Wing',
-        assignedSubjects: Array.isArray(facultyData.assignedSubjects) ? facultyData.assignedSubjects : [facultyData.assignedSubjects].filter(Boolean),
-        assignedSections: Array.isArray(facultyData.assignedSections) ? facultyData.assignedSections : ['Section A'],
-        status: facultyData.status || 'Active',
-        qualification: facultyData.qualification || 'M.Tech in CSIT',
-        experienceYears: Number(facultyData.experienceYears) || 3,
-        avatar: (facultyData.name || 'FC').split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase(),
-      };
-
-      const updated = [newFaculty, ...list];
-      localStorage.setItem(STORAGE_KEYS.FACULTY, JSON.stringify(updated));
-      return newFaculty;
-    }
+    const payload = await toApiPayload(facultyData);
+    const { data } = await apiClient.post('/faculty/', payload);
+    return mapFaculty(data);
   },
 
   async updateFaculty(id, updateData) {
-    try {
-      const response = await apiClient.put(`/faculty/${id}/`, updateData);
-      return response.data;
-    } catch {
-      await mockDelay(200);
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.FACULTY) || JSON.stringify(INITIAL_FACULTY));
-      const index = list.findIndex((f) => f.id === id);
-      if (index === -1) throw new Error('Faculty member not found.');
-
-      const updatedRecord = {
-        ...list[index],
-        ...updateData,
-        assignedSubjects: Array.isArray(updateData.assignedSubjects)
-          ? updateData.assignedSubjects
-          : list[index].assignedSubjects,
-        assignedSections: Array.isArray(updateData.assignedSections)
-          ? updateData.assignedSections
-          : list[index].assignedSections,
-      };
-
-      list[index] = updatedRecord;
-      localStorage.setItem(STORAGE_KEYS.FACULTY, JSON.stringify(list));
-      return updatedRecord;
-    }
+    const payload = await toApiPayload(updateData);
+    if (!payload.password) delete payload.password;
+    const { data } = await apiClient.patch(`/faculty/${id}/`, payload);
+    return mapFaculty(data);
   },
 
   async deleteFaculty(id) {
-    try {
-      await apiClient.delete(`/faculty/${id}/`);
-      return { success: true };
-    } catch {
-      await mockDelay(150);
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.FACULTY) || JSON.stringify(INITIAL_FACULTY));
-      const filtered = list.filter((f) => f.id !== id);
-      localStorage.setItem(STORAGE_KEYS.FACULTY, JSON.stringify(filtered));
-      return { success: true };
-    }
+    await apiClient.delete(`/faculty/${id}/`);
+    return { success: true };
+  },
+
+  async reviewFaculty(id, action) {
+    const { data } = await apiClient.post(`/faculty/${id}/review/`, { action });
+    return mapFaculty(data);
   },
 };
 
 export default facultyService;
-

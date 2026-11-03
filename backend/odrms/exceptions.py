@@ -18,6 +18,10 @@ STATUS_CODES = {
 def api_exception_handler(exc, context):
     response = exception_handler(exc, context)
     if response is None:
+        import os as _os, sys as _sys, traceback as _traceback
+
+        if _os.environ.get("DJANGO_DEBUG", "").lower() in {"1", "true", "yes"} or _sys.argv[1:2] == ["test"]:
+            _traceback.print_exception(type(exc), exc, exc.__traceback__, file=_sys.stderr)
         return Response(
             {
                 "success": False,

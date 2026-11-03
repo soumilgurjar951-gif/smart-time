@@ -6,7 +6,9 @@ from rest_framework.views import APIView
 
 from achievements.models import FacultyAchievement
 from attendance.models import AttendanceRecord
-from lectures.models import Lecture
+from classes.models import AccessGrant, AcademicClass, FacultySubjectAssignment
+from faculty.models import FacultyProfile
+from lectures.models import AcademicYear, Lecture, Subject, TimetableEntry
 from resources.models import Resource, ResourceBooking
 from tasks.models import DepartmentTask
 
@@ -23,8 +25,105 @@ class ReportBaseView(APIView):
             return -1
         return profile.id
 
+    def faculty_accessible_sections(self, user):
+        """Sections the logged-in faculty member may access (assigned sections)."""
+        profile = getattr(user, "faculty_profile", None)
+        if not profile:
+            return []
+        return list(
+            AcademicClass.objects.filter(
+                subjects__faculty_assignments__faculty=profile,
+                subjects__faculty_assignments__is_active=True,
+                subjects__department_class__is_active=True,
+            )
+            .order_by("section")
+            .values_list("section", flat=True)
+            .distinct()
+        )
+
+    def hod_may_access_section(self, user, section):
+        """HOD may read a section only via an approved, active, unexpired grant."""
+        now = timezone.now()
+        return AccessGrant.objects.filter(
+            holder_user=user,
+            access_type=AccessGrant.AccessType.HOD,
+            is_active=True,
+            expires_at__isnull=False,
+            expires_at__gt=now,
+            department_class__section=section,
+        ).exists()
+
     def date_range(self, request):
         return request.query_params.get("date_from"), request.query_params.get("date_to")
+
+
+class DepartmentOverviewView(ReportBaseView):
+    """High-level dashboard numbers for HOD and faculty."""
+
+    def get(self, request):
+        today = timezone.localdate()
+        user = request.user
+
+        if user.is_hod:
+            total_faculty = FacultyProfile.objects.filter(
+                account_status=FacultyProfile.AccountStatus.ACTIVE
+            ).count()
+            lectures_today = Lecture.objects.filter(date=today).exclude(
+                status=Lecture.Status.CANCELLED
+            ).count()
+            pending_tasks = DepartmentTask.objects.filter(
+                status__in=[DepartmentTask.Status.PENDING, DepartmentTask.Status.OVERDUE]
+            ).count()
+            pending_bookings = ResourceBooking.objects.filter(
+                status=ResourceBooking.Status.PENDING
+            ).count()
+            pending_achievements = FacultyAchievement.objects.filter(
+                verification_status=FacultyAchievement.VerificationStatus.PENDING
+            ).count()
+            return Response(
+                {
+                    "role": "HOD",
+                    "as_of": today,
+                    "total_faculty": total_faculty,
+                    "lectures_today": lectures_today,
+                    "pending_tasks": pending_tasks,
+                    "pending_booking_requests": pending_bookings,
+                    "pending_achievement_reviews": pending_achievements,
+                }
+            )
+
+        # Faculty overview
+        profile = getattr(user, "faculty_profile", None)
+        if not profile:
+            return Response({"role": "FACULTY", "as_of": today})
+
+        lectures_today = Lecture.objects.filter(
+            assigned_faculty=profile, date=today
+        ).exclude(status=Lecture.Status.CANCELLED).count()
+        upcoming = Lecture.objects.filter(
+            assigned_faculty=profile, date__gt=today
+        ).exclude(status=Lecture.Status.CANCELLED).count()
+        my_tasks = DepartmentTask.objects.filter(
+            assigned_faculty=profile,
+            status__in=[DepartmentTask.Status.PENDING, DepartmentTask.Status.IN_PROGRESS, DepartmentTask.Status.OVERDUE],
+        ).count()
+        my_achievements = FacultyAchievement.objects.filter(
+            faculty=profile
+        ).aggregate(
+            total=Count("id"),
+            approved=Count("id", filter=Q(verification_status=FacultyAchievement.VerificationStatus.APPROVED)),
+            pending=Count("id", filter=Q(verification_status=FacultyAchievement.VerificationStatus.PENDING)),
+        )
+        return Response(
+            {
+                "role": "FACULTY",
+                "as_of": today,
+                "lectures_today": lectures_today,
+                "upcoming_lectures": upcoming,
+                "active_tasks": my_tasks,
+                "achievements": my_achievements,
+            }
+        )
 
 
 class FacultyTaskCompletionReportView(ReportBaseView):
@@ -109,12 +208,22 @@ class AttendanceSummaryReportView(ReportBaseView):
             return Response({"summary": {}, "results": []})
         if faculty_id:
             qs = qs.filter(lecture__assigned_faculty_id=faculty_id)
+        user = request.user
+        if not user.is_hod and faculty_id:
+            # Faculty/coordinator: only their assigned sections.
+            sections = self.faculty_accessible_sections(user)
+            if sections:
+                qs = qs.filter(lecture__section__in=sections)
         subject = request.query_params.get("subject")
         section = request.query_params.get("section")
         date_from, date_to = self.date_range(request)
         if subject:
             qs = qs.filter(lecture__subject_id=subject)
         if section:
+            if user.is_hod and not self.hod_may_access_section(user, section):
+                from rest_framework.exceptions import PermissionDenied
+
+                raise PermissionDenied("You do not have approved access to this section.")
             qs = qs.filter(lecture__section=section)
         if date_from:
             qs = qs.filter(lecture__date__gte=date_from)
@@ -204,7 +313,8 @@ class AchievementReportView(ReportBaseView):
 class PendingUpdatesReportView(ReportBaseView):
     def get(self, request):
         qs = DepartmentTask.objects.select_related("assigned_faculty").filter(
-            Q(update_requested_at__isnull=False) | Q(status__in=[DepartmentTask.Status.PENDING, DepartmentTask.Status.IN_PROGRESS, DepartmentTask.Status.OVERDUE])
+            Q(update_requested_at__isnull=False)
+            | Q(status__in=[DepartmentTask.Status.PENDING, DepartmentTask.Status.IN_PROGRESS, DepartmentTask.Status.OVERDUE])
         ).exclude(status=DepartmentTask.Status.COMPLETED)
         faculty_id = self.scoped_faculty_id(request)
         if faculty_id == -1:

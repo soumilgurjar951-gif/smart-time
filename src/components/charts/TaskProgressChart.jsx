@@ -16,7 +16,7 @@ export default function TaskProgressChart({ data }) {
   const chartData = data && data.length > 0 ? data : [
     { name: 'Completed', count: 1, color: '#10b981' },
     { name: 'In Progress', count: 2, color: '#f59e0b' },
-    { name: 'Under Review', count: 1, color: '#6366f1' },
+    { name: 'Under Review', count: 1, color: '#2563EB' },
     { name: 'Pending', count: 1, color: '#ef4444' },
   ];
 
@@ -26,11 +26,11 @@ export default function TaskProgressChart({ data }) {
         <PieChart>
           <Tooltip
             contentStyle={{
-              backgroundColor: isDark ? '#0f172a' : '#ffffff',
-              borderColor: isDark ? '#334155' : '#e2e8f0',
+              backgroundColor: isDark ? '#0B1F3A' : '#ffffff',
+              borderColor: isDark ? '#1E3A64' : '#DCE5F0',
               borderRadius: '12px',
               fontSize: '12px',
-              color: isDark ? '#f8fafc' : '#0f172a',
+              color: isDark ? '#f8fafc' : '#0B1F3A',
             }}
             formatter={(value) => [`${value} Tasks`]}
           />

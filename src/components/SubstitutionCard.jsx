@@ -32,7 +32,7 @@ export default function SubstitutionCard({
       <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 via-white to-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+            <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-electric-50 text-electric-700 border border-electric-200">
               {lecture.className}
             </span>
             <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-slate-100 text-slate-700">
@@ -52,7 +52,7 @@ export default function SubstitutionCard({
           </div>
 
           <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-indigo-600 shrink-0" />
+            <BookOpen className="w-4 h-4 text-electric-600 shrink-0" />
             {lecture.subjectName}
           </h4>
 
@@ -76,7 +76,7 @@ export default function SubstitutionCard({
         {!isSubstituted && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 py-1 px-3 rounded-lg hover:bg-indigo-50 self-start md:self-auto transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-electric-600 hover:text-electric-800 py-1 px-3 rounded-lg hover:bg-electric-50 self-start md:self-auto transition-colors"
           >
             <span>
               {isExpanded
@@ -113,7 +113,7 @@ export default function SubstitutionCard({
         <div className="p-5 bg-white space-y-3">
           <div className="flex items-center justify-between mb-1">
             <h5 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+              <Sparkles className="w-3.5 h-3.5 text-electric-600" />
               Available Faculty Substitutes (Period {lecture.period})
             </h5>
             <span className="text-xs text-slate-400">
@@ -122,7 +122,7 @@ export default function SubstitutionCard({
           </div>
 
           {availableSubstitutes.length === 0 ? (
-            <div className="p-6 rounded-xl border border-dashed border-slate-200 text-center bg-slate-50/50">
+            <div className="p-6 rounded-xl border border-dashed border-slate-200 text-center bg-offwhite/50">
               <p className="text-sm font-medium text-slate-600">
                 No faculty members are free during this period.
               </p>
@@ -147,15 +147,15 @@ export default function SubstitutionCard({
                     onClick={() => setSelectedSubId(substitute.id)}
                     className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                       isSelected
-                        ? 'border-indigo-500 bg-indigo-50/30 ring-1 ring-indigo-500/30'
-                        : 'border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/60'
+                        ? 'border-electric-500 bg-electric-50/30 ring-1 ring-electric-500/30'
+                        : 'border-slate-200/80 hover:border-slate-300 hover:bg-offwhite/60'
                     }`}
                   >
                     {/* Faculty Info */}
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-white shrink-0 ${
-                          substitute.avatarColor || 'bg-indigo-600'
+                          substitute.avatarColor || 'bg-electric-600'
                         }`}
                       >
                         {substitute.name
@@ -177,7 +177,7 @@ export default function SubstitutionCard({
                             </span>
                           )}
                           {substitute.canTeachSubject && (
-                            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-sm text-[10px] font-semibold bg-indigo-50 text-indigo-700">
+                            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-sm text-[10px] font-semibold bg-electric-50 text-electric-700">
                               Subject Specialist
                             </span>
                           )}
@@ -217,7 +217,7 @@ export default function SubstitutionCard({
                         className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 ${
                           isBestMatch
                             ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-200'
-                            : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-100'
+                            : 'bg-electric-600 hover:bg-electric-700 text-white shadow-electric-100'
                         }`}
                       >
                         <UserCheck className="w-3.5 h-3.5" />

@@ -32,31 +32,31 @@ export default function ResourceChart({ data }) {
         >
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke={isDark ? '#334155' : '#e2e8f0'}
+            stroke={isDark ? '#1E3A64' : '#DCE5F0'}
             vertical={false}
           />
           <XAxis
             dataKey="type"
-            tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }}
-            axisLine={{ stroke: isDark ? '#334155' : '#e2e8f0' }}
+            tick={{ fill: isDark ? '#8FABCE' : '#3D6398', fontSize: 11 }}
+            axisLine={{ stroke: isDark ? '#1E3A64' : '#DCE5F0' }}
           />
           <YAxis
             allowDecimals={false}
-            tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }}
-            axisLine={{ stroke: isDark ? '#334155' : '#e2e8f0' }}
+            tick={{ fill: isDark ? '#8FABCE' : '#3D6398', fontSize: 11 }}
+            axisLine={{ stroke: isDark ? '#1E3A64' : '#DCE5F0' }}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: isDark ? '#0f172a' : '#ffffff',
-              borderColor: isDark ? '#334155' : '#e2e8f0',
+              backgroundColor: isDark ? '#0B1F3A' : '#ffffff',
+              borderColor: isDark ? '#1E3A64' : '#DCE5F0',
               borderRadius: '12px',
               fontSize: '12px',
-              color: isDark ? '#f8fafc' : '#0f172a',
+              color: isDark ? '#f8fafc' : '#0B1F3A',
             }}
           />
           <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-          <Bar dataKey="total" name="Total Allocated" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="inUse" name="Currently Booked" fill="#6366f1" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="total" name="Total Allocated" fill="#8FABCE" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="inUse" name="Currently Booked" fill="#2563EB" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

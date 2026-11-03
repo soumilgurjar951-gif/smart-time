@@ -6,10 +6,12 @@ import taskService from '../services/taskService';
 import resourceService from '../services/resourceService';
 import achievementService from '../services/achievementService';
 import { initializeStorage } from '../utils/storage';
+import { useAuth } from './AuthContext';
 
 const OdrmsContext = createContext(null);
 
 export function OdrmsProvider({ children }) {
+  const { isAuthenticated } = useAuth();
   const [toast, setToast] = useState(null);
   const [counts, setCounts] = useState({
     facultyCount: 0,
@@ -18,36 +20,7 @@ export function OdrmsProvider({ children }) {
     pendingAchievementsCount: 0,
     pendingBookingsCount: 0,
   });
-  const [recentActivities, setRecentActivities] = useState([
-    {
-      id: 'act-1',
-      title: 'DAA Python Lab Booking Approved',
-      subtitle: 'Turing Block Lab 1 reserved for Section B by Prof. Vikramaditya',
-      time: '15 mins ago',
-      type: 'resource',
-    },
-    {
-      id: 'act-2',
-      title: 'Attendance Submitted for TOC (Sec A)',
-      subtitle: '93.3% attendance recorded by Dr. Rajiv Sharma',
-      time: '1 hour ago',
-      type: 'attendance',
-    },
-    {
-      id: 'act-3',
-      title: 'New Faculty Achievement Submitted',
-      subtitle: 'Dr. Amitav Banerjee uploaded IEEE Research Paper publication',
-      time: '3 hours ago',
-      type: 'achievement',
-    },
-    {
-      id: 'act-4',
-      title: 'NAAC Course File Task Progress Updated',
-      subtitle: 'Dr. Ananya Mukherjee updated progress to 65%',
-      time: 'Yesterday',
-      type: 'task',
-    },
-  ]);
+  const [recentActivities, setRecentActivities] = useState([]);
 
   // Toast notifier
   const showToast = useCallback((message, type = 'success') => {
@@ -97,9 +70,10 @@ export function OdrmsProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     initializeStorage();
     refreshCounts();
-  }, [refreshCounts]);
+  }, [isAuthenticated, refreshCounts]);
 
   const value = {
     toast,
@@ -123,4 +97,3 @@ export function useOdrms() {
 }
 
 export default OdrmsContext;
-

@@ -7,7 +7,7 @@ export const DEPARTMENT_INFO = {
   semester: '5th Semester',
   sections: ['Section A', 'Section B'],
   college: 'Chameli Devi Group of Institutions',
-  session: 'Academic Session 2026-27',
+  session: 'Academic session not configured',
 };
 
 export const USER_ROLES = {
@@ -15,80 +15,66 @@ export const USER_ROLES = {
   FACULTY: 'Faculty',
 };
 
+export const DESIGNATION_OPTIONS = [
+  'Professor & HOD',
+  'Professor',
+  'Associate Professor',
+  'Assistant Professor',
+  'Lecturer',
+];
+
+export const OTHER_DESIGNATION = 'Other';
+
 export const CSIT_5TH_SEM_SUBJECTS = [
   {
-    code: 'CSIT-501',
-    name: 'Theory of Computation',
-    shortName: 'TOC',
-    credits: 4,
+    code: 'CSIT501',
+    name: 'Computer Networking',
     type: 'Theory',
-    defaultFacultyId: 'fac-1',
   },
   {
-    code: 'CSIT-502',
-    name: 'Database Management Systems',
-    shortName: 'DBMS',
-    credits: 4,
+    code: 'CSIT502',
+    name: 'Operating System',
     type: 'Theory',
-    defaultFacultyId: 'fac-2',
   },
   {
-    code: 'CSIT-503',
-    name: 'Design & Analysis of Algorithms',
-    shortName: 'DAA',
-    credits: 4,
+    code: 'CSIT503',
+    name: 'Principles of Programming Language',
     type: 'Theory',
-    defaultFacultyId: 'fac-3',
   },
   {
-    code: 'CSIT-504',
-    name: 'Software Engineering & Agile',
-    shortName: 'SE',
-    credits: 3,
+    code: 'CSIT504',
+    name: 'Artificial Intelligence',
     type: 'Theory',
-    defaultFacultyId: 'fac-4',
   },
   {
-    code: 'CSIT-505',
-    name: 'Web Technologies & Cloud Computing',
-    shortName: 'WTC',
-    credits: 3,
-    type: 'Theory',
-    defaultFacultyId: 'fac-5',
-  },
-  {
-    code: 'CSIT-506',
-    name: 'DBMS & SQL Laboratory',
-    shortName: 'DBMS Lab',
-    credits: 2,
+    code: 'CSIT505',
+    name: 'Linux Lab',
     type: 'Lab',
-    defaultFacultyId: 'fac-2',
   },
   {
-    code: 'CSIT-507',
-    name: 'Algorithms & Python Laboratory',
-    shortName: 'DAA Lab',
-    credits: 2,
+    code: 'CSIT506',
+    name: 'Open Source Software Lab',
     type: 'Lab',
-    defaultFacultyId: 'fac-3',
   },
   {
-    code: 'CSIT-508',
-    name: 'Minor Project & Seminar Stage-I',
-    shortName: 'Minor Project',
-    credits: 2,
-    type: 'Practical',
-    defaultFacultyId: 'fac-6',
+    code: 'CSIT508',
+    name: 'Minor Project-I',
+    type: 'Project',
   },
+  { code: 'CRT', name: 'CRT', type: 'Unspecified' },
+  { code: 'Soft Skill', name: 'Soft Skill', type: 'Unspecified' },
+  { code: 'Aptitude', name: 'Aptitude', type: 'Unspecified' },
 ];
 
 export const TIME_SLOTS = [
-  { id: 1, label: '09:00 AM - 10:00 AM', period: 1 },
-  { id: 2, label: '10:00 AM - 11:00 AM', period: 2 },
-  { id: 3, label: '11:15 AM - 12:15 PM', period: 3 },
-  { id: 4, label: '12:15 PM - 01:15 PM', period: 4 },
-  { id: 5, label: '02:00 PM - 03:00 PM', period: 5 },
-  { id: 6, label: '03:00 PM - 04:00 PM', period: 6 },
+  { id: 1, label: '08:40 AM - 09:25 AM', period: 1 },
+  { id: 2, label: '09:25 AM - 10:10 AM', period: 2 },
+  { id: 3, label: '10:10 AM - 10:55 AM', period: 3 },
+  { id: 4, label: '10:55 AM - 11:40 AM', period: 4 },
+  { id: 5, label: '11:40 AM - 12:20 PM', period: 5 },
+  { id: 6, label: '01:00 PM - 01:40 PM', period: 6 },
+  { id: 7, label: '01:40 PM - 02:20 PM', period: 7 },
+  { id: 8, label: '02:20 PM - 03:00 PM', period: 8 },
 ];
 
 export const DAYS_OF_WEEK = [
@@ -97,7 +83,6 @@ export const DAYS_OF_WEEK = [
   'Wednesday',
   'Thursday',
   'Friday',
-  'Saturday',
 ];
 
 export const RESOURCE_TYPES = [
@@ -129,4 +114,3 @@ export const ATTENDANCE_STATUSES = {
 };
 
 export const SECTIONS = ['Section A', 'Section B'];
-

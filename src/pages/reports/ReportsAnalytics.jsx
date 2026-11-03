@@ -104,7 +104,7 @@ export default function ReportsAnalytics() {
       {/* Header & Export Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-400 text-xs font-bold border border-indigo-200 dark:border-indigo-900 mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-electric-50 dark:bg-electric-950/70 text-electric-700 dark:text-electric-400 text-xs font-bold border border-electric-200 dark:border-electric-900 mb-2">
             <BarChart3 className="w-3.5 h-3.5" />
             <span>NAAC / NBA Accreditation Audit Suite</span>
           </div>
@@ -120,21 +120,21 @@ export default function ReportsAnalytics() {
           <Button variant="secondary" icon={Download} onClick={handleExportCSV}>
             Export CSV
           </Button>
-          <Button icon={Printer} onClick={handlePrint} className="bg-slate-900 hover:bg-slate-800 text-white">
+          <Button icon={Printer} onClick={handlePrint} className="bg-midnight-900 hover:bg-midnight-800 text-white">
             Print Official PDF
           </Button>
         </div>
       </div>
 
       {/* Report Tabs */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-2 shadow-xs">
+      <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-2 shadow-xs">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
           <button
             onClick={() => setActiveReportTab('attendance')}
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
               activeReportTab === 'attendance'
-                ? 'bg-indigo-600 text-white shadow-2xs'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                ? 'bg-electric-600 text-white shadow-2xs'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-midnight-800'
             }`}
           >
             <ClipboardCheck className="w-3.5 h-3.5" />
@@ -144,8 +144,8 @@ export default function ReportsAnalytics() {
             onClick={() => setActiveReportTab('tasks')}
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
               activeReportTab === 'tasks'
-                ? 'bg-indigo-600 text-white shadow-2xs'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                ? 'bg-electric-600 text-white shadow-2xs'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-midnight-800'
             }`}
           >
             <CheckSquare className="w-3.5 h-3.5" />
@@ -155,8 +155,8 @@ export default function ReportsAnalytics() {
             onClick={() => setActiveReportTab('resources')}
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
               activeReportTab === 'resources'
-                ? 'bg-indigo-600 text-white shadow-2xs'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                ? 'bg-electric-600 text-white shadow-2xs'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-midnight-800'
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
@@ -166,8 +166,8 @@ export default function ReportsAnalytics() {
             onClick={() => setActiveReportTab('workload')}
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
               activeReportTab === 'workload'
-                ? 'bg-indigo-600 text-white shadow-2xs'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                ? 'bg-electric-600 text-white shadow-2xs'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-midnight-800'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -177,16 +177,16 @@ export default function ReportsAnalytics() {
       </div>
 
       {/* Printable Report Document Card */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 sm:p-8 shadow-xs space-y-6">
         {/* Official Header for Print & Audit */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-midnight-800 gap-4">
           <div className="flex items-center gap-4">
             <img src="/cdgi-logo.png" alt="CDGI Logo" className="w-14 h-14 object-contain shrink-0" />
             <div>
               <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white uppercase font-['Plus_Jakarta_Sans',sans-serif]">
                 Chameli Devi Group of Institutions, Indore
               </h2>
-              <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <p className="text-xs font-bold text-electric-600 dark:text-electric-400">
                 Department of Computer Science & Information Technology (CSIT)
               </p>
               <p className="text-xs text-slate-500">
@@ -213,17 +213,17 @@ export default function ReportsAnalytics() {
                 <AttendanceChart data={overview?.attendanceBySubject} />
               </div>
 
-              <div className="space-y-3 bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs">
+              <div className="space-y-3 bg-offwhite dark:bg-midnight-800/60 p-5 rounded-2xl border border-slate-200 dark:border-midnight-700 text-xs">
                 <h4 className="font-bold text-slate-800 dark:text-white uppercase">Section Summary Highlights</h4>
-                <div className="flex items-center justify-between py-2 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between py-2 border-b border-slate-200 dark:border-midnight-700">
                   <span className="text-slate-500">Section A Average:</span>
-                  <span className="font-black text-indigo-600 dark:text-indigo-400">{metrics.attendanceSecA}%</span>
+                  <span className="font-black text-electric-600 dark:text-electric-400">{metrics.attendanceSecA}%</span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between py-2 border-b border-slate-200 dark:border-midnight-700">
                   <span className="text-slate-500">Section B Average:</span>
                   <span className="font-black text-cyan-600 dark:text-cyan-400">{metrics.attendanceSecB}%</span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between py-2 border-b border-slate-200 dark:border-midnight-700">
                   <span className="text-slate-500">Total Enrolled:</span>
                   <span className="font-bold text-slate-900 dark:text-white">120 Students (60 + 60)</span>
                 </div>
@@ -241,7 +241,7 @@ export default function ReportsAnalytics() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-600 dark:text-slate-400 uppercase">
+                    <tr className="border-b border-slate-200 dark:border-midnight-700 bg-offwhite dark:bg-midnight-800 font-bold text-slate-600 dark:text-slate-400 uppercase">
                       <th className="py-2.5 px-3">Date</th>
                       <th className="py-2.5 px-3">Subject</th>
                       <th className="py-2.5 px-3">Section</th>
@@ -250,12 +250,12 @@ export default function ReportsAnalytics() {
                       <th className="py-2.5 px-3 text-center">Attendance %</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-100 dark:divide-midnight-800">
                     {attendanceList.map((a) => (
                       <tr key={a.id}>
                         <td className="py-2.5 px-3 font-semibold">{a.date}</td>
                         <td className="py-2.5 px-3 font-bold">{a.subjectName} ({a.subjectCode})</td>
-                        <td className="py-2.5 px-3 font-bold text-indigo-600">{a.section}</td>
+                        <td className="py-2.5 px-3 font-bold text-electric-600">{a.section}</td>
                         <td className="py-2.5 px-3">{a.facultyName}</td>
                         <td className="py-2.5 px-3 text-center font-bold">
                           {a.presentCount} / {a.totalStudents}
@@ -283,7 +283,7 @@ export default function ReportsAnalytics() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-600 uppercase">
+                      <tr className="border-b border-slate-200 dark:border-midnight-700 bg-offwhite dark:bg-midnight-800 font-bold text-slate-600 uppercase">
                         <th className="py-2.5 px-3">Task Deliverable</th>
                         <th className="py-2.5 px-3">Assigned Faculty</th>
                         <th className="py-2.5 px-3">Priority</th>
@@ -292,7 +292,7 @@ export default function ReportsAnalytics() {
                         <th className="py-2.5 px-3 text-center">Progress</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody className="divide-y divide-slate-100 dark:divide-midnight-800">
                       {taskList.map((t) => (
                         <tr key={t.id}>
                           <td className="py-2.5 px-3 font-bold">{t.title}</td>
@@ -330,7 +330,7 @@ export default function ReportsAnalytics() {
                 <ResourceChart data={overview?.resourceUtilization} />
               </div>
 
-              <div className="space-y-3 bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs">
+              <div className="space-y-3 bg-offwhite dark:bg-midnight-800/60 p-5 rounded-2xl border border-slate-200 dark:border-midnight-700 text-xs">
                 <h4 className="font-bold text-slate-900 dark:text-white uppercase">Department Inventory Status</h4>
                 <p className="text-slate-500">
                   Total Allocated Facilities: <strong>7 Units</strong>
@@ -342,7 +342,7 @@ export default function ReportsAnalytics() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Advanced Computing Lab 1 (Turing Block):</span>
-                    <span className="font-bold text-indigo-600">In Use (Sec B DAA)</span>
+                    <span className="font-bold text-electric-600">In Use (Sec B DAA)</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Database & Cloud Lab 2 (Ada Lovelace):</span>
@@ -367,7 +367,7 @@ export default function ReportsAnalytics() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-600 uppercase">
+                  <tr className="border-b border-slate-200 dark:border-midnight-700 bg-offwhite dark:bg-midnight-800 font-bold text-slate-600 uppercase">
                     <th className="py-2.5 px-3">Faculty Member</th>
                     <th className="py-2.5 px-3">Employee ID</th>
                     <th className="py-2.5 px-3">Designation</th>
@@ -376,12 +376,12 @@ export default function ReportsAnalytics() {
                     <th className="py-2.5 px-3">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-100 dark:divide-midnight-800">
                   {facultyList.map((f) => (
                     <tr key={f.id}>
                       <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">{f.name}</td>
                       <td className="py-3 px-3 font-mono text-slate-500">{f.employeeId}</td>
-                      <td className="py-3 px-3 font-medium text-indigo-600 dark:text-indigo-400">{f.designation}</td>
+                      <td className="py-3 px-3 font-medium text-electric-600 dark:text-electric-400">{f.designation}</td>
                       <td className="py-3 px-3">{f.assignedSubjects.join(', ')}</td>
                       <td className="py-3 px-3 font-bold">{f.assignedSections.join(' & ')}</td>
                       <td className="py-3 px-3">
@@ -396,11 +396,11 @@ export default function ReportsAnalytics() {
         )}
 
         {/* Digital Verification & Stamp Footer */}
-        <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+        <div className="pt-6 border-t border-slate-200 dark:border-midnight-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
           <p>Generated automatically via Online Departmental Resource Management System (ODRMS).</p>
           <div className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-300">
             <span>Verified by: Dr. Rajiv Sharma (HOD CSIT)</span>
-            <span className="text-indigo-600 font-mono">[STAMP-CDGI-CSIT-5TH-SEM]</span>
+            <span className="text-electric-600 font-mono">[STAMP-CDGI-CSIT-5TH-SEM]</span>
           </div>
         </div>
       </div>

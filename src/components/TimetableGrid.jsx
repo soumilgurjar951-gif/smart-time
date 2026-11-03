@@ -25,8 +25,8 @@ export default function TimetableGrid({
         <table className="w-full min-w-[900px] border-collapse text-left">
           {/* Header row: Days / Time periods */}
           <thead>
-            <tr className="bg-slate-50/80 border-b border-slate-200">
-              <th className="py-4 px-4 font-semibold text-xs text-slate-500 uppercase tracking-wider w-32 sticky left-0 bg-slate-50/95 z-10 backdrop-blur-xs">
+            <tr className="bg-offwhite/80 border-b border-slate-200">
+              <th className="py-4 px-4 font-semibold text-xs text-slate-500 uppercase tracking-wider w-32 sticky left-0 bg-offwhite/95 z-10 backdrop-blur-xs">
                 Day / Time
               </th>
               {TIME_PERIODS.map((period) => (
@@ -35,7 +35,7 @@ export default function TimetableGrid({
                   className="py-3 px-3 font-semibold text-xs text-slate-700 border-l border-slate-200/60 min-w-[145px]"
                 >
                   <div className="flex flex-col">
-                    <span className="text-indigo-600 font-bold">
+                    <span className="text-electric-600 font-bold">
                       Period {period.period}
                     </span>
                     <span className="text-[11px] text-slate-400 font-normal mt-0.5">
@@ -56,15 +56,15 @@ export default function TimetableGrid({
                 <tr
                   key={day}
                   className={`group transition-colors ${
-                    isToday ? 'bg-indigo-50/20' : 'hover:bg-slate-50/50'
+                    isToday ? 'bg-electric-50/20' : 'hover:bg-offwhite/50'
                   }`}
                 >
                   {/* Day label column */}
-                  <td className="py-4 px-4 font-semibold text-sm text-slate-800 sticky left-0 bg-white/95 group-hover:bg-slate-50/90 z-10 border-r border-slate-100 shadow-xs">
+                  <td className="py-4 px-4 font-semibold text-sm text-slate-800 sticky left-0 bg-white/95 group-hover:bg-offwhite/90 z-10 border-r border-slate-100 shadow-xs">
                     <div className="flex items-center gap-2">
                       <span className="capitalize">{day}</span>
                       {isToday && (
-                        <span className="px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded-full bg-electric-100 text-electric-700 text-[10px] font-bold">
                           Today
                         </span>
                       )}
@@ -88,7 +88,7 @@ export default function TimetableGrid({
                             className={`h-full flex flex-col justify-between p-3 rounded-xl border text-xs transition-all relative group/cell ${
                               isFacultyAbsent
                                 ? 'bg-rose-50/80 border-rose-300 text-rose-900 shadow-xs'
-                                : 'bg-gradient-to-br from-indigo-50/60 via-white to-slate-50 border-indigo-100/90 hover:border-indigo-300 hover:shadow-md'
+                                : 'bg-gradient-to-br from-electric-50/60 via-white to-slate-50 border-electric-100/90 hover:border-electric-300 hover:shadow-md'
                             }`}
                           >
                             {/* Card Content */}
@@ -115,7 +115,7 @@ export default function TimetableGrid({
                               {mode === 'class' ? (
                                 <div className="space-y-1 text-slate-600">
                                   <div className="flex items-center gap-1.5">
-                                    <User className="w-3 h-3 text-indigo-500 shrink-0" />
+                                    <User className="w-3 h-3 text-electric-500 shrink-0" />
                                     <span className="truncate font-medium">
                                       {entry.facultyName}
                                     </span>
@@ -124,8 +124,8 @@ export default function TimetableGrid({
                               ) : (
                                 <div className="space-y-1 text-slate-600">
                                   <div className="flex items-center gap-1.5">
-                                    <BookOpen className="w-3 h-3 text-indigo-500 shrink-0" />
-                                    <span className="truncate font-semibold text-indigo-700">
+                                    <BookOpen className="w-3 h-3 text-electric-500 shrink-0" />
+                                    <span className="truncate font-semibold text-electric-700">
                                       {entry.className || 'Class Group'}
                                     </span>
                                   </div>
@@ -153,16 +153,16 @@ export default function TimetableGrid({
                             </div>
                           </div>
                         ) : readOnly ? (
-                          <div className="h-full rounded-xl border border-dashed border-slate-100 bg-slate-50/30 flex items-center justify-center text-slate-300 text-xs">
+                          <div className="h-full rounded-xl border border-dashed border-slate-100 bg-offwhite/30 flex items-center justify-center text-slate-300 text-xs">
                             —
                           </div>
                         ) : (
                           <button
                             onClick={() => onCellClick && onCellClick(day, period.period)}
-                            className="w-full h-full min-h-[90px] rounded-xl border border-dashed border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/40 text-slate-400 hover:text-indigo-600 flex flex-col items-center justify-center gap-1 transition-all group/btn"
+                            className="w-full h-full min-h-[90px] rounded-xl border border-dashed border-slate-200 hover:border-electric-400 hover:bg-electric-50/40 text-slate-400 hover:text-electric-600 flex flex-col items-center justify-center gap-1 transition-all group/btn"
                             title={`Add class for ${day} Period ${period.period}`}
                           >
-                            <div className="w-7 h-7 rounded-full bg-slate-100 group-hover/btn:bg-indigo-100 flex items-center justify-center transition-colors">
+                            <div className="w-7 h-7 rounded-full bg-slate-100 group-hover/btn:bg-electric-100 flex items-center justify-center transition-colors">
                               <Plus className="w-3.5 h-3.5" />
                             </div>
                             <span className="text-[11px] font-medium">Assign</span>

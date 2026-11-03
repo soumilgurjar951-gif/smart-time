@@ -177,7 +177,7 @@ export default function TaskManagement() {
       </div>
 
       {/* Filter and Status Tabs */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-4 shadow-xs space-y-3">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
           {['All', 'Pending', 'In Progress', 'Under Review', 'Completed'].map((tab) => {
             const count =
@@ -189,8 +189,8 @@ export default function TaskManagement() {
                 onClick={() => setStatusTab(tab)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-2 ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-2xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-electric-600 text-white shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-midnight-800'
                 }`}
               >
                 <span>{tab}</span>
@@ -198,7 +198,7 @@ export default function TaskManagement() {
                   className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
                     isActive
                       ? 'bg-white/20 text-white'
-                      : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                      : 'bg-slate-200 dark:bg-midnight-700 text-slate-700 dark:text-slate-300'
                   }`}
                 >
                   {count}
@@ -208,7 +208,7 @@ export default function TaskManagement() {
           })}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-midnight-800">
           <div className="flex-1 max-w-md">
             <SearchInput
               value={search}
@@ -222,7 +222,7 @@ export default function TaskManagement() {
             <select
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+              className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
             >
               <option value="All">All Priorities</option>
               {TASK_PRIORITIES.map((p) => (
@@ -252,12 +252,12 @@ export default function TaskManagement() {
             return (
               <div
                 key={task.id}
-                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all"
+                className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-electric-300 dark:hover:border-electric-700 transition-all"
               >
                 <div className="space-y-3">
                   {/* Category & Priority */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-midnight-800 text-slate-600 dark:text-slate-300">
                       {task.category}
                     </span>
                     <Badge priority={task.priority}>{task.priority}</Badge>
@@ -277,18 +277,18 @@ export default function TaskManagement() {
                   <div>
                     <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 mb-1">
                       <span>Progress</span>
-                      <span className="text-indigo-600 dark:text-indigo-400">{task.progressPct || 0}%</span>
+                      <span className="text-electric-600 dark:text-electric-400">{task.progressPct || 0}%</span>
                     </div>
-                    <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full bg-slate-100 dark:bg-midnight-800 rounded-full h-1.5 overflow-hidden">
                       <div
-                        className="bg-indigo-600 h-full rounded-full transition-all duration-300"
+                        className="bg-electric-600 h-full rounded-full transition-all duration-300"
                         style={{ width: `${task.progressPct || 0}%` }}
                       />
                     </div>
                   </div>
 
                   {/* Assignment Details */}
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs space-y-1">
+                  <div className="pt-2 border-t border-slate-100 dark:border-midnight-800 text-xs space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-400 font-medium">Assigned To:</span>
                       <span className="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[160px]">
@@ -311,7 +311,7 @@ export default function TaskManagement() {
 
                   {/* Completion Report Preview if present */}
                   {task.completionReport && (
-                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/80 text-[11px]">
+                    <div className="p-2.5 rounded-xl bg-offwhite dark:bg-midnight-800/60 border border-slate-100 dark:border-midnight-700/80 text-[11px]">
                       <span className="text-[10px] font-bold uppercase text-slate-400 block mb-0.5">
                         Faculty Report:
                       </span>
@@ -323,7 +323,7 @@ export default function TaskManagement() {
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex items-center justify-between gap-2">
                   <Badge status={task.status}>{task.status}</Badge>
 
                   <div className="flex items-center gap-1.5">
@@ -391,7 +391,7 @@ export default function TaskManagement() {
                 step="5"
                 value={progressVal}
                 onChange={(e) => setProgressVal(Number(e.target.value))}
-                className="w-full accent-indigo-600 cursor-pointer"
+                className="w-full accent-electric-600 cursor-pointer"
               />
             </div>
 
@@ -402,7 +402,7 @@ export default function TaskManagement() {
               <select
                 value={statusVal}
                 onChange={(e) => setStatusVal(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+                className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
               >
                 <option value="In Progress">In Progress</option>
                 <option value="Under Review">Submit for HOD Review (Under Review)</option>
@@ -420,11 +420,11 @@ export default function TaskManagement() {
                 value={completionReportText}
                 onChange={(e) => setCompletionReportText(e.target.value)}
                 placeholder="Detail what was completed, verified, or provide link to course file drive..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
               />
             </div>
 
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-2">
+            <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex justify-end gap-2">
               <Button variant="secondary" onClick={() => setUpdatingTask(null)}>
                 Cancel
               </Button>
@@ -445,7 +445,7 @@ export default function TaskManagement() {
       >
         {reviewingTask && (
           <form onSubmit={handleSaveReview} className="space-y-4 text-xs">
-            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1">
+            <div className="p-3 rounded-2xl bg-offwhite dark:bg-midnight-800/60 border border-slate-200 dark:border-midnight-700 space-y-1">
               <span className="text-[10px] font-bold text-slate-400 uppercase">
                 Submitted by {reviewingTask.assignedToName}:
               </span>
@@ -461,7 +461,7 @@ export default function TaskManagement() {
               <select
                 value={reviewDecision}
                 onChange={(e) => setReviewDecision(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+                className="w-full px-3 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
               >
                 <option value="Completed">Approve & Mark Completed</option>
                 <option value="In Progress">Request Revisions (Revert to In Progress)</option>
@@ -476,11 +476,11 @@ export default function TaskManagement() {
                 type="text"
                 value={hodRemarks}
                 onChange={(e) => setHodRemarks(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
               />
             </div>
 
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-2">
+            <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex justify-end gap-2">
               <Button variant="secondary" onClick={() => setReviewingTask(null)}>
                 Cancel
               </Button>

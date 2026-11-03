@@ -164,26 +164,26 @@ export default function AutomationHub() {
 
   const automationModules = [
     { id: 'substitution', name: '1. Auto Substitution', icon: ArrowLeftRight, badge: '⭐ Core', color: 'text-rose-600 bg-rose-50 border-rose-200' },
-    { id: 'ai-gen', name: '2. AI Generator', icon: Brain, badge: '🧠 Neural', color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+    { id: 'ai-gen', name: '2. AI Generator', icon: Brain, badge: '🧠 Neural', color: 'text-electric-600 bg-electric-50 border-electric-200' },
     { id: 'rooms', name: '3. Auto Room Allocation', icon: Building2, badge: '🏢 Smart', color: 'text-blue-600 bg-blue-50 border-blue-200' },
     { id: 'workload', name: '4. Workload Balancer', icon: Scale, badge: '⚖️ Fair', color: 'text-purple-600 bg-purple-50 border-purple-200' },
     { id: 'notifications', name: '5. Notification System', icon: Bell, badge: '🔔 Live', color: 'text-amber-600 bg-amber-50 border-amber-200' },
     { id: 'leave', name: '6. Leave Auto-Approval', icon: FileCheck2, badge: '📝 Instant', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
     { id: 'attendance', name: '7. QR & Biometric', icon: QrCode, badge: '📲 Fast', color: 'text-teal-600 bg-teal-50 border-teal-200' },
     { id: 'recurring', name: '8. Recurring Scheduler', icon: CalendarClock, badge: '🔁 Auto', color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
-    { id: 'conflict', name: '9. Conflict Resolver', icon: AlertTriangle, badge: `${conflicts.length} Clashes`, color: conflicts.length > 0 ? 'text-amber-600 bg-amber-50 border-amber-200' : 'text-slate-600 bg-slate-50 border-slate-200' },
-    { id: 'reports', name: '10. Auto Reports', icon: FileSpreadsheet, badge: '📊 PDF', color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+    { id: 'conflict', name: '9. Conflict Resolver', icon: AlertTriangle, badge: `${conflicts.length} Clashes`, color: conflicts.length > 0 ? 'text-amber-600 bg-amber-50 border-amber-200' : 'text-slate-600 bg-offwhite border-slate-200' },
+    { id: 'reports', name: '10. Auto Reports', icon: FileSpreadsheet, badge: '📊 PDF', color: 'text-electric-600 bg-electric-50 border-electric-200' },
   ];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300 pb-16">
       {/* Hero Command Center Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-indigo-900/50">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="bg-gradient-to-r from-midnight-950 via-midnight-800 to-midnight-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-midnight-600/50">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-electric-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-500/30 mb-3">
-              <Bot className="w-3.5 h-3.5 text-indigo-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-electric-500/20 text-electric-300 text-xs font-semibold border border-electric-500/30 mb-3">
+              <Bot className="w-3.5 h-3.5 text-electric-400" />
               <span>Chameli Devi Group of Institutions • CDGI TimeFlow Automation Engine</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-3">
@@ -201,7 +201,7 @@ export default function AutomationHub() {
             <button
               onClick={() => handleTriggerAiGenerator()}
               disabled={isAiGenerating}
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all shadow-md shadow-indigo-600/30 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-4 py-2.5 rounded-xl bg-electric-600 hover:bg-electric-500 text-white font-bold text-xs transition-all shadow-md shadow-electric-600/30 flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <Brain className={`w-4 h-4 ${isAiGenerating ? 'animate-spin' : ''}`} />
               <span>{isAiGenerating ? 'AI Generating...' : 'Run Master AI Generator'}</span>
@@ -249,7 +249,7 @@ export default function AutomationHub() {
           </div>
 
           <div className="bg-white/5 rounded-xl p-3 border border-white/10 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center font-bold text-xs">
+            <div className="w-8 h-8 rounded-lg bg-electric-500/20 text-electric-300 flex items-center justify-center font-bold text-xs">
               {notifications.length}
             </div>
             <div className="min-w-0">
@@ -266,7 +266,7 @@ export default function AutomationHub() {
           <button
             onClick={() => setActiveTab('all')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-2 ${activeTab === 'all'
-              ? 'bg-slate-900 text-white shadow-xs'
+              ? 'bg-midnight-900 text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
           >
@@ -281,8 +281,8 @@ export default function AutomationHub() {
                 key={mod.id}
                 onClick={() => setActiveTab(mod.id)}
                 className={`px-3 py-2 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${isActive
-                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  ? 'bg-electric-600 text-white shadow-sm shadow-electric-200'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-offwhite'
                   }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -326,7 +326,7 @@ export default function AutomationHub() {
               {absences.length > 0 && (
                 <button
                   onClick={() => autoAssignAllSubstitutions(absences[0].id)}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 shadow-sm shadow-indigo-200 transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-electric-600 hover:bg-electric-700 text-white text-xs font-bold flex items-center gap-2 shadow-sm shadow-electric-200 transition-all cursor-pointer"
                 >
                   <Zap className="w-4 h-4 text-amber-300" />
                   <span>1-Click Auto-Assign All Slots</span>
@@ -363,7 +363,7 @@ export default function AutomationHub() {
                       <div key={lec.timetableId} className="bg-white rounded-xl border border-slate-200/90 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-black text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+                            <span className="text-xs font-black text-electric-700 bg-electric-50 px-2 py-0.5 rounded-md">
                               Period {lec.period}
                             </span>
                             <span className="text-xs font-bold text-slate-800">{lec.subjectName}</span>
@@ -382,7 +382,7 @@ export default function AutomationHub() {
                           ) : (
                             <button
                               onClick={() => autoAssignAllSubstitutions(abs.id)}
-                              className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-electric-600 hover:bg-electric-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer"
                             >
                               <Zap className="w-3.5 h-3.5 text-amber-300" />
                               <span>Auto-Assign Candidate</span>
@@ -406,7 +406,7 @@ export default function AutomationHub() {
         <section className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-200 mb-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-electric-50 text-electric-700 text-xs font-bold border border-electric-200 mb-2">
                 <Brain className="w-3.5 h-3.5" />
                 <span>Feature 2: Multi-Constraint Neural Solver</span>
               </div>
@@ -421,7 +421,7 @@ export default function AutomationHub() {
             <button
               onClick={handleTriggerAiGenerator}
               disabled={isAiGenerating}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-extrabold flex items-center gap-2 shadow-md shadow-indigo-200 cursor-pointer disabled:opacity-50"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-electric-600 to-electric-700 hover:from-electric-500 hover:to-electric-600 text-white text-xs font-extrabold flex items-center gap-2 shadow-md shadow-electric-200 cursor-pointer disabled:opacity-50"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
               <span>{isAiGenerating ? 'AI Engine Running...' : 'Generate Optimized Timetable'}</span>
@@ -430,9 +430,9 @@ export default function AutomationHub() {
 
           {/* AI Constraints Configurator & Solver Progress */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-1 rounded-2xl bg-slate-50 border border-slate-200 p-5 space-y-4">
+            <div className="md:col-span-1 rounded-2xl bg-offwhite border border-slate-200 p-5 space-y-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-indigo-600" />
+                <Sliders className="w-4 h-4 text-electric-600" />
                 <span>Solver Constraints</span>
               </h3>
 
@@ -443,7 +443,7 @@ export default function AutomationHub() {
                     type="checkbox"
                     checked={aiConstraints.preserveLunch}
                     onChange={(e) => setAiConstraints({ ...aiConstraints, preserveLunch: e.target.checked })}
-                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="w-4 h-4 rounded text-electric-600 focus:ring-electric-500 cursor-pointer"
                   />
                 </label>
 
@@ -453,7 +453,7 @@ export default function AutomationHub() {
                     type="checkbox"
                     checked={aiConstraints.consecutiveLabs}
                     onChange={(e) => setAiConstraints({ ...aiConstraints, consecutiveLabs: e.target.checked })}
-                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="w-4 h-4 rounded text-electric-600 focus:ring-electric-500 cursor-pointer"
                   />
                 </label>
 
@@ -463,7 +463,7 @@ export default function AutomationHub() {
                     type="checkbox"
                     checked={aiConstraints.fairWorkload}
                     onChange={(e) => setAiConstraints({ ...aiConstraints, fairWorkload: e.target.checked })}
-                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="w-4 h-4 rounded text-electric-600 focus:ring-electric-500 cursor-pointer"
                   />
                 </label>
               </div>
@@ -473,7 +473,7 @@ export default function AutomationHub() {
               </div>
             </div>
 
-            <div className="md:col-span-2 rounded-2xl bg-slate-900 text-white p-5 space-y-4 flex flex-col justify-between">
+            <div className="md:col-span-2 rounded-2xl bg-midnight-900 text-white p-5 space-y-4 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold text-slate-400 mb-2">
                   <span>Optimization Engine Status</span>
@@ -482,9 +482,9 @@ export default function AutomationHub() {
                   </span>
                 </div>
 
-                <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-4">
+                <div className="w-full bg-midnight-800 rounded-full h-2 overflow-hidden mb-4">
                   <div
-                    className="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full transition-all duration-500"
+                    className="bg-gradient-to-r from-electric-500 to-emerald-400 h-full transition-all duration-500"
                     style={{ width: isAiGenerating ? `${aiProgressStep * 25}%` : '100%' }}
                   ></div>
                 </div>
@@ -505,7 +505,7 @@ export default function AutomationHub() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
+              <div className="flex items-center justify-between pt-4 border-t border-midnight-800 text-xs">
                 <span className="text-slate-400">Master Grid Entries: <strong className="text-white">{timetableEntries.length} Slots</strong></span>
                 <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
                   Conflict-Free Guarantee: Verified
@@ -564,7 +564,7 @@ export default function AutomationHub() {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                  <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-xl bg-offwhite border border-slate-100">
                     <span className="text-slate-500">Seating Capacity:</span>
                     <span className="font-extrabold text-slate-800">{room.capacity} Students</span>
                   </div>
@@ -702,8 +702,8 @@ export default function AutomationHub() {
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Recent Automated Dispatches</h3>
               <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
                 {notifications.map((notif) => (
-                  <div key={notif.id} className="rounded-xl border border-slate-200 p-3.5 bg-slate-50/60 hover:bg-white transition-colors flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <div key={notif.id} className="rounded-xl border border-slate-200 p-3.5 bg-offwhite/60 hover:bg-white transition-colors flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-electric-100 text-electric-700 flex items-center justify-center shrink-0 mt-0.5">
                       <Bell className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -725,9 +725,9 @@ export default function AutomationHub() {
             </div>
 
             {/* Mobile Phone Mockup */}
-            <div className="rounded-3xl bg-slate-900 p-4 text-white border-4 border-slate-800 shadow-xl flex flex-col justify-between max-w-xs mx-auto w-full">
+            <div className="rounded-3xl bg-midnight-900 p-4 text-white border-4 border-midnight-800 shadow-xl flex flex-col justify-between max-w-xs mx-auto w-full">
               <div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-[10px] text-slate-400">
+                <div className="flex items-center justify-between pb-3 border-b border-midnight-800 text-[10px] text-slate-400">
                   <span>9:41 AM</span>
                   <div className="flex items-center gap-1 font-bold">
                     <span>CDGI WhatsApp</span>
@@ -746,7 +746,7 @@ export default function AutomationHub() {
                     <span className="px-2 py-1 rounded-md bg-emerald-600 text-white text-[10px] font-bold">
                       Acknowledge
                     </span>
-                    <span className="px-2 py-1 rounded-md bg-slate-800 text-slate-300 text-[10px]">
+                    <span className="px-2 py-1 rounded-md bg-midnight-800 text-slate-300 text-[10px]">
                       View Slot
                     </span>
                   </div>
@@ -793,7 +793,7 @@ export default function AutomationHub() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-600 font-bold uppercase tracking-wider">
+                <tr className="border-b border-slate-200 bg-offwhite/70 text-slate-600 font-bold uppercase tracking-wider">
                   <th className="py-3 px-4">Faculty Member</th>
                   <th className="py-3 px-4">Leave Type</th>
                   <th className="py-3 px-4">Duration</th>
@@ -806,7 +806,7 @@ export default function AutomationHub() {
                 {leaveApplications.map((leave) => {
                   const isApproved = leave.status === 'Auto-Approved';
                   return (
-                    <tr key={leave.id} className="hover:bg-slate-50/50">
+                    <tr key={leave.id} className="hover:bg-offwhite/50">
                       <td className="py-3 px-4 font-bold text-slate-900">{leave.facultyName}</td>
                       <td className="py-3 px-4 font-semibold text-slate-700">{leave.leaveType}</td>
                       <td className="py-3 px-4 text-slate-600">{leave.daysCount} Day(s)</td>
@@ -870,9 +870,9 @@ export default function AutomationHub() {
           {activeAttendanceSession && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
               {/* Dynamic QR Display */}
-              <div className="md:col-span-1 flex flex-col items-center justify-center p-6 bg-slate-900 text-white rounded-3xl border-4 border-teal-500/30 text-center space-y-3">
+              <div className="md:col-span-1 flex flex-col items-center justify-center p-6 bg-midnight-900 text-white rounded-3xl border-4 border-teal-500/30 text-center space-y-3">
                 <div className="p-3 bg-white rounded-2xl shadow-lg">
-                  <div className="w-40 h-40 bg-slate-900 rounded-xl flex items-center justify-center p-2 relative overflow-hidden">
+                  <div className="w-40 h-40 bg-midnight-900 rounded-xl flex items-center justify-center p-2 relative overflow-hidden">
                     <QrCode className="w-full h-full text-white" />
                   </div>
                 </div>
@@ -882,7 +882,7 @@ export default function AutomationHub() {
                     <span>Token Rotates in:</span>
                     <span className="text-teal-400 font-bold">{qrCountdown}s</span>
                   </div>
-                  <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                  <div className="w-full bg-midnight-800 rounded-full h-1.5 overflow-hidden">
                     <div
                       className="bg-teal-400 h-full transition-all duration-1000"
                       style={{ width: `${(qrCountdown / 15) * 100}%` }}
@@ -928,7 +928,7 @@ export default function AutomationHub() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div className="flex items-center gap-2 text-xs text-slate-600 bg-offwhite p-3 rounded-xl border border-slate-200">
                   <ShieldCheck className="w-4 h-4 text-teal-600 shrink-0" />
                   <span>Biometric Terminal 1 (Turing Block) and RFID Turnstiles active. Real-time sync enabled.</span>
                 </div>
@@ -1050,14 +1050,14 @@ export default function AutomationHub() {
                       <h4 className="text-sm font-bold text-slate-900">{conf.title}</h4>
                     </div>
                     <p className="text-xs text-slate-600">{conf.description}</p>
-                    <p className="text-[11px] text-indigo-700 font-semibold">
+                    <p className="text-[11px] text-electric-700 font-semibold">
                       💡 AI Suggestion: {conf.suggestedResolution}
                     </p>
                   </div>
 
                   <button
                     onClick={() => resolveConflict(conf.id)}
-                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shrink-0 shadow-sm cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-electric-600 hover:bg-electric-700 text-white text-xs font-bold shrink-0 shadow-sm cursor-pointer"
                   >
                     Auto-Resolve This Clash
                   </button>
@@ -1075,7 +1075,7 @@ export default function AutomationHub() {
         <section className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-200 mb-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-electric-50 text-electric-700 text-xs font-bold border border-electric-200 mb-2">
                 <FileSpreadsheet className="w-3.5 h-3.5" />
                 <span>Feature 10: Official Audit & Print-Ready PDF</span>
               </div>
@@ -1091,7 +1091,7 @@ export default function AutomationHub() {
               <select
                 value={selectedReport}
                 onChange={(e) => setSelectedReport(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800"
+                className="bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800"
               >
                 <option value="workload">Faculty Workload Audit</option>
                 <option value="substitution">Absence & Substitution Log</option>
@@ -1100,7 +1100,7 @@ export default function AutomationHub() {
 
               <button
                 onClick={handlePrintReport}
-                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-2 shadow-xs cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-midnight-900 hover:bg-midnight-800 text-white text-xs font-bold flex items-center gap-2 shadow-xs cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Print / Save PDF</span>
@@ -1109,14 +1109,14 @@ export default function AutomationHub() {
           </div>
 
           {/* Printable Report Preview Card */}
-          <div className="rounded-2xl border border-slate-200 p-6 bg-slate-50/50 space-y-6 font-['Plus_Jakarta_Sans',sans-serif]">
+          <div className="rounded-2xl border border-slate-200 p-6 bg-offwhite/50 space-y-6 font-['Plus_Jakarta_Sans',sans-serif]">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
               <div className="flex items-center gap-3">
                 <img src="/cdgi-logo.png" alt="CDGI Logo" className="w-12 h-12 object-contain" />
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900">Chameli Devi Group of Institutions, Indore</h3>
-                  <p className="text-xs text-indigo-600 font-semibold uppercase">Office of Dean Academics • TimeFlow Autonomous Report</p>
+                  <p className="text-xs text-electric-600 font-semibold uppercase">Office of Dean Academics • TimeFlow Autonomous Report</p>
                 </div>
               </div>
               <div className="text-right text-xs text-slate-500">
@@ -1182,7 +1182,7 @@ export default function AutomationHub() {
                     {substitutions.map((sub) => (
                       <tr key={sub.id}>
                         <td className="py-2.5 font-bold text-slate-800">{sub.originalFaculty}</td>
-                        <td className="py-2.5 font-bold text-indigo-700">{sub.substituteFaculty}</td>
+                        <td className="py-2.5 font-bold text-electric-700">{sub.substituteFaculty}</td>
                         <td className="py-2.5 text-slate-700">{sub.subjectName}</td>
                         <td className="py-2.5 text-slate-600">{sub.className}</td>
                         <td className="py-2.5 text-slate-600">Period {sub.period} ({sub.room})</td>
@@ -1232,7 +1232,7 @@ export default function AutomationHub() {
             <select
               value={absenceFacultyId}
               onChange={(e) => setAbsenceFacultyId(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+              className="w-full bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
             >
               {facultyList.map((f) => (
                 <option key={f.id} value={f.id}>{f.name} ({f.deptCode || 'CSE'})</option>
@@ -1245,7 +1245,7 @@ export default function AutomationHub() {
             <select
               value={absenceDay}
               onChange={(e) => setAbsenceDay(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+              className="w-full bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
             >
               {daysOfWeek.map((d) => (
                 <option key={d} value={d}>{d}</option>
@@ -1260,7 +1260,7 @@ export default function AutomationHub() {
               value={absenceReason}
               onChange={(e) => setAbsenceReason(e.target.value)}
               placeholder="e.g. Medical emergency, Conference"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800"
+              className="w-full bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800"
               required
             />
           </div>
@@ -1297,7 +1297,7 @@ export default function AutomationHub() {
             <select
               value={leaveFacultyId}
               onChange={(e) => setLeaveFacultyId(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+              className="w-full bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
             >
               {facultyList.map((f) => (
                 <option key={f.id} value={f.id}>{f.name}</option>
@@ -1311,7 +1311,7 @@ export default function AutomationHub() {
               <select
                 value={leaveType}
                 onChange={(e) => setLeaveType(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+                className="w-full bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
               >
                 <option value="Casual Leave">Casual Leave (Instant Auto-Approve)</option>
                 <option value="Medical Leave">Medical Leave</option>
@@ -1327,7 +1327,7 @@ export default function AutomationHub() {
                 max="5"
                 value={leaveDaysCount}
                 onChange={(e) => setLeaveDaysCount(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+                className="w-full bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
               />
             </div>
           </div>
@@ -1338,7 +1338,7 @@ export default function AutomationHub() {
               type="text"
               value={leaveReason}
               onChange={(e) => setLeaveReason(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800"
+              className="w-full bg-offwhite border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800"
               required
             />
           </div>

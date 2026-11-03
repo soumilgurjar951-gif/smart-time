@@ -32,18 +32,18 @@ export default function Modal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-midnight-900/60 dark:bg-midnight-950/80 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
       <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
         <div
-          className={`relative transform overflow-hidden rounded-3xl bg-white dark:bg-slate-900 text-left shadow-2xl transition-all border border-slate-200/90 dark:border-slate-800 w-full ${maxWidth} my-8 animate-in zoom-in-95 duration-200`}
+          className={`relative transform overflow-hidden rounded-3xl bg-white dark:bg-midnight-900 text-left shadow-2xl transition-all border border-slate-200/90 dark:border-midnight-800 w-full ${maxWidth} my-8 animate-in zoom-in-95 duration-200`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-5">
+          <div className="flex items-start justify-between border-b border-slate-100 dark:border-midnight-800 px-6 py-5">
             <div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
                 {title}
@@ -56,7 +56,7 @@ export default function Modal({
             </div>
             <button
               onClick={onClose}
-              className="rounded-xl p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="rounded-xl p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-midnight-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

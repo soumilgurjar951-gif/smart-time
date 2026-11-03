@@ -9,13 +9,10 @@ import {
   Award,
   ClipboardCheck,
   TrendingUp,
-  AlertCircle,
   PlusCircle,
   ArrowRight,
   Sparkles,
   Clock,
-  Layers,
-  GraduationCap,
 } from 'lucide-react';
 import StatCard from '../../components/common/StatCard';
 import Button from '../../components/common/Button';
@@ -56,7 +53,7 @@ export default function HodDashboard() {
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-200">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-600/10 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-midnight-950 via-midnight-800 to-midnight-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-electric-600/10 relative overflow-hidden">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -69,14 +66,14 @@ export default function HodDashboard() {
               />
             </div>
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-indigo-100 text-xs font-semibold backdrop-blur-xs mb-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-electric-100 text-xs font-semibold backdrop-blur-xs mb-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                 <span>{DEPARTMENT_INFO.department} Department • {DEPARTMENT_INFO.year} / {DEPARTMENT_INFO.semester}</span>
               </div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight font-['Plus_Jakarta_Sans',sans-serif]">
                 Welcome, {user?.name || 'Dr. Rajiv Sharma (HOD)'}
               </h1>
-              <p className="text-indigo-100 text-xs sm:text-sm mt-1 max-w-xl">
+              <p className="text-electric-100 text-xs sm:text-sm mt-1 max-w-xl">
                 Online Departmental Resource Management System • Monitoring Sections A & B lectures, faculty workloads, resource allocation, and accreditation deliverables.
               </p>
             </div>
@@ -89,8 +86,13 @@ export default function HodDashboard() {
               </Button>
             </Link>
             <Link to="/lectures">
-              <Button size="sm" icon={CalendarDays} className="bg-white text-indigo-700 hover:bg-indigo-50">
-                Schedule Lecture
+              <Button size="sm" icon={CalendarDays} className="bg-white text-electric-700 hover:bg-electric-50">
+                Manage Lectures
+              </Button>
+            </Link>
+            <Link to="/timetable">
+              <Button size="sm" icon={CalendarDays} className="bg-white text-electric-700 hover:bg-electric-50">
+                Timetable
               </Button>
             </Link>
           </div>
@@ -101,17 +103,17 @@ export default function HodDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <StatCard
           title="Total Department Faculty"
-          value={counts.facultyCount || metrics.totalFaculty || 6}
+          value={counts.facultyCount ?? metrics.totalFaculty ?? 0}
           subtitle="All assigned to 5th Sem CSIT"
           icon={Users}
           color="indigo"
-          badge="100% Active"
+          badge={counts.facultyCount ? 'Profiles loaded' : 'No faculty profiles'}
         />
 
         <StatCard
           title="Assigned Lectures"
-          value={metrics.assignedLectures || 8}
-          subtitle={`${metrics.completedLectures || 3} Completed / Today`}
+          value={metrics.assignedLectures ?? 0}
+          subtitle={`${metrics.completedLectures ?? 0} Completed / Today`}
           icon={CalendarDays}
           color="blue"
           badge="Sec A & B"
@@ -119,7 +121,7 @@ export default function HodDashboard() {
 
         <StatCard
           title="Pending Department Tasks"
-          value={counts.pendingTasksCount || metrics.pendingTasks || 3}
+          value={counts.pendingTasksCount ?? metrics.pendingTasks ?? 0}
           subtitle="Course files & Exam setup"
           icon={CheckSquare}
           color="amber"
@@ -129,7 +131,7 @@ export default function HodDashboard() {
 
         <StatCard
           title="Resource Booking Requests"
-          value={counts.pendingBookingsCount || metrics.pendingBookings || 1}
+          value={counts.pendingBookingsCount ?? metrics.pendingBookings ?? 0}
           subtitle="Labs, Classrooms & Projector"
           icon={Building2}
           color="rose"
@@ -142,7 +144,7 @@ export default function HodDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
         <StatCard
           title="Faculty Achievements"
-          value={counts.pendingAchievementsCount || metrics.pendingAchievements || 2}
+          value={counts.pendingAchievementsCount ?? metrics.pendingAchievements ?? 0}
           subtitle="Awaiting HOD verification"
           icon={Award}
           color="purple"
@@ -151,27 +153,27 @@ export default function HodDashboard() {
 
         <StatCard
           title="Section A Attendance"
-          value={`${metrics.attendanceSecA || 92.4}%`}
-          subtitle="60 Students enrolled in Sec A"
+          value={`${metrics.attendanceSecA ?? 0}%`}
+          subtitle="Recorded attendance for Section A"
           icon={ClipboardCheck}
           color="emerald"
-          badge="Above 75% Target"
+          badge={metrics.attendanceSecA == null ? 'No data yet' : 'Section A'}
         />
 
         <StatCard
           title="Section B Attendance"
-          value={`${metrics.attendanceSecB || 93.1}%`}
-          subtitle="60 Students enrolled in Sec B"
+          value={`${metrics.attendanceSecB ?? 0}%`}
+          subtitle="Recorded attendance for Section B"
           icon={TrendingUp}
           color="emerald"
-          badge="Above 75% Target"
+          badge={metrics.attendanceSecB == null ? 'No data yet' : 'Section B'}
         />
       </div>
 
       {/* Analytics Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Attendance by Subject (Sec A vs Sec B) */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs">
+        <div className="lg:col-span-2 bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
@@ -183,7 +185,7 @@ export default function HodDashboard() {
             </div>
             <Link
               to="/attendance"
-              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-electric-600 dark:text-electric-400 hover:underline flex items-center gap-1"
             >
               <span>Detailed Roster</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -194,7 +196,7 @@ export default function HodDashboard() {
         </div>
 
         {/* Task Completion Status Pie Chart */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
@@ -202,7 +204,7 @@ export default function HodDashboard() {
               </h3>
               <Link
                 to="/tasks"
-                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                className="text-xs font-bold text-electric-600 dark:text-electric-400 hover:underline"
               >
                 View All
               </Link>
@@ -214,7 +216,7 @@ export default function HodDashboard() {
             <TaskProgressChart data={overview?.taskDistribution} />
           </div>
 
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
+          <div className="pt-4 border-t border-slate-100 dark:border-midnight-800 text-center">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
               NAAC / NBA Accreditation Deliverables in Progress
             </span>
@@ -225,7 +227,7 @@ export default function HodDashboard() {
       {/* Recent Departmental Activities & Quick Action Hub */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity Feed */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs">
+        <div className="lg:col-span-2 bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
               Recent Departmental Activities
@@ -233,11 +235,11 @@ export default function HodDashboard() {
             <span className="text-xs font-semibold text-slate-400">Real-time Stream</span>
           </div>
 
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y divide-slate-100 dark:divide-midnight-800">
             {recentActivities.map((act) => (
               <div key={act.id} className="py-3 flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-xl bg-electric-50 dark:bg-electric-950 text-electric-600 dark:text-electric-400 flex items-center justify-center shrink-0 mt-0.5">
                     <Clock className="w-4 h-4" />
                   </div>
                   <div>
@@ -252,9 +254,9 @@ export default function HodDashboard() {
         </div>
 
         {/* Action Shortcuts Card */}
-        <div className="bg-slate-900 text-white rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+        <div className="bg-midnight-900 text-white rounded-3xl p-6 shadow-xl flex flex-col justify-between">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-500/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-electric-500/20 text-electric-300 text-xs font-bold border border-electric-500/30">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>HOD Direct Administrative Actions</span>
             </div>
@@ -267,32 +269,32 @@ export default function HodDashboard() {
             <div className="space-y-2 pt-2">
               <Link
                 to="/faculty"
-                className="block p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition-colors border border-slate-700"
+                className="block p-3 rounded-xl bg-midnight-800 hover:bg-midnight-700 text-xs font-bold transition-colors border border-midnight-700"
               >
                 👥 Add / Manage CSIT Faculty Members →
               </Link>
               <Link
                 to="/resources"
-                className="block p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition-colors border border-slate-700"
+                className="block p-3 rounded-xl bg-midnight-800 hover:bg-midnight-700 text-xs font-bold transition-colors border border-midnight-700"
               >
                 🏢 Review Laboratory & Hall Booking Requests →
               </Link>
               <Link
                 to="/achievements"
-                className="block p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition-colors border border-slate-700"
+                className="block p-3 rounded-xl bg-midnight-800 hover:bg-midnight-700 text-xs font-bold transition-colors border border-midnight-700"
               >
                 🏆 Verify Faculty Publications & Certificates →
               </Link>
               <Link
                 to="/reports"
-                className="block p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition-colors border border-slate-700"
+                className="block p-3 rounded-xl bg-midnight-800 hover:bg-midnight-700 text-xs font-bold transition-colors border border-midnight-700"
               >
                 📊 Generate Audit Reports (PDF & CSV) →
               </Link>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-400 text-center">
+          <div className="pt-4 border-t border-midnight-800 text-[11px] text-slate-400 text-center">
             Chameli Devi Group of Institutions • CSIT Department
           </div>
         </div>
@@ -300,4 +302,3 @@ export default function HodDashboard() {
     </div>
   );
 }
-

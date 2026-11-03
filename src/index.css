@@ -2,14 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ODRMS Design Tokens — Midnight Blue / Electric Blue / Off-White
+   Raw CSS uses these variables; the Tailwind theme (tailwind.config.js)
+   mirrors the same values so utility classes stay in sync. */
+:root {
+  --odrms-midnight: #0b1f3a; /* Midnight Blue — dark surfaces */
+  --odrms-midnight-deep: #04101f;
+  --odrms-midnight-surface: #14294a;
+  --odrms-electric: #2563eb; /* Electric Blue — primary interactive */
+  --odrms-electric-strong: #1d4ed8;
+  --odrms-offwhite: #f8fafc; /* Off-White — light content */
+}
+
 @layer base {
   body {
-    @apply bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans transition-colors duration-200;
+    @apply bg-offwhite dark:bg-midnight-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans transition-colors duration-200;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom scrollbar for data tables and timetable grids */
+/* Custom scrollbar for data tables and timetable grids — blue-gray / midnight */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -20,18 +32,18 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #b7c6dc;
   border-radius: 9999px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #1e3a64;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #8fabce;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #2a4d7e;
 }

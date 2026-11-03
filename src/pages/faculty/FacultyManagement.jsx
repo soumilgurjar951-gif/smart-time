@@ -112,12 +112,34 @@ export default function FacultyManagement() {
     }
   };
 
+  const pendingSubmissions = useMemo(
+    () => facultyList.filter((f) => f.profileStatus === 'Submitted'),
+    [facultyList]
+  );
+
+  const handleReviewFaculty = async (faculty, action) => {
+    setIsSubmitting(true);
+    try {
+      const updated = await facultyService.reviewFaculty(faculty.id, action);
+      setFacultyList((prev) => prev.map((f) => (f.id === updated.id ? updated : f)));
+      if (action === 'VERIFY') {
+        showToast(`Faculty profile of ${updated.name} verified.`);
+      } else {
+        showToast(`Changes requested for ${updated.name}.`);
+      }
+    } catch (err) {
+      showToast(err.message || 'Failed to update profile status.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-200">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-400 text-xs font-bold border border-indigo-200 dark:border-indigo-900 mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-electric-50 dark:bg-electric-950/70 text-electric-700 dark:text-electric-400 text-xs font-bold border border-electric-200 dark:border-electric-900 mb-2">
             <Users className="w-3.5 h-3.5" />
             <span>CSIT Department • 3rd Year / 5th Sem</span>
           </div>
@@ -136,8 +158,62 @@ export default function FacultyManagement() {
         )}
       </div>
 
+      {/* Faculty Profile Submissions (HOD Review) */}
+      {isHod && (
+        <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-5 sm:p-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
+                Faculty Profile Submissions
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Review faculty profiles submitted during onboarding. Verify to approve teaching access or request
+                corrections.
+              </p>
+            </div>
+            <Badge status="Submitted">{pendingSubmissions.length}</Badge>
+          </div>
+
+          {pendingSubmissions.length === 0 ? (
+            <p className="text-xs font-semibold text-slate-400">
+              No faculty profiles are pending submission right now.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {pendingSubmissions.map((faculty) => (
+                <div
+                  key={faculty.id}
+                  className="p-4 rounded-2xl border border-slate-200 dark:border-midnight-800 bg-offwhite/50 dark:bg-midnight-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">{faculty.name}</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {faculty.designation} • {faculty.employeeId} • {faculty.email}
+                    </p>
+                    <p className="text-[11px] text-slate-400">Sections: {faculty.assignedSections.join(', ') || '—'}</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Button size="sm" onClick={() => handleReviewFaculty(faculty, 'VERIFY')} isLoading={isSubmitting}>
+                      Verify
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => handleReviewFaculty(faculty, 'CHANGES_REQUESTED')}
+                      isLoading={isSubmitting}
+                    >
+                      Request Changes
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-midnight-900 rounded-2xl border border-slate-200/90 dark:border-midnight-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <div className="flex-1 max-w-md">
           <SearchInput
             value={search}
@@ -155,7 +231,7 @@ export default function FacultyManagement() {
           <select
             value={sectionFilter}
             onChange={(e) => setSectionFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+            className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             <option value="All">All Sections (A & B)</option>
             <option value="Section A">Section A Only</option>
@@ -165,7 +241,7 @@ export default function FacultyManagement() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+            className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             <option value="All">All Statuses</option>
             <option value="Active">Active</option>
@@ -190,20 +266,20 @@ export default function FacultyManagement() {
           {filteredFaculty.map((faculty) => (
             <div
               key={faculty.id}
-              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-xs hover:border-indigo-300 dark:hover:border-indigo-700 transition-all flex flex-col justify-between space-y-4"
+              className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-5 shadow-xs hover:border-electric-300 dark:hover:border-electric-700 transition-all flex flex-col justify-between space-y-4"
             >
               <div>
                 {/* Header: Avatar, Name, Employee ID */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white font-extrabold text-sm flex items-center justify-center shadow-md shadow-indigo-600/20">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-electric-600 to-electric-500 text-white font-extrabold text-sm flex items-center justify-center shadow-md shadow-electric-600/20">
                       {faculty.avatar || 'FC'}
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-tight">
                         {faculty.name}
                       </h3>
-                      <p className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold">
+                      <p className="text-xs text-electric-600 dark:text-electric-400 font-semibold">
                         {faculty.designation}
                       </p>
                       <span className="text-[10px] font-mono text-slate-400">
@@ -212,11 +288,14 @@ export default function FacultyManagement() {
                     </div>
                   </div>
 
-                  <Badge status={faculty.status}>{faculty.status}</Badge>
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <Badge status={faculty.status}>{faculty.status}</Badge>
+                    <Badge status={faculty.profileStatus}>{faculty.profileStatus}</Badge>
+                  </div>
                 </div>
 
                 {/* Contact and Cabin */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-midnight-800 space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
                   <div className="flex items-center gap-2 truncate">
                     <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     <span className="truncate">{faculty.email}</span>
@@ -235,7 +314,7 @@ export default function FacultyManagement() {
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
                     <span>Assigned 5th Sem Subjects:</span>
-                    <span className="text-indigo-600 dark:text-indigo-400">
+                    <span className="text-electric-600 dark:text-electric-400">
                       {faculty.assignedSections.join(' & ')}
                     </span>
                   </div>
@@ -243,7 +322,7 @@ export default function FacultyManagement() {
                     {faculty.assignedSubjects.map((sub, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                        className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-midnight-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-midnight-700"
                       >
                         {sub}
                       </span>
@@ -253,10 +332,10 @@ export default function FacultyManagement() {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+              <div className="pt-4 border-t border-slate-100 dark:border-midnight-800 flex items-center justify-between gap-2">
                 <button
                   onClick={() => setViewingFaculty(faculty)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold text-electric-600 dark:text-electric-400 hover:bg-electric-50 dark:hover:bg-electric-950/60 flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Eye className="w-3.5 h-3.5" />
                   <span>Full Profile</span>
@@ -266,7 +345,7 @@ export default function FacultyManagement() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setEditingFaculty(faculty)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-electric-600 dark:hover:text-electric-400 hover:bg-slate-100 dark:hover:bg-midnight-800 transition-colors"
                       title="Edit Faculty"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -274,7 +353,7 @@ export default function FacultyManagement() {
                     {faculty.role !== 'HOD' && (
                       <button
                         onClick={() => handleDeleteFaculty(faculty.id, faculty.name)}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-midnight-800 transition-colors"
                         title="Remove Faculty"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -328,15 +407,15 @@ export default function FacultyManagement() {
       >
         {viewingFaculty && (
           <div className="space-y-5">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-              <div className="w-16 h-16 rounded-2xl bg-indigo-600 text-white font-extrabold text-xl flex items-center justify-center">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-offwhite dark:bg-midnight-800/60 border border-slate-200 dark:border-midnight-700">
+              <div className="w-16 h-16 rounded-2xl bg-electric-600 text-white font-extrabold text-xl flex items-center justify-center">
                 {viewingFaculty.avatar || 'FC'}
               </div>
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   {viewingFaculty.name}
                 </h3>
-                <p className="text-xs text-indigo-600 dark:text-indigo-400 font-bold">
+                <p className="text-xs text-electric-600 dark:text-electric-400 font-bold">
                   {viewingFaculty.designation}
                 </p>
                 <p className="text-xs text-slate-500 mt-0.5">{viewingFaculty.qualification}</p>
@@ -347,28 +426,28 @@ export default function FacultyManagement() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div className="p-3 rounded-xl border border-slate-200 dark:border-midnight-800 bg-white dark:bg-midnight-900">
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Email</span>
                 <span className="font-semibold text-slate-800 dark:text-slate-200">{viewingFaculty.email}</span>
               </div>
-              <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div className="p-3 rounded-xl border border-slate-200 dark:border-midnight-800 bg-white dark:bg-midnight-900">
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Contact</span>
                 <span className="font-semibold text-slate-800 dark:text-slate-200">{viewingFaculty.contact}</span>
               </div>
-              <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div className="p-3 rounded-xl border border-slate-200 dark:border-midnight-800 bg-white dark:bg-midnight-900">
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Cabin Location</span>
                 <span className="font-semibold text-slate-800 dark:text-slate-200">{viewingFaculty.cabin}</span>
               </div>
-              <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div className="p-3 rounded-xl border border-slate-200 dark:border-midnight-800 bg-white dark:bg-midnight-900">
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Experience</span>
                 <span className="font-semibold text-slate-800 dark:text-slate-200">{viewingFaculty.experienceYears} Years</span>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-2 text-xs">
+            <div className="p-4 rounded-2xl border border-slate-200 dark:border-midnight-800 bg-white dark:bg-midnight-900 space-y-2 text-xs">
               <h4 className="font-bold text-slate-800 dark:text-slate-200">5th Semester Teaching Duties</h4>
               <p className="text-slate-500">
-                Sections: <strong className="text-indigo-600 dark:text-indigo-400">{viewingFaculty.assignedSections.join(' & ')}</strong>
+                Sections: <strong className="text-electric-600 dark:text-electric-400">{viewingFaculty.assignedSections.join(' & ')}</strong>
               </p>
               <div>
                 <span className="text-slate-500 block mb-1">Assigned Subjects:</span>
@@ -376,7 +455,7 @@ export default function FacultyManagement() {
                   {viewingFaculty.assignedSubjects.map((sub, i) => (
                     <span
                       key={i}
-                      className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-900 text-xs"
+                      className="px-2.5 py-1 rounded-lg bg-electric-50 dark:bg-electric-950 text-electric-700 dark:text-electric-300 font-bold border border-electric-200 dark:border-electric-900 text-xs"
                     >
                       {sub}
                     </span>

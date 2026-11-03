@@ -12,7 +12,7 @@ export default function StatCard({
   onClick,
 }) {
   const colorMap = {
-    indigo: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900',
+    indigo: 'bg-electric-50 text-electric-600 dark:bg-electric-950/50 dark:text-electric-400 border-electric-100 dark:border-electric-900',
     emerald: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900',
     amber: 'bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400 border-amber-100 dark:border-amber-900',
     rose: 'bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400 border-rose-100 dark:border-rose-900',
@@ -25,8 +25,8 @@ export default function StatCard({
   return (
     <div
       onClick={onClick}
-      className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-xs transition-all ${
-        onClick ? 'hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 cursor-pointer' : ''
+      className={`bg-white dark:bg-midnight-900 rounded-2xl border border-slate-200/90 dark:border-midnight-800 p-5 shadow-xs transition-all ${
+        onClick ? 'hover:shadow-md hover:border-electric-300 dark:hover:border-electric-700 cursor-pointer' : ''
       }`}
     >
       <div className="flex items-start justify-between gap-3">

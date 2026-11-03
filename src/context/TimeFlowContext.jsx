@@ -85,7 +85,7 @@ export function TimeFlowProvider({ children }) {
       id: `fac-${Date.now()}`,
       currentWeeklyLectures: Number(newFaculty.currentWeeklyLectures) || 0,
       maxWeeklyLectures: Number(newFaculty.maxWeeklyLectures) || 16,
-      avatarColor: 'bg-indigo-600',
+      avatarColor: 'bg-electric-600',
       status: 'Available',
       isAbsentToday: false,
       leaveBalance: { casual: 12, medical: 10, duty: 5 },
@@ -118,7 +118,7 @@ export function TimeFlowProvider({ children }) {
       isLab: Boolean(newSubject.isLab),
       color: newSubject.isLab
         ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-        : 'bg-indigo-50 border-indigo-200 text-indigo-700',
+        : 'bg-electric-50 border-electric-200 text-electric-700',
     };
     setSubjectList((prev) => [subject, ...prev]);
     showToast(`Subject "${subject.name}" added successfully.`);

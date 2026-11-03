@@ -6,7 +6,10 @@ export const taskService = {
   async getAllTasks(filters = {}) {
     try {
       const response = await apiClient.get('/tasks/', { params: filters });
-      return response.data;
+      const data = response.data;
+      // DRF paginates list endpoints ({count, results}); other callers may
+      // return a plain array. Always resolve to an array.
+      return Array.isArray(data) ? data : data?.results || [];
     } catch {
       await mockDelay(150);
       let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.TASKS) || JSON.stringify(INITIAL_TASKS));

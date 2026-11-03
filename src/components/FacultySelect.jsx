@@ -28,7 +28,7 @@ export default function FacultySelect({
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           required={required}
-          className="w-full appearance-none bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed cursor-pointer pr-10 shadow-xs"
+          className="w-full appearance-none bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-electric-500/20 focus:border-electric-600 transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed cursor-pointer pr-10 shadow-xs"
         >
           <option value="" disabled>
             {placeholder}
@@ -61,7 +61,7 @@ export default function FacultySelect({
 
       {/* Selected faculty snapshot pills */}
       {selectedFaculty && showWorkload && (
-        <div className="mt-2.5 flex flex-wrap items-center gap-2 p-2.5 bg-slate-50 border border-slate-200/80 rounded-lg text-xs">
+        <div className="mt-2.5 flex flex-wrap items-center gap-2 p-2.5 bg-offwhite border border-slate-200/80 rounded-lg text-xs">
           <span className="font-semibold text-slate-700">
             {selectedFaculty.name}
           </span>
@@ -72,7 +72,7 @@ export default function FacultySelect({
             className={`font-medium ${
               selectedFaculty.currentWeeklyLectures >= selectedFaculty.maxWeeklyLectures
                 ? 'text-rose-600 font-bold'
-                : 'text-indigo-600'
+                : 'text-electric-600'
             }`}
           >
             Load: {selectedFaculty.currentWeeklyLectures}/{selectedFaculty.maxWeeklyLectures} hrs/wk

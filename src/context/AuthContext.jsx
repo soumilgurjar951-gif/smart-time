@@ -21,11 +21,11 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = async (identifier, password) => {
+  const login = async (identifier, password, designation = null) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const result = await authService.login(identifier, password);
+      const result = await authService.login(identifier, password, designation);
       setUser(result.user);
       setToken(result.token);
       setIsLoading(false);

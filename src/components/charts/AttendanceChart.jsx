@@ -33,26 +33,26 @@ export default function AttendanceChart({ data }) {
         >
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke={isDark ? '#334155' : '#e2e8f0'}
+            stroke={isDark ? '#1E3A64' : '#DCE5F0'}
             vertical={false}
           />
           <XAxis
             dataKey="subject"
-            tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }}
-            axisLine={{ stroke: isDark ? '#334155' : '#e2e8f0' }}
+            tick={{ fill: isDark ? '#8FABCE' : '#3D6398', fontSize: 11 }}
+            axisLine={{ stroke: isDark ? '#1E3A64' : '#DCE5F0' }}
           />
           <YAxis
             domain={[60, 100]}
-            tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 11 }}
-            axisLine={{ stroke: isDark ? '#334155' : '#e2e8f0' }}
+            tick={{ fill: isDark ? '#8FABCE' : '#3D6398', fontSize: 11 }}
+            axisLine={{ stroke: isDark ? '#1E3A64' : '#DCE5F0' }}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: isDark ? '#0f172a' : '#ffffff',
-              borderColor: isDark ? '#334155' : '#e2e8f0',
+              backgroundColor: isDark ? '#0B1F3A' : '#ffffff',
+              borderColor: isDark ? '#1E3A64' : '#DCE5F0',
               borderRadius: '12px',
               fontSize: '12px',
-              color: isDark ? '#f8fafc' : '#0f172a',
+              color: isDark ? '#f8fafc' : '#0B1F3A',
             }}
             formatter={(value) => [`${value}% Attendance`]}
           />
@@ -62,13 +62,13 @@ export default function AttendanceChart({ data }) {
           <Bar
             dataKey="secA"
             name="Section A"
-            fill="#4f46e5"
+            fill="#2563EB"
             radius={[4, 4, 0, 0]}
           />
           <Bar
             dataKey="secB"
             name="Section B"
-            fill="#06b6d4"
+            fill="#60A5FA"
             radius={[4, 4, 0, 0]}
           />
         </BarChart>

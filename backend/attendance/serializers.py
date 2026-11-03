@@ -31,7 +31,10 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
     roster_name = serializers.CharField(source="roster.full_name", read_only=True)
     lecture_date = serializers.DateField(source="lecture.date", read_only=True)
     subject = serializers.IntegerField(source="lecture.subject_id", read_only=True)
+    subject_code = serializers.CharField(source="lecture.subject.code", read_only=True)
+    subject_name = serializers.CharField(source="lecture.subject.name", read_only=True)
     section = serializers.CharField(source="lecture.section", read_only=True)
+    faculty_name = serializers.CharField(source="lecture.assigned_faculty.full_name", read_only=True)
     marked_by_name = serializers.CharField(source="marked_by.full_name", read_only=True)
 
     class Meta:
@@ -46,7 +49,10 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
             "remarks",
             "lecture_date",
             "subject",
+            "subject_code",
+            "subject_name",
             "section",
+            "faculty_name",
             "marked_by",
             "marked_by_name",
             "marked_at",
@@ -77,7 +83,7 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
 
 class BulkAttendanceSerializer(serializers.Serializer):
     lecture = serializers.IntegerField()
-    entries = AttendanceRecordSerializer(many=True)
+    entries = serializers.ListSerializer(child=serializers.DictField())
 
     def validate(self, attrs):
         from lectures.models import Lecture
@@ -88,7 +94,23 @@ class BulkAttendanceSerializer(serializers.Serializer):
             raise serializers.ValidationError({"lecture": "Lecture not found."}) from exc
         attrs["lecture_obj"] = lecture
         for entry in attrs["entries"]:
-            if entry.get("lecture") and entry["lecture"].id != lecture.id:
-                raise serializers.ValidationError({"entries": "All entries must belong to the same lecture."})
-            entry["lecture"] = lecture
+            if "roster" not in entry or "status" not in entry:
+                raise serializers.ValidationError(
+                    {"entries": "Each entry requires roster and status."}
+                )
+            if entry["status"] not in AttendanceRecord.Status.values:
+                raise serializers.ValidationError({"entries": "Invalid attendance status."})
+            if entry.get("lecture"):
+                try:
+                    nested_lecture_id = int(getattr(entry["lecture"], "id", entry["lecture"]))
+                except (TypeError, ValueError) as exc:
+                    raise serializers.ValidationError({"entries": "Invalid lecture reference."}) from exc
+                if nested_lecture_id != lecture.id:
+                    raise serializers.ValidationError({"entries": "All entries must belong to the same lecture."})
+            try:
+                entry["roster"] = AttendanceRoster.objects.get(pk=entry["roster"])
+            except AttendanceRoster.DoesNotExist as exc:
+                raise serializers.ValidationError({"entries": "Roster entry not found."}) from exc
+            if entry["roster"].section != lecture.section or not entry["roster"].is_active:
+                raise serializers.ValidationError({"entries": "Roster section must match the lecture and be active."})
         return attrs

@@ -1,151 +1,109 @@
-// src/services/attendanceService.js
-import apiClient, { mockDelay } from './api';
-import {
-  STORAGE_KEYS,
-  INITIAL_ATTENDANCE,
-  STUDENTS_SEC_A,
-  STUDENTS_SEC_B,
-} from '../utils/storage';
+import apiClient from './api';
+
+const listData = (data) => (Array.isArray(data) ? data : data.results || []);
+const statusToUi = { PRESENT: 'Present', ABSENT: 'Absent', ON_LEAVE: 'On Leave' };
+const statusToApi = { Present: 'PRESENT', Absent: 'ABSENT', 'On Leave': 'ON_LEAVE' };
+
+function mapHistoryRecord(record) {
+  return {
+    id: record.id,
+    lectureId: String(record.lecture),
+    rollNo: record.roster_roll_number,
+    name: record.roster_name,
+    status: statusToUi[record.status] || record.status,
+    remarks: record.remarks,
+    date: record.lecture_date,
+    subjectCode: record.subject_code || '',
+    subjectName: record.subject_name || '',
+    section: `Section ${record.section}`,
+    facultyName: record.faculty_name || '',
+  };
+}
 
 export const attendanceService = {
   async getAttendanceForLecture(lecture) {
-    try {
-      const response = await apiClient.get(`/attendance/lecture/${lecture.id}/`);
-      return response.data;
-    } catch {
-      await mockDelay(150);
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.ATTENDANCE) || JSON.stringify(INITIAL_ATTENDANCE));
-      const existing = list.find((a) => a.lectureId === lecture.id);
-
-      if (existing) {
-        return existing;
-      }
-
-      // Default roster for this section
-      const defaultRoster = lecture.section === 'Section B' ? STUDENTS_SEC_B : STUDENTS_SEC_A;
-      const initialSession = {
-        id: `att-${lecture.id}`,
-        lectureId: lecture.id,
-        subjectCode: lecture.subjectCode,
-        subjectName: lecture.subjectName,
-        facultyName: lecture.facultyName,
+    const sectionCode = lecture.sectionCode || lecture.section.slice(-1);
+    const [attendanceResponse, rosterResponse] = await Promise.all([
+      apiClient.get('/attendance/', { params: { lecture: lecture.id } }),
+      apiClient.get('/attendance/roster/', { params: { section: sectionCode, is_active: true } }),
+    ]);
+    const marked = listData(attendanceResponse.data);
+    const roster = listData(rosterResponse.data);
+    const byRosterId = new Map(marked.map((record) => [record.roster, record]));
+    const records = roster.map((student) => {
+      const attendance = byRosterId.get(student.id);
+      return {
+        id: student.id,
+        roster: student.id,
+        rollNo: student.roll_number,
+        name: student.full_name,
         section: lecture.section,
-        date: lecture.date || new Date().toISOString().split('T')[0],
-        timeSlot: lecture.timeSlot,
-        totalStudents: defaultRoster.length,
-        presentCount: defaultRoster.length,
-        absentCount: 0,
-        onLeaveCount: 0,
-        attendanceRate: 100,
-        records: defaultRoster.map((s) => ({ ...s, status: 'Present' })),
+        status: attendance ? statusToUi[attendance.status] : '',
+        remarks: attendance?.remarks || '',
       };
-
-      return initialSession;
-    }
+    });
+    const presentCount = records.filter((record) => record.status === 'Present').length;
+    const absentCount = records.filter((record) => record.status === 'Absent').length;
+    const onLeaveCount = records.filter((record) => record.status === 'On Leave').length;
+    return {
+      lectureId: String(lecture.id),
+      subjectCode: lecture.subjectCode,
+      subjectName: lecture.subjectName,
+      facultyName: lecture.facultyName,
+      section: lecture.section,
+      date: lecture.date,
+      timeSlot: lecture.timeSlot,
+      totalStudents: records.length,
+      presentCount,
+      absentCount,
+      onLeaveCount,
+      attendanceRate: records.length ? Number(((presentCount / records.length) * 100).toFixed(1)) : 0,
+      records,
+    };
   },
 
   async saveLectureAttendance(attendanceData) {
-    try {
-      const response = await apiClient.post('/attendance/submit/', attendanceData);
-      return response.data;
-    } catch {
-      await mockDelay(200);
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.ATTENDANCE) || JSON.stringify(INITIAL_ATTENDANCE));
-      const lectures = JSON.parse(localStorage.getItem(STORAGE_KEYS.LECTURES) || '[]');
-
-      // Recalculate stats
-      const total = attendanceData.records.length;
-      const present = attendanceData.records.filter((r) => r.status === 'Present').length;
-      const absent = attendanceData.records.filter((r) => r.status === 'Absent').length;
-      const onLeave = attendanceData.records.filter((r) => r.status === 'On Leave').length;
-      const rate = total > 0 ? Number(((present / total) * 100).toFixed(1)) : 0;
-
-      const recordToSave = {
-        ...attendanceData,
-        totalStudents: total,
-        presentCount: present,
-        absentCount: absent,
-        onLeaveCount: onLeave,
-        attendanceRate: rate,
-        savedAt: new Date().toISOString(),
+    const entries = attendanceData.records.map((record) => {
+      const status = statusToApi[record.status];
+      if (!status) throw new Error(`Select an attendance status for ${record.rollNo}.`);
+      return {
+        roster: Number(record.roster ?? record.id),
+        status,
+        remarks: record.remarks || '',
       };
-
-      const existingIndex = list.findIndex((a) => a.lectureId === attendanceData.lectureId);
-      if (existingIndex !== -1) {
-        list[existingIndex] = recordToSave;
-      } else {
-        list.unshift(recordToSave);
-      }
-      localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(list));
-
-      // Mark lecture attendanceMarked = true
-      const lecIndex = lectures.findIndex((l) => l.id === attendanceData.lectureId);
-      if (lecIndex !== -1) {
-        lectures[lecIndex].attendanceMarked = true;
-        lectures[lecIndex].status = 'Completed';
-        localStorage.setItem(STORAGE_KEYS.LECTURES, JSON.stringify(lectures));
-      }
-
-      return recordToSave;
-    }
+    });
+    const { data } = await apiClient.post('/attendance/bulk/', {
+      lecture: Number(attendanceData.lectureId),
+      entries,
+    });
+    return data;
   },
 
   async getAttendanceHistory(filters = {}) {
-    try {
-      const response = await apiClient.get('/attendance/history/', { params: filters });
-      return response.data;
-    } catch {
-      await mockDelay(150);
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.ATTENDANCE) || JSON.stringify(INITIAL_ATTENDANCE));
-
-      if (filters.section && filters.section !== 'All') {
-        list = list.filter((a) => a.section === filters.section);
-      }
-      if (filters.subjectCode && filters.subjectCode !== 'All') {
-        list = list.filter((a) => a.subjectCode === filters.subjectCode);
-      }
-      if (filters.facultyName && filters.facultyName !== 'All') {
-        list = list.filter((a) => a.facultyName.toLowerCase().includes(filters.facultyName.toLowerCase()));
-      }
-      if (filters.date) {
-        list = list.filter((a) => a.date === filters.date);
-      }
-
-      return list;
-    }
+    const params = { ...filters };
+    if (params.section?.startsWith('Section ')) params.section = params.section.slice(-1);
+    const { data } = await apiClient.get('/attendance/', { params });
+    return listData(data).map(mapHistoryRecord);
   },
 
   async getSectionSummary() {
-    try {
-      const response = await apiClient.get('/attendance/summary/');
-      return response.data;
-    } catch {
-      await mockDelay(100);
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.ATTENDANCE) || JSON.stringify(INITIAL_ATTENDANCE));
-      
-      const secA = list.filter((a) => a.section === 'Section A');
-      const secB = list.filter((a) => a.section === 'Section B');
-
-      const calcAvg = (items) => {
-        if (!items.length) return 0;
-        const sum = items.reduce((acc, curr) => acc + (curr.attendanceRate || 0), 0);
-        return Number((sum / items.length).toFixed(1));
-      };
-
+    const { data } = await apiClient.get('/attendance/reports/');
+    const rows = data.by_lecture || [];
+    const summaryFor = (section) => {
+      const lectures = rows.filter((row) => row['lecture__section'] === section);
+      const present = lectures.reduce((sum, row) => sum + row.present, 0);
+      const total = lectures.reduce((sum, row) => sum + row.total, 0);
       return {
-        sectionA: {
-          totalSessions: secA.length,
-          averageRate: calcAvg(secA),
-        },
-        sectionB: {
-          totalSessions: secB.length,
-          averageRate: calcAvg(secB),
-        },
-        overallRate: calcAvg(list),
+        totalSessions: lectures.length,
+        averageRate: total ? Number(((present / total) * 100).toFixed(1)) : 0,
       };
-    }
+    };
+    return {
+      sectionA: summaryFor('A'),
+      sectionB: summaryFor('B'),
+      overallRate: data.summary?.present_percentage || 0,
+    };
   },
 };
 
 export default attendanceService;
-

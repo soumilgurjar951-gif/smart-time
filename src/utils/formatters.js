@@ -38,7 +38,7 @@ export function getPriorityBadgeColor(priority) {
     case 'low':
       return 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900';
     default:
-      return 'bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300 border-slate-200 dark:border-slate-800';
+      return 'bg-offwhite text-slate-700 dark:bg-midnight-900 dark:text-slate-300 border-slate-200 dark:border-midnight-800';
   }
 }
 
@@ -60,7 +60,7 @@ export function getStatusBadgeColor(status) {
     case 'cancelled':
       return 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border-rose-200 dark:border-rose-900';
     default:
-      return 'bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300 border-slate-200 dark:border-slate-800';
+      return 'bg-offwhite text-slate-700 dark:bg-midnight-900 dark:text-slate-300 border-slate-200 dark:border-midnight-800';
   }
 }
 

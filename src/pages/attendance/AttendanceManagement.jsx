@@ -39,7 +39,7 @@ export default function AttendanceManagement() {
         const lecs = await lectureService.getAllLectures();
         setLectures(lecs);
 
-        const paramLecId = searchParams.get('lectureId');
+        const paramLecId = searchParams.get('lecture') || searchParams.get('lectureId');
         const defaultId = paramLecId || (lecs[0]?.id ?? '');
         setSelectedLectureId(defaultId);
       } catch {
@@ -165,12 +165,12 @@ export default function AttendanceManagement() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+        <div className="flex bg-slate-100 dark:bg-midnight-800 p-1 rounded-xl border border-slate-200 dark:border-midnight-700">
           <button
             onClick={() => setActiveTab('mark')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
               activeTab === 'mark'
-                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-2xs'
+                ? 'bg-white dark:bg-midnight-900 text-emerald-600 dark:text-emerald-400 shadow-2xs'
                 : 'text-slate-600 dark:text-slate-400'
             }`}
           >
@@ -180,7 +180,7 @@ export default function AttendanceManagement() {
             onClick={() => setActiveTab('history')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
               activeTab === 'history'
-                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-2xs'
+                ? 'bg-white dark:bg-midnight-900 text-emerald-600 dark:text-emerald-400 shadow-2xs'
                 : 'text-slate-600 dark:text-slate-400'
             }`}
           >
@@ -192,7 +192,7 @@ export default function AttendanceManagement() {
       {activeTab === 'mark' ? (
         <>
           {/* Lecture Selection Bar & Meta Info */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-5 shadow-xs space-y-4">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex-1 max-w-xl">
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -201,7 +201,7 @@ export default function AttendanceManagement() {
                 <select
                   value={selectedLectureId}
                   onChange={(e) => setSelectedLectureId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-slate-900 dark:text-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm font-bold text-slate-900 dark:text-white"
                 >
                   {lectures.map((l) => (
                     <option key={l.id} value={l.id}>
@@ -233,20 +233,20 @@ export default function AttendanceManagement() {
 
             {/* Lecture Meta Glance */}
             {selectedLecture && (
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+              <div className="pt-4 border-t border-slate-100 dark:border-midnight-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-offwhite dark:bg-midnight-800/60 border border-slate-100 dark:border-midnight-800">
                   <span className="text-[10px] text-slate-400 block uppercase font-bold">Faculty</span>
                   <span className="font-bold text-slate-800 dark:text-slate-200">{selectedLecture.facultyName}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-offwhite dark:bg-midnight-800/60 border border-slate-100 dark:border-midnight-800">
                   <span className="text-[10px] text-slate-400 block uppercase font-bold">Classroom</span>
                   <span className="font-bold text-slate-800 dark:text-slate-200">{selectedLecture.classroom}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-offwhite dark:bg-midnight-800/60 border border-slate-100 dark:border-midnight-800">
                   <span className="text-[10px] text-slate-400 block uppercase font-bold">Section & Type</span>
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">{selectedLecture.section} ({selectedLecture.lectureType})</span>
+                  <span className="font-bold text-electric-600 dark:text-electric-400">{selectedLecture.section} ({selectedLecture.lectureType})</span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-offwhite dark:bg-midnight-800/60 border border-slate-100 dark:border-midnight-800">
                   <span className="text-[10px] text-slate-400 block uppercase font-bold">Curriculum Unit</span>
                   <span className="font-bold text-slate-800 dark:text-slate-200 truncate block">{selectedLecture.topic || 'General Lecture'}</span>
                 </div>
@@ -256,27 +256,27 @@ export default function AttendanceManagement() {
 
           {/* Real-time Rate Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
+            <div className="bg-white dark:bg-midnight-900 p-4 rounded-2xl border border-slate-200 dark:border-midnight-800 text-center">
               <span className="block text-2xl font-black text-slate-900 dark:text-white">{totalCount}</span>
               <span className="text-xs font-semibold text-slate-400 uppercase">Enrolled Students</span>
             </div>
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
+            <div className="bg-white dark:bg-midnight-900 p-4 rounded-2xl border border-slate-200 dark:border-midnight-800 text-center">
               <span className="block text-2xl font-black text-emerald-600">{presentCount}</span>
               <span className="text-xs font-semibold text-emerald-600 uppercase">Present</span>
             </div>
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
+            <div className="bg-white dark:bg-midnight-900 p-4 rounded-2xl border border-slate-200 dark:border-midnight-800 text-center">
               <span className="block text-2xl font-black text-rose-600">{absentCount}</span>
               <span className="text-xs font-semibold text-rose-600 uppercase">Absent</span>
             </div>
-            <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
-              <span className="block text-2xl font-black text-indigo-600 dark:text-indigo-400">{liveRate}%</span>
-              <span className="text-xs font-semibold text-indigo-600 uppercase">Attendance Rate</span>
+            <div className="bg-white dark:bg-midnight-900 p-4 rounded-2xl border border-slate-200 dark:border-midnight-800 text-center">
+              <span className="block text-2xl font-black text-electric-600 dark:text-electric-400">{liveRate}%</span>
+              <span className="text-xs font-semibold text-electric-600 uppercase">Attendance Rate</span>
             </div>
           </div>
 
           {/* Student Roster Table */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs">
-            <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 overflow-hidden shadow-xs">
+            <div className="p-4 border-b border-slate-100 dark:border-midnight-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
                 Student Attendance Sheet ({selectedLecture?.section})
               </h3>
@@ -291,7 +291,7 @@ export default function AttendanceManagement() {
 
             <div className="overflow-x-auto max-h-[500px]">
               <table className="w-full text-left border-collapse text-xs">
-                <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                <thead className="sticky top-0 z-10 bg-offwhite dark:bg-midnight-800 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200 dark:border-midnight-700">
                   <tr>
                     <th className="py-3 px-5">Roll No</th>
                     <th className="py-3 px-4">Student Name</th>
@@ -300,14 +300,14 @@ export default function AttendanceManagement() {
                     <th className="py-3 px-5 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-100 dark:divide-midnight-800">
                   {filteredStudents.map((student) => {
                     const isPresent = student.status === 'Present';
                     const isAbsent = student.status === 'Absent';
                     const isOnLeave = student.status === 'On Leave';
 
                     return (
-                      <tr key={student.rollNo} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                      <tr key={student.rollNo} className="hover:bg-offwhite/60 dark:hover:bg-midnight-800/40">
                         <td className="py-2.5 px-5 font-mono font-bold text-slate-700 dark:text-slate-300">
                           {student.rollNo}
                         </td>
@@ -338,7 +338,7 @@ export default function AttendanceManagement() {
                               className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                                 isPresent
                                   ? 'bg-emerald-600 text-white shadow-2xs'
-                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-slate-200'
+                                  : 'bg-slate-100 dark:bg-midnight-800 text-slate-600 hover:bg-slate-200'
                               }`}
                             >
                               Present
@@ -349,7 +349,7 @@ export default function AttendanceManagement() {
                               className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                                 isAbsent
                                   ? 'bg-rose-600 text-white shadow-2xs'
-                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-slate-200'
+                                  : 'bg-slate-100 dark:bg-midnight-800 text-slate-600 hover:bg-slate-200'
                               }`}
                             >
                               Absent
@@ -360,7 +360,7 @@ export default function AttendanceManagement() {
                               className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
                                 isOnLeave
                                   ? 'bg-amber-600 text-white shadow-2xs'
-                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 hover:bg-slate-200'
+                                  : 'bg-slate-100 dark:bg-midnight-800 text-slate-600 hover:bg-slate-200'
                               }`}
                             >
                               Leave
@@ -377,7 +377,7 @@ export default function AttendanceManagement() {
         </>
       ) : (
         /* History Log Tab */
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
@@ -392,7 +392,7 @@ export default function AttendanceManagement() {
               <select
                 value={historySectionFilter}
                 onChange={(e) => setHistorySectionFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+                className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
               >
                 <option value="All">All Sections</option>
                 <option value="Section A">Section A</option>
@@ -402,7 +402,7 @@ export default function AttendanceManagement() {
               <select
                 value={historySubjectFilter}
                 onChange={(e) => setHistorySubjectFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+                className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
               >
                 <option value="All">All Subjects</option>
                 {CSIT_5TH_SEM_SUBJECTS.map((s) => (
@@ -417,7 +417,7 @@ export default function AttendanceManagement() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 font-bold uppercase">
+                <tr className="border-b border-slate-200 dark:border-midnight-800 bg-offwhite dark:bg-midnight-800/60 text-slate-600 dark:text-slate-400 font-bold uppercase">
                   <th className="py-3 px-4">Date</th>
                   <th className="py-3 px-4">Subject</th>
                   <th className="py-3 px-4">Section</th>
@@ -426,14 +426,14 @@ export default function AttendanceManagement() {
                   <th className="py-3 px-4 text-center">Attendance %</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-midnight-800">
                 {filteredHistory.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                  <tr key={item.id} className="hover:bg-offwhite dark:hover:bg-midnight-800/40">
                     <td className="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">{item.date}</td>
                     <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">
                       {item.subjectName} ({item.subjectCode})
                     </td>
-                    <td className="py-3 px-4 font-bold text-indigo-600 dark:text-indigo-400">{item.section}</td>
+                    <td className="py-3 px-4 font-bold text-electric-600 dark:text-electric-400">{item.section}</td>
                     <td className="py-3 px-4 text-slate-700 dark:text-slate-300">{item.facultyName}</td>
                     <td className="py-3 px-4 text-center font-bold">
                       <span className="text-emerald-600">{item.presentCount}</span> / {item.totalStudents}
@@ -453,4 +453,3 @@ export default function AttendanceManagement() {
     </div>
   );
 }
-

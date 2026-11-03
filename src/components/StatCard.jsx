@@ -8,14 +8,14 @@ export default function StatCard({
   badge,
   badgeType = 'default', // 'danger' | 'success' | 'warning' | 'indigo' | 'default'
   subtext,
-  iconBg = 'bg-indigo-50 text-indigo-600',
+  iconBg = 'bg-electric-50 text-electric-600',
   onClick,
 }) {
   const badgeStyles = {
     danger: 'bg-rose-50 text-rose-700 border-rose-200',
     warning: 'bg-amber-50 text-amber-700 border-amber-200',
     success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    indigo: 'bg-electric-50 text-electric-700 border-electric-200',
     default: 'bg-slate-100 text-slate-700 border-slate-200',
   };
 
@@ -23,7 +23,7 @@ export default function StatCard({
     <div
       onClick={onClick}
       className={`bg-white rounded-xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all duration-200 ${
-        onClick ? 'cursor-pointer hover:border-indigo-300' : ''
+        onClick ? 'cursor-pointer hover:border-electric-300' : ''
       }`}
     >
       <div className="flex items-center justify-between">

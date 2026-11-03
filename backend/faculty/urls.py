@@ -1,8 +1,8 @@
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 
 from faculty.views import FacultyViewSet
 
-router = DefaultRouter()
+router = SimpleRouter()
 router.register("", FacultyViewSet, basename="faculty")
 
 urlpatterns = router.urls

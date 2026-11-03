@@ -129,7 +129,7 @@ export default function LectureManagement() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-400 text-xs font-bold border border-indigo-200 dark:border-indigo-900 mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-electric-50 dark:bg-electric-950/70 text-electric-700 dark:text-electric-400 text-xs font-bold border border-electric-200 dark:border-electric-900 mb-2">
             <CalendarDays className="w-3.5 h-3.5" />
             <span>CSIT 5th Semester • Timetable Hub</span>
           </div>
@@ -143,12 +143,12 @@ export default function LectureManagement() {
 
         <div className="flex items-center gap-2.5">
           {/* View Toggle */}
-          <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+          <div className="flex bg-slate-100 dark:bg-midnight-800 p-1 rounded-xl border border-slate-200 dark:border-midnight-700">
             <button
               onClick={() => setViewMode('list')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                 viewMode === 'list'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-2xs'
+                  ? 'bg-white dark:bg-midnight-900 text-electric-600 dark:text-electric-400 shadow-2xs'
                   : 'text-slate-600 dark:text-slate-400'
               }`}
             >
@@ -159,7 +159,7 @@ export default function LectureManagement() {
               onClick={() => setViewMode('weekly')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                 viewMode === 'weekly'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-2xs'
+                  ? 'bg-white dark:bg-midnight-900 text-electric-600 dark:text-electric-400 shadow-2xs'
                   : 'text-slate-600 dark:text-slate-400'
               }`}
             >
@@ -177,7 +177,7 @@ export default function LectureManagement() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-midnight-900 rounded-2xl border border-slate-200/90 dark:border-midnight-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <div className="flex-1 max-w-md">
           <SearchInput
             value={search}
@@ -195,7 +195,7 @@ export default function LectureManagement() {
           <select
             value={sectionFilter}
             onChange={(e) => setSectionFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+            className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             <option value="All">All Sections (A & B)</option>
             <option value="Section A">Section A Only</option>
@@ -205,7 +205,7 @@ export default function LectureManagement() {
           <select
             value={dayFilter}
             onChange={(e) => setDayFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+            className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             <option value="All">All Days</option>
             {DAYS_OF_WEEK.map((d) => (
@@ -228,11 +228,11 @@ export default function LectureManagement() {
         />
       ) : viewMode === 'list' ? (
         /* List View */
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
+                <tr className="border-b border-slate-200 dark:border-midnight-800 bg-offwhite/70 dark:bg-midnight-800/50 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                   <th className="py-3.5 px-5">Subject</th>
                   <th className="py-3.5 px-4">Section</th>
                   <th className="py-3.5 px-4">Day & Time</th>
@@ -243,9 +243,9 @@ export default function LectureManagement() {
                   {isHod && <th className="py-3.5 px-5 text-right">Actions</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-midnight-800">
                 {filteredLectures.map((lec) => (
-                  <tr key={lec.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                  <tr key={lec.id} className="hover:bg-offwhite/60 dark:hover:bg-midnight-800/40 transition-colors">
                     <td className="py-3.5 px-5">
                       <div className="font-bold text-slate-900 dark:text-white">
                         {lec.subjectName}
@@ -255,7 +255,7 @@ export default function LectureManagement() {
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/70 px-2 py-0.5 rounded-md">
+                      <span className="font-bold text-electric-600 dark:text-electric-400 bg-electric-50 dark:bg-electric-950/70 px-2 py-0.5 rounded-md">
                         {lec.section}
                       </span>
                     </td>
@@ -280,14 +280,14 @@ export default function LectureManagement() {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => setEditingLecture(lec)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-electric-600 dark:hover:text-electric-400 hover:bg-slate-100 dark:hover:bg-midnight-800"
                             title="Edit Lecture"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteLecture(lec.id, lec.subjectName, lec.section)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-midnight-800"
                             title="Delete Lecture"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -303,9 +303,9 @@ export default function LectureManagement() {
         </div>
       ) : (
         /* Weekly Timetable Grid */
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-xs overflow-x-auto">
+        <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-5 shadow-xs overflow-x-auto">
           <div className="min-w-[760px] space-y-4">
-            <div className="grid grid-cols-6 gap-3 text-center text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-100 dark:border-slate-800">
+            <div className="grid grid-cols-6 gap-3 text-center text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-100 dark:border-midnight-800">
               <div className="text-left pl-2">Time Slot</div>
               <div>Monday</div>
               <div>Tuesday</div>
@@ -316,8 +316,8 @@ export default function LectureManagement() {
 
             {TIME_SLOTS.map((slot) => (
               <div key={slot.id} className="grid grid-cols-6 gap-3 items-stretch">
-                <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col justify-center text-left">
-                  <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+                <div className="p-2 rounded-xl bg-offwhite dark:bg-midnight-800/60 border border-slate-200/80 dark:border-midnight-700 flex flex-col justify-center text-left">
+                  <span className="text-[11px] font-bold text-electric-600 dark:text-electric-400">
                     Period {slot.period}
                   </span>
                   <span className="text-[10px] text-slate-500">{slot.label}</span>
@@ -331,7 +331,7 @@ export default function LectureManagement() {
                   return (
                     <div
                       key={day}
-                      className="min-h-20 p-2 rounded-xl bg-slate-50/40 dark:bg-slate-800/30 border border-slate-200/60 dark:border-slate-800 flex flex-col gap-1 justify-center"
+                      className="min-h-20 p-2 rounded-xl bg-offwhite/40 dark:bg-midnight-800/30 border border-slate-200/60 dark:border-midnight-800 flex flex-col gap-1 justify-center"
                     >
                       {matchingLectures.length === 0 ? (
                         <span className="text-[10px] text-slate-300 dark:text-slate-600 text-center font-mono">
@@ -341,10 +341,10 @@ export default function LectureManagement() {
                         matchingLectures.map((m) => (
                           <div
                             key={m.id}
-                            className="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs text-left"
+                            className="p-1.5 rounded-lg bg-white dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 shadow-2xs text-left"
                           >
                             <div className="flex items-center justify-between text-[10px] font-bold">
-                              <span className="text-indigo-600 dark:text-indigo-400 truncate">
+                              <span className="text-electric-600 dark:text-electric-400 truncate">
                                 {m.subjectCode}
                               </span>
                               <span className="text-slate-400">{m.section === 'Section A' ? 'Sec A' : 'Sec B'}</span>

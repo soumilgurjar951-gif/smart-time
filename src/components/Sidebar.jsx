@@ -37,7 +37,7 @@ export default function Sidebar({ isOpen, onClose }) {
       label: 'Automation Suite',
       icon: Sparkles,
       badge: '10 AI Tools',
-      badgeColor: 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-2xs font-extrabold',
+      badgeColor: 'bg-gradient-to-r from-electric-500 to-purple-600 text-white shadow-2xs font-extrabold',
     },
     {
       to: '/timetable-builder',
@@ -83,7 +83,7 @@ export default function Sidebar({ isOpen, onClose }) {
       {/* Mobile backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-midnight-900/40 backdrop-blur-xs lg:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -113,7 +113,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 >
                   Chameli Devi
                 </h1>
-                <p className="text-[11px] font-semibold text-indigo-600 tracking-wide uppercase truncate">
+                <p className="text-[11px] font-semibold text-electric-600 tracking-wide uppercase truncate">
                   Group of Institutions
                 </p>
                 <p className="text-[10px] text-slate-500 font-medium truncate">
@@ -147,8 +147,8 @@ export default function Sidebar({ isOpen, onClose }) {
                   className={({ isActive }) =>
                     `group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                        ? 'bg-electric-600 text-white shadow-sm shadow-electric-200'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-offwhite'
                     }`
                   }
                 >
@@ -184,10 +184,10 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
 
         {/* Bottom: User Profile & Logout */}
-        <div className="p-3 border-t border-slate-100 bg-slate-50/60">
+        <div className="p-3 border-t border-slate-100 bg-offwhite/60">
           <div className="p-2.5 rounded-xl bg-white border border-slate-200/70 shadow-xs mb-2">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs">
+              <div className="w-9 h-9 rounded-lg bg-electric-100 text-electric-700 font-bold flex items-center justify-center text-xs">
                 {user?.avatar || 'AD'}
               </div>
               <div className="flex-1 min-w-0">
@@ -195,7 +195,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   <p className="text-xs font-bold text-slate-800 truncate">
                     {user?.name || 'Administrator'}
                   </p>
-                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-electric-500 shrink-0" />
                 </div>
                 <p className="text-[11px] text-slate-500 truncate">
                   {user?.role || 'Admin'} • {user?.academicSession || 'Fall 2026'}

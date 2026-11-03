@@ -10,15 +10,24 @@ class FacultyProfile(models.Model):
         INACTIVE = "INACTIVE", "Inactive"
         SUSPENDED = "SUSPENDED", "Suspended"
 
+    class ProfileStatus(models.TextChoices):
+        INCOMPLETE = "INCOMPLETE", "Incomplete"
+        SUBMITTED = "SUBMITTED", "Submitted"
+        VERIFIED = "VERIFIED", "Verified"
+        CHANGES_REQUESTED = "CHANGES_REQUESTED", "Changes Requested"
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="faculty_profile",
+        null=True,
+        blank=True,
     )
-    employee_id = models.CharField(max_length=32, unique=True)
-    full_name = models.CharField(max_length=150)
-    email = models.EmailField(unique=True)
-    designation = models.CharField(max_length=100)
+    faculty_code = models.CharField(max_length=16, unique=True, null=True, blank=True)
+    employee_id = models.CharField(max_length=32, unique=True, null=True, blank=True)
+    full_name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
+    designation = models.CharField(max_length=100, blank=True)
     contact_number = models.CharField(max_length=20, blank=True)
     department = models.CharField(max_length=16, default=DEPARTMENT_CSIT)
     assigned_subjects = models.ManyToManyField(
@@ -32,6 +41,14 @@ class FacultyProfile(models.Model):
         choices=AccountStatus.choices,
         default=AccountStatus.ACTIVE,
     )
+    profile_status = models.CharField(
+        max_length=20,
+        choices=ProfileStatus.choices,
+        default=ProfileStatus.INCOMPLETE,
+    )
+    qualifications = models.CharField(max_length=255, blank=True)
+    specialization = models.CharField(max_length=255, blank=True)
+    date_of_joining = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -45,7 +62,7 @@ class FacultyProfile(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.employee_id} — {self.full_name}"
+        return self.full_name or self.faculty_code or self.employee_id or f"Faculty {self.pk}"
 
     def clean(self):
         from django.core.exceptions import ValidationError

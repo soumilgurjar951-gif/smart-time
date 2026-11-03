@@ -3,6 +3,7 @@ from django.urls import path
 from reports.views import (
     AchievementReportView,
     AttendanceSummaryReportView,
+    DepartmentOverviewView,
     FacultyTaskCompletionReportView,
     LectureScheduleReportView,
     PendingUpdatesReportView,
@@ -10,6 +11,7 @@ from reports.views import (
 )
 
 urlpatterns = [
+    path("overview/", DepartmentOverviewView.as_view(), name="report-overview"),
     path("tasks/", FacultyTaskCompletionReportView.as_view(), name="report-tasks"),
     path("lectures/", LectureScheduleReportView.as_view(), name="report-lectures"),
     path("attendance/", AttendanceSummaryReportView.as_view(), name="report-attendance"),

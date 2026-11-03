@@ -126,7 +126,7 @@ export default function AchievementManagement() {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <div className="flex-1 max-w-md">
           <SearchInput
             value={search}
@@ -139,7 +139,7 @@ export default function AchievementManagement() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+            className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             <option value="All">All Categories</option>
             {ACHIEVEMENT_CATEGORIES.map((c) => (
@@ -152,7 +152,7 @@ export default function AchievementManagement() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200"
+            className="px-3 py-2 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             <option value="All">All Statuses</option>
             <option value="Approved">Approved</option>
@@ -181,7 +181,7 @@ export default function AchievementManagement() {
             return (
               <div
                 key={ach.id}
-                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all"
+                className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-electric-300 dark:hover:border-electric-700 transition-all"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-2">
@@ -195,7 +195,7 @@ export default function AchievementManagement() {
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
                       {ach.title}
                     </h3>
-                    <p className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold mt-1">
+                    <p className="text-xs text-electric-600 dark:text-electric-400 font-semibold mt-1">
                       {ach.issuingBody}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-3 leading-relaxed">
@@ -204,7 +204,7 @@ export default function AchievementManagement() {
                   </div>
 
                   {/* Faculty & Date */}
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs space-y-1 text-slate-600 dark:text-slate-400">
+                  <div className="pt-2 border-t border-slate-100 dark:border-midnight-800 text-xs space-y-1 text-slate-600 dark:text-slate-400">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-400 font-medium">Faculty:</span>
                       <span className="font-bold text-slate-800 dark:text-slate-200">{ach.facultyName}</span>
@@ -222,11 +222,11 @@ export default function AchievementManagement() {
                   </div>
 
                   {/* Supporting Certificate Mock Tag */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/80 flex items-center justify-between text-[11px]">
+                  <div className="p-2.5 rounded-xl bg-offwhite dark:bg-midnight-800/60 border border-slate-100 dark:border-midnight-700/80 flex items-center justify-between text-[11px]">
                     <span className="font-mono text-slate-600 dark:text-slate-300 truncate max-w-[180px]">
                       📄 {ach.certificateFileName || 'certificate-proof.pdf'}
                     </span>
-                    <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                    <span className="text-electric-600 dark:text-electric-400 font-bold">
                       Digital Verified
                     </span>
                   </div>
@@ -234,7 +234,7 @@ export default function AchievementManagement() {
 
                 {/* HOD Review Trigger */}
                 {isHod && isUnderReview && (
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <div className="pt-3 border-t border-slate-100 dark:border-midnight-800">
                     <Button
                       size="sm"
                       onClick={() => setReviewingAch(ach)}
@@ -274,7 +274,7 @@ export default function AchievementManagement() {
       >
         {reviewingAch && (
           <div className="space-y-4 text-xs">
-            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1.5">
+            <div className="p-3 rounded-2xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 space-y-1.5">
               <p><strong>Faculty:</strong> {reviewingAch.facultyName} ({reviewingAch.designation})</p>
               <p><strong>Category:</strong> {reviewingAch.category}</p>
               <p><strong>Issuing Body:</strong> {reviewingAch.issuingBody}</p>
@@ -290,11 +290,11 @@ export default function AchievementManagement() {
                 value={reviewNotes}
                 onChange={(e) => setReviewNotes(e.target.value)}
                 placeholder="e.g. Scopus Q1 verified, eligible for NAAC Criteria 3.4 citation score..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-white"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-offwhite dark:bg-midnight-800 border border-slate-200 dark:border-midnight-700 text-xs sm:text-sm text-slate-900 dark:text-white"
               />
             </div>
 
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
+            <div className="pt-3 border-t border-slate-100 dark:border-midnight-800 flex items-center justify-end gap-2">
               <Button
                 variant="danger"
                 size="sm"

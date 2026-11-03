@@ -8,18 +8,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        indigo: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
-          950: '#1e1b4b',
+        // ODRMS core palette
+        // Midnight Blue — primary dark surfaces: sidebar, navigation, headers, banners
+        midnight: {
+          50: '#EEF2F7',
+          100: '#DCE5F0',
+          200: '#BDCCE2',
+          300: '#8FABCE',
+          400: '#5E85B5',
+          500: '#3D6398',
+          600: '#2A4D7E',
+          700: '#1E3A64',
+          800: '#14294A',
+          900: '#0B1F3A',
+          950: '#04101F',
+        },
+        // Electric Blue — primary actions, active states, links, highlights
+        electric: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
+          950: '#172554',
+        },
+        // Off-White — light content background
+        offwhite: {
+          DEFAULT: '#F8FAFC',
         },
       },
       fontFamily: {

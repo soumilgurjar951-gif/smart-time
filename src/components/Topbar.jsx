@@ -31,7 +31,7 @@ export default function Topbar({ onToggleSidebar }) {
             </button>
 
             <div className="flex items-center gap-2.5 text-xs text-slate-500">
-              <span className="flex items-center gap-2 font-medium text-slate-800 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-xl shadow-2xs">
+              <span className="flex items-center gap-2 font-medium text-slate-800 bg-offwhite border border-slate-200/80 px-2.5 py-1 rounded-xl shadow-2xs">
                 <img
                   src="/cdgi-logo.png"
                   alt="CDGI Logo"
@@ -45,7 +45,7 @@ export default function Topbar({ onToggleSidebar }) {
                 </span>
               </span>
               <span className="hidden sm:inline text-slate-300">/</span>
-              <span className="hidden sm:inline-block bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg font-semibold text-[11px]">
+              <span className="hidden sm:inline-block bg-electric-50 text-electric-700 px-2.5 py-1 rounded-lg font-semibold text-[11px]">
                 {user?.academicSession || 'Session 2026-27'}
               </span>
             </div>
@@ -54,8 +54,8 @@ export default function Topbar({ onToggleSidebar }) {
           {/* Right: Date, Urgent Alert, Profile quick glance */}
           <div className="flex items-center gap-3 sm:gap-4">
             {/* Live Day & Date */}
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/70 text-xs font-medium text-slate-600">
-              <Calendar className="w-3.5 h-3.5 text-indigo-600" />
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-offwhite border border-slate-200/70 text-xs font-medium text-slate-600">
+              <Calendar className="w-3.5 h-3.5 text-electric-600" />
               <span>{todayFormatted}</span>
             </div>
 
@@ -76,7 +76,7 @@ export default function Topbar({ onToggleSidebar }) {
 
             {/* Admin Badge */}
             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-              <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-electric-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
                 {user?.avatar || 'AD'}
               </div>
               <div className="hidden xl:block text-left">

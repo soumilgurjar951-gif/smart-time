@@ -11,8 +11,8 @@ export default function EmptyState({
   onAction,
 }) {
   return (
-    <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40">
-      <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
+    <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-2xl border border-dashed border-slate-200 dark:border-midnight-800 bg-white/50 dark:bg-midnight-900/40">
+      <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-midnight-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
         <Icon className="w-6 h-6 stroke-[1.8]" />
       </div>
       <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">

@@ -6,7 +6,8 @@ export const achievementService = {
   async getAllAchievements(filters = {}) {
     try {
       const response = await apiClient.get('/achievements/', { params: filters });
-      return response.data;
+      const data = response.data;
+      return Array.isArray(data) ? data : data?.results || [];
     } catch {
       await mockDelay(150);
       let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACHIEVEMENTS) || JSON.stringify(INITIAL_ACHIEVEMENTS));
