@@ -71,7 +71,7 @@ export default function HodDashboard() {
                 <span>{DEPARTMENT_INFO.department} Department • {DEPARTMENT_INFO.year} / {DEPARTMENT_INFO.semester}</span>
               </div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight font-['Plus_Jakarta_Sans',sans-serif]">
-                Welcome, {user?.name || 'Dr. Rajiv Sharma (HOD)'}
+                Welcome, {user?.full_name || 'HOD'}
               </h1>
               <p className="text-electric-100 text-xs sm:text-sm mt-1 max-w-xl">
                 Online Departmental Resource Management System • Monitoring Sections A & B lectures, faculty workloads, resource allocation, and accreditation deliverables.
@@ -86,12 +86,12 @@ export default function HodDashboard() {
               </Button>
             </Link>
             <Link to="/lectures">
-              <Button size="sm" icon={CalendarDays} className="bg-white text-electric-700 hover:bg-electric-50">
+              <Button variant="primary" size="sm" icon={CalendarDays}>
                 Manage Lectures
               </Button>
             </Link>
             <Link to="/timetable">
-              <Button size="sm" icon={CalendarDays} className="bg-white text-electric-700 hover:bg-electric-50">
+              <Button variant="primary" size="sm" icon={CalendarDays}>
                 Timetable
               </Button>
             </Link>

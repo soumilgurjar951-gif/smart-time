@@ -98,6 +98,22 @@ class FacultyOnboardingTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_resubmission_after_changes_requested_flips_to_submitted(self):
+        # HOD sends a CHANGES_REQUESTED review; the faculty then edits their
+        # onboarding details again — the profile must return to SUBMITTED so it
+        # reappears in the HOD review queue.
+        self.faculty.profile_status = FacultyProfile.ProfileStatus.CHANGES_REQUESTED
+        self.faculty.save(update_fields=["profile_status", "updated_at"])
+        self.auth(self.faculty_user, "FacPass123!")
+        response = self.client.patch(
+            f"/api/faculty/{self.faculty.id}/",
+            {"qualifications": "Ph.D. in Computer Science", "specialization": "Networks"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.faculty.refresh_from_db()
+        self.assertEqual(self.faculty.profile_status, FacultyProfile.ProfileStatus.SUBMITTED)
+
     def test_hod_reviews_faculty_profile_verification(self):
         self.faculty.profile_status = FacultyProfile.ProfileStatus.SUBMITTED
         self.faculty.save()

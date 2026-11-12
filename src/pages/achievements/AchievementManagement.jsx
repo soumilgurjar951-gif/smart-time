@@ -87,12 +87,12 @@ export default function AchievementManagement() {
     try {
       const updated = await achievementService.reviewAchievement(reviewingAch.id, {
         status,
-        approvedBy: user?.name || 'Dr. Rajiv Sharma (HOD)',
+        approvedBy: user?.full_name || 'HOD',
         reviewNotes,
       });
       setAchievements((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
       showToast(`Achievement has been ${status}!`);
-      addActivity(`Achievement ${status}: ${updated.title}`, `Verified by ${user?.name}`, 'achievement');
+      addActivity(`Achievement ${status}: ${updated.title}`, `Verified by ${user?.full_name}`, 'achievement');
       setReviewingAch(null);
       setReviewNotes('');
       refreshCounts();

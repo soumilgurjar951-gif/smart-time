@@ -14,7 +14,7 @@ export default function BookingForm({
     resourceId: resourceList[0]?.id || '',
     resourceName: resourceList[0]?.name || '',
     requestedById: user?.id || 'fac-2',
-    requestedByName: user?.name || 'Faculty Member',
+    requestedByName: user?.full_name || 'Faculty Member',
     section: 'Section A',
     date: new Date().toISOString().split('T')[0],
     timeSlot: TIME_SLOTS[0].label,

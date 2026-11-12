@@ -52,6 +52,7 @@ class BaseClassAPITestCase(APITestCase):
             full_name="Faculty One",
             email=cls.faculty_user.email,
             department="CSIT",
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
         cls.other_faculty = FacultyProfile.objects.create(
             user=cls.other_faculty_user,
@@ -60,6 +61,7 @@ class BaseClassAPITestCase(APITestCase):
             full_name="Faculty Two",
             email=cls.other_faculty_user.email,
             department="CSIT",
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
 
     def authenticate(self, user):
@@ -406,6 +408,7 @@ class AccessRequestWorkflowTests(BaseClassAPITestCase):
             full_name="Section A Coordinator",
             email=self.coordinator_user.email,
             department="CSIT",
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
         self.coordinator_assignment = ClassCoordinator.objects.create(
             faculty=self.coordinator,
@@ -493,3 +496,143 @@ class AccessRequestWorkflowTests(BaseClassAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         access_request.refresh_from_db()
         self.assertEqual(access_request.status, AccessRequest.Status.REJECTED)
+
+
+class ClassCoordinatorAPITests(BaseClassAPITestCase):
+    """HOD-only coordinator assignment API (Section 5 of the RBAC spec)."""
+
+    def test_hod_assigns_coordinator_and_access_applies(self):
+        self.authenticate(self.hod)
+        response = self.client.post(
+            f"/api/classes/{self.class_a.id}/coordinator/",
+            {"faculty": self.faculty.id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(
+            ClassCoordinator.objects.filter(
+                faculty=self.faculty, department_class=self.class_a, is_active=True
+            ).exists()
+        )
+        # The coordinator now reaches their assigned class only — without any
+        # ClassFacultyAccess row.
+        self.authenticate(self.faculty_user)
+        data = self.client.get("/api/classes/").json()
+        ids = [row["id"] for row in data["results"]]
+        self.assertIn(self.class_a.id, ids)
+        self.assertNotIn(self.class_b.id, ids)
+
+    def test_non_hod_cannot_assign_coordinator(self):
+        ClassFacultyAccess.objects.create(
+            faculty=self.faculty, department_class=self.class_a, granted_by=self.hod
+        )
+        self.authenticate(self.faculty_user)
+        response = self.client.post(
+            f"/api/classes/{self.class_a.id}/coordinator/",
+            {"faculty": self.other_faculty.id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn("HOD", response.json()["error"]["message"])
+        self.assertFalse(ClassCoordinator.objects.filter(faculty=self.other_faculty, is_active=True).exists())
+
+    def test_assignment_requires_active_login_account(self):
+        # Faculty profile without a login account cannot be coordinator.
+        orphan = FacultyProfile.objects.create(
+            faculty_code="T9",
+            employee_id="CSIT-FT-9",
+            full_name="No Account Body",
+            email="noaccount@csit.example",
+            department="CSIT",
+        )
+        self.authenticate(self.hod)
+        response = self.client.post(
+            f"/api/classes/{self.class_a.id}/coordinator/",
+            {"faculty": orphan.id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # An inactive login account is also rejected.
+        inactive_user = User.objects.create_user(
+            email="inactive@csit.example",
+            password="SecurePass123!",
+            full_name="Inactive Faculty",
+            role=User.Role.FACULTY,
+            is_active=False,
+        )
+        inactive = FacultyProfile.objects.create(
+            user=inactive_user,
+            faculty_code="T8",
+            employee_id="CSIT-FT-8",
+            full_name="Inactive Faculty",
+            email=inactive_user.email,
+            department="CSIT",
+        )
+        response = self.client.post(
+            f"/api/classes/{self.class_a.id}/coordinator/",
+            {"faculty": inactive.id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_reassignment_swaps_coordinator(self):
+        self.authenticate(self.hod)
+        first = self.client.post(
+            f"/api/classes/{self.class_a.id}/coordinator/",
+            {"faculty": self.faculty.id},
+            format="json",
+        )
+        self.assertEqual(first.status_code, status.HTTP_201_CREATED)
+        second = self.client.post(
+            f"/api/classes/{self.class_a.id}/coordinator/",
+            {"faculty": self.other_faculty.id},
+            format="json",
+        )
+        self.assertEqual(second.status_code, status.HTTP_200_OK)
+        # Only one coordinator row per class (DB constraint) + faculty swapped.
+        rows = ClassCoordinator.objects.filter(department_class=self.class_a)
+        self.assertEqual(rows.count(), 1)
+        self.assertEqual(rows.first().faculty_id, self.other_faculty.id)
+        self.authenticate(self.faculty_user)
+        self.assertEqual(self.client.get("/api/classes/").json()["count"], 0)
+
+    def test_remove_coordinator_revokes_class_access(self):
+        assignment = ClassCoordinator.objects.create(
+            faculty=self.faculty, department_class=self.class_a, assigned_by=self.hod
+        )
+        self.authenticate(self.faculty_user)
+        self.assertEqual(self.client.get("/api/classes/").json()["count"], 1)
+        self.authenticate(self.hod)
+        response = self.client.delete(f"/api/classes/{self.class_a.id}/coordinator/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assignment.refresh_from_db()
+        self.assertFalse(assignment.is_active)
+        self.authenticate(self.faculty_user)
+        self.assertEqual(self.client.get("/api/classes/").json()["count"], 0)
+
+    def test_remove_requires_hod_and_fails_when_none(self):
+        ClassCoordinator.objects.create(
+            faculty=self.faculty, department_class=self.class_a, assigned_by=self.hod
+        )
+        self.authenticate(self.faculty_user)
+        self.assertEqual(
+            self.client.delete(f"/api/classes/{self.class_a.id}/coordinator/").status_code,
+            status.HTTP_403_FORBIDDEN,
+        )
+        self.authenticate(self.hod)
+        response = self.client.delete(f"/api/classes/{self.class_b.id}/coordinator/")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_coordinator_requires_class_access(self):
+        ClassCoordinator.objects.create(
+            faculty=self.other_faculty, department_class=self.class_a, assigned_by=self.hod
+        )
+        self.authenticate(self.faculty_user)
+        self.assertEqual(
+            self.client.get(f"/api/classes/{self.class_a.id}/coordinator/").status_code,
+            status.HTTP_403_FORBIDDEN,
+        )
+        self.authenticate(self.hod)
+        data = self.client.get(f"/api/classes/{self.class_a.id}/coordinator/").json()
+        self.assertEqual(data["coordinator"]["faculty"], self.other_faculty.id)

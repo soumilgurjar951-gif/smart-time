@@ -35,6 +35,7 @@ class AttendanceSummarySectionTests(APITestCase):
             full_name="Faculty One",
             email=self.faculty_user.email,
             department="CSIT",
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
         self.subject = Subject.objects.create(code="CSIT901", name="Computer Networking")
         self.slot = TimeSlot.objects.get(period_number=1)

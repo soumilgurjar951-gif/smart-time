@@ -130,7 +130,7 @@ export default function ResourceManagement() {
     try {
       const updated = await resourceService.reviewBooking(reviewingBooking.id, {
         status,
-        approvedBy: user?.name || 'Dr. Rajiv Sharma (HOD)',
+        approvedBy: user?.full_name || 'HOD',
         decisionNotes,
       });
       setBookings((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));

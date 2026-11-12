@@ -43,7 +43,7 @@ export default function Login() {
       const loggedInUser = result.user;
       if (loggedInUser.role === 'HOD') {
         navigate('/hod/dashboard');
-      } else if (['SUBMITTED', 'VERIFIED'].includes(loggedInUser.profile_status)) {
+      } else if (loggedInUser.profile_status === 'VERIFIED') {
         navigate('/faculty/dashboard');
       } else {
         navigate('/faculty/onboarding');

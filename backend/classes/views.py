@@ -14,6 +14,9 @@ Every sub-endpoint validates class access on the backend for every request:
     POST   /api/classes/{class_id}/faculty-access/           (HOD only)
     GET    /api/classes/{class_id}/faculty-access/           (HOD only)
     DELETE /api/classes/{class_id}/faculty-access/{access_id}/  (HOD only)
+    GET    /api/classes/{class_id}/coordinator/              (any user with class access)
+    POST   /api/classes/{class_id}/coordinator/              (HOD only — assign)
+    DELETE /api/classes/{class_id}/coordinator/              (HOD only — remove)
     GET    /api/classes/summary/                (HOD only — explicit cross-class summary)
 """
 
@@ -29,7 +32,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.permissions import IsHOD
+from accounts.permissions import IsHOD, IsProfileApproved
 from attendance.models import AttendanceRecord
 from faculty.models import FacultyProfile
 from lectures.models import Lecture, TimeSlot, TimetableEntry
@@ -57,6 +60,7 @@ from .serializers import (
     AcademicClassSerializer,
     AccessGrantSerializer,
     AccessRequestSerializer,
+    ClassCoordinatorSerializer,
     ClassFacultyAccessSerializer,
     ClassSubjectSerializer,
     DepartmentSerializer,
@@ -84,7 +88,7 @@ def _plain(error_dict):
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.annotate(class_count=Count("classes", distinct=True))
     serializer_class = DepartmentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
 
     def get_permissions(self):
         if self.action not in {"list", "retrieve"}:
@@ -103,7 +107,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
 class ClassViewSet(viewsets.ModelViewSet):
     serializer_class = AcademicClassSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["department", "year", "semester", "section", "is_active"]
 
     STATS_DAYS = 30
@@ -552,9 +556,88 @@ class ClassViewSet(viewsets.ModelViewSet):
             {"detail": "Access revoked.", "is_active": access.is_active, "revoked_at": access.revoked_at}
         )
 
+    # -------------------------------------------------------- class coordinator
+
+    @action(detail=True, methods=["get", "post", "delete"], url_path="coordinator")
+    def coordinator(self, request, pk=None):
+        """Get / assign (HOD) / remove (HOD) the class coordinator.
+
+        GET    /api/classes/{class_id}/coordinator/   (any user with class access)
+        POST   /api/classes/{class_id}/coordinator/   {"faculty": <faculty_id>} (HOD only)
+        DELETE /api/classes/{class_id}/coordinator/   (HOD only)
+        """
+        cls = _class_object_for_user(request, pk)
+
+        if request.method == "DELETE":
+            if not request.user.is_hod:
+                raise PermissionDenied("Only the HOD can remove the class coordinator.")
+            row = cls.coordinators.select_related("faculty", "assigned_by").filter(is_active=True).first()
+            if row is None:
+                raise ValidationError({"detail": "No active coordinator is assigned to this class."})
+            row.is_active = False
+            row.save(update_fields=["is_active", "updated_at"])
+            audit(
+                actor=request.user,
+                action="class_coordinator_removed",
+                entity_type="ClassCoordinator",
+                entity_id=row.pk,
+                metadata={"class": cls.pk, "faculty": row.faculty_id},
+            )
+            if row.faculty.user_id and row.faculty.user.is_active:
+                notify(
+                    recipient=row.faculty.user,
+                    title="Class coordinator removed",
+                    message=f"You are no longer the coordinator of {cls.display_name}.",
+                    notification_type=Notification.NotificationType.WARNING,
+                    department_class=cls,
+                )
+            return Response({"detail": "Coordinator removed.", "class_id": cls.pk, "coordinator": None})
+
+        if request.method == "POST":
+            if not request.user.is_hod:
+                raise PermissionDenied("Only the HOD can assign the class coordinator.")
+            serializer = ClassCoordinatorSerializer(data=request.data, context={"request": request})
+            serializer.is_valid(raise_exception=True)
+            faculty_id = serializer.validated_data["faculty"].id
+            if cls.department.code and serializer.validated_data["faculty"].department != cls.department.code:
+                raise ValidationError({"faculty": "Coordinator must belong to the class department."})
+            row, created = ClassCoordinator.objects.update_or_create(
+                department_class=cls,
+                defaults={
+                    "faculty_id": faculty_id,
+                    "assigned_by": request.user,
+                    "is_active": True,
+                },
+            )
+            audit(
+                actor=request.user,
+                action="class_coordinator_assigned",
+                entity_type="ClassCoordinator",
+                entity_id=row.pk,
+                metadata={"class": cls.pk, "faculty": faculty_id},
+            )
+            if row.faculty.user_id and row.faculty.user.is_active:
+                notify(
+                    recipient=row.faculty.user,
+                    title="Class coordinator assigned",
+                    message=f"{request.user.full_name or 'HOD'} assigned you as coordinator of {cls.display_name}.",
+                    notification_type=Notification.NotificationType.SUCCESS,
+                    department_class=cls,
+                )
+            return Response(
+                ClassCoordinatorSerializer(row, context={"request": request}).data,
+                status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+            )
+
+        # GET: any user with access to the class can see the current coordinator.
+        row = cls.coordinators.select_related("faculty", "assigned_by").filter(is_active=True).first()
+        return Response(
+            {"class_id": cls.pk, "coordinator": ClassCoordinatorSerializer(row).data if row else None}
+        )
+
     # ------------------------------------------------------- access requests
 
-    @action(detail=True, methods=["post"], url_path="access-requests")
+    @action(detail=True, methods=["post"], url_path="access-requests", permission_classes=[IsAuthenticated])
     def access_request_create(self, request, pk=None):
         cls = _class_object_for_user(request, pk)
         if not request.user.is_hod:
@@ -611,7 +694,12 @@ class ClassViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    @action(detail=True, methods=["get", "post"], url_path="access-requests")
+    @action(
+        detail=True,
+        methods=["get", "post"],
+        url_path="access-requests",
+        permission_classes=[IsAuthenticated],
+    )
     def access_request_list(self, request, pk=None):
         cls = _class_object_for_user(request, pk)
         if request.method == "POST":

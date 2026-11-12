@@ -14,6 +14,11 @@ STATUS_CODES = {
     429: "throttled",
 }
 
+# View-raised error codes that should surface verbatim to clients.
+CUSTOM_ERROR_CODES = {
+    "profile_not_approved",
+}
+
 
 def api_exception_handler(exc, context):
     response = exception_handler(exc, context)
@@ -48,11 +53,19 @@ def api_exception_handler(exc, context):
         message = str(payload)
         details = {}
 
+    # Specialized permission codes (e.g. profile_not_approved) win over the
+    # generic http-status mapping so clients can branch on them.
+    error_code = STATUS_CODES.get(response.status_code, "error")
+    if isinstance(payload, dict) and hasattr(payload.get("detail"), "code"):
+        detail_code = payload["detail"].code
+        if detail_code in CUSTOM_ERROR_CODES:
+            error_code = detail_code
+
     return Response(
         {
             "success": False,
             "error": {
-                "code": STATUS_CODES.get(response.status_code, "error"),
+                "code": error_code,
                 "message": message,
                 "details": details,
             },

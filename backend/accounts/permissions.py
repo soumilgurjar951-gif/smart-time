@@ -1,3 +1,4 @@
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
@@ -51,3 +52,34 @@ class IsHODOrReadOwn(BasePermission):
 def faculty_profile_for(user):
     profile = getattr(user, "faculty_profile", None)
     return profile if profile and profile.account_status == profile.AccountStatus.ACTIVE else profile
+
+
+class IsProfileApproved(BasePermission):
+    """Departmental module gate: only HOD, or faculty with an HOD-approved
+    (VERIFIED) and ACTIVE profile, may access protected module APIs.
+
+    Unapproved faculty receive 403 with code ``profile_not_approved`` so the
+    frontend can route them back to the onboarding/approval flow.
+    """
+
+    message = "Your faculty profile requires HOD approval before you can access departmental modules."
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not (user and user.is_authenticated):
+            return False
+        if user.is_hod:
+            return True
+        profile = getattr(user, "faculty_profile", None)
+        if profile is None:
+            raise PermissionDenied(self.message, code="profile_not_approved")
+        from faculty.models import FacultyProfile
+
+        approved = (
+            user.is_active
+            and profile.account_status == FacultyProfile.AccountStatus.ACTIVE
+            and profile.profile_status == FacultyProfile.ProfileStatus.VERIFIED
+        )
+        if not approved:
+            raise PermissionDenied(self.message, code="profile_not_approved")
+        return True

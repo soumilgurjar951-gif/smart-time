@@ -55,6 +55,10 @@ export default function FacultyDashboard() {
     return <Navigate to="/faculty/onboarding" replace />;
   }
 
+  // Database-backed coordinator role (assigned by the HOD) — shown from the
+  // auth payload, never inferred from the email string.
+  const coordinatorSections = (user?.coordinator_classes || []).map((c) => `Sec ${c.section}`).join(', ');
+
   if (loading) {
     return <LoadingSpinner message="Loading your teaching portal..." />;
   }
@@ -74,11 +78,17 @@ export default function FacultyDashboard() {
               <span>{DEPARTMENT_INFO.department} Faculty Portal • {DEPARTMENT_INFO.year} / {DEPARTMENT_INFO.semester}</span>
             </div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight font-['Plus_Jakarta_Sans',sans-serif]">
-              Good Day, {user?.name || 'Faculty Member'}
+              Good Day, {user?.full_name || 'Faculty Member'}
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl">
-              {user?.designation} • Cabin: {user?.cabin || 'CSIT Wing'} • Assigned Sections: {user?.assignedSections?.join(', ') || 'Section A'}
+              {user?.designation || user?.role} • CSIT Department
             </p>
+            {user?.is_coordinator && coordinatorSections ? (
+              <p className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-electric-600/25 border border-electric-400/40 text-electric-200 text-[11px] font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-electric-400" />
+                Class Coordinator • {coordinatorSections}
+              </p>
+            ) : null}
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">

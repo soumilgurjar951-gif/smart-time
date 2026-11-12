@@ -3,6 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsProfileApproved
 from rest_framework.response import Response
 
 from accounts.permissions import IsHOD
@@ -12,7 +13,7 @@ from tasks.serializers import DepartmentTaskSerializer, TaskUpdateSerializer
 
 class DepartmentTaskViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentTaskSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["assigned_faculty", "status", "priority"]
     search_fields = ["title", "description"]
     ordering_fields = ["deadline", "created_at", "priority", "progress"]

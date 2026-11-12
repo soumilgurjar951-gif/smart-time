@@ -1,42 +1,40 @@
 #!/usr/bin/env python
-"""Create admin user for Django admin panel"""
+"""Create/reset the HOD account — credentials are NEVER hardcoded.
+
+This script is a thin launcher for:
+
+    python manage.py create_hod
+
+Set credentials via environment variables (recommended) or let the command
+prompt for them:
+
+    DJANGO_HOD_EMAIL=hod@cdgi.edu.in
+    DJANGO_HOD_PASSWORD=<strong-password>
+    DJANGO_HOD_FULL_NAME="Dr. Head of Department"
+
+Run from the backend directory:
+
+    python create_admin.py                       # prompts for missing values
+"""
+
 import os
-import django
+import sys
+from pathlib import Path
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'odrms.settings')
-django.setup()
+BACKEND_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BACKEND_DIR))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "odrms.settings")
 
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
+def main(*args):
+    import django
 
-# Check if user exists
-email = 'hod@cdgi.edu.in'
-if User.objects.filter(email=email).exists():
-    print(f"✅ User {email} already exists!")
-    user = User.objects.get(email=email)
-else:
-    # Create new superuser
-    user = User.objects.create_superuser(
-        email=email,
-        password='admin123',
-        full_name='HOD - Chameli Devi Group of Institutions',
-        role='HOD'
-    )
-    print(f"✅ Created new superuser: {email}")
+    django.setup()
+    from django.core.management import call_command
 
-# Ensure user has admin access
-user.is_staff = True
-user.is_superuser = True
-user.is_active = True
-user.save()
+    call_command("create_hod", *args)
 
-print(f"\n{'='*60}")
-print(f"🔐 ADMIN LOGIN CREDENTIALS")
-print(f"{'='*60}")
-print(f"URL: http://localhost:8000/admin/")
-print(f"Email: {email}")
-print(f"Password: admin123")
-print(f"Staff: {user.is_staff}")
-print(f"Superuser: {user.is_superuser}")
-print(f"{'='*60}\n")
+
+if __name__ == "__main__":
+    cli_args = sys.argv[1:]
+    main(*cli_args)

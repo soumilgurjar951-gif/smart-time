@@ -4,6 +4,7 @@ import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import Toast from '../common/Toast';
+import SmartAssistant from '../assistant/SmartAssistant';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AppLayout() {
@@ -30,6 +31,9 @@ export default function AppLayout() {
 
       {/* Global Toast */}
       <Toast />
+
+      {/* ODRMS Smart Assistant (live class + NL chat) */}
+      <SmartAssistant />
     </div>
   );
 }

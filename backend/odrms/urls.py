@@ -34,6 +34,7 @@ urlpatterns = [
     path("api/resources/", include("resources.urls")),
     path("api/reports/", include("reports.urls")),
     path("api/notifications/", include("notifications.urls")),
+    path("api/assistant/", include("assistant.urls")),
     path("api/", include("classes.urls")),
 ]
 

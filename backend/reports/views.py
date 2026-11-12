@@ -1,6 +1,7 @@
 from django.db.models import Count, Q
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsProfileApproved
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,7 +15,7 @@ from tasks.models import DepartmentTask
 
 
 class ReportBaseView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
 
     def scoped_faculty_id(self, request):
         param = request.query_params.get("faculty")

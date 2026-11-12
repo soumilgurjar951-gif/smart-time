@@ -2,6 +2,7 @@ from django.utils import timezone
 from rest_framework import generics, mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsProfileApproved
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -19,7 +20,7 @@ class ResourceViewSet(
 ):
     queryset = Resource.objects.all()
     serializer_class = ResourceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["type", "is_available"]
     search_fields = ["name", "location", "description"]
 
@@ -31,7 +32,7 @@ class ResourceViewSet(
 
 class ResourceBookingListCreateView(generics.ListCreateAPIView):
     serializer_class = ResourceBookingSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["resource", "status", "date", "requested_by"]
 
     def get_queryset(self):

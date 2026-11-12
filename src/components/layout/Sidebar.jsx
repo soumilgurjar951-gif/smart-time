@@ -248,14 +248,19 @@ export default function Sidebar({ isOpen, onClose }) {
           <div className="rounded-2xl bg-midnight-800/70 p-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-xl bg-electric-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
-                {user?.avatar || (isHod ? 'RS' : 'AM')}
+                {String(user?.full_name || 'U')
+                  .split(/\s+/)
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((word) => word[0].toUpperCase())
+                  .join('') || 'U'}
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-bold text-white truncate">
-                  {user?.name || 'User'}
+                  {user?.full_name || 'User'}
                 </p>
                 <p className="text-[10px] text-midnight-300 truncate">
-                  {user?.role} • {DEPARTMENT_INFO.department}
+                  {user?.designation || user?.role} • {DEPARTMENT_INFO.department}
                 </p>
               </div>
             </div>

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "reports",
     "notifications",
     "classes",
+    "assistant",
 ]
 
 MIDDLEWARE = [
@@ -167,6 +168,19 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Kolkata"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+# ---------------------------------------------------------------------------
+# ODRMS Smart Assistant configuration (all overridable via environment)
+# ---------------------------------------------------------------------------
+# Minimum attendance percentage shown by the assistant. Configurable so the
+# college policy drives the number, never a hardcoded guess.
+ODRMS_MIN_ATTENDANCE_PCT = float(os.getenv("ODRMS_MIN_ATTENDANCE_PCT", "75"))
+# Minutes before a lecture when the assistant should raise a class-start reminder.
+ASSISTANT_REMINDER_MINUTES = int(os.getenv("ASSISTANT_REMINDER_MINUTES", "10"))
+# Optional external AI polish. When no key is configured the assistant runs on
+# the built-in rule-based NLU and database answers only (never fabricates data).
+ASSISTANT_AI_API_KEY = os.getenv("ASSISTANT_AI_API_KEY", "")
+ASSISTANT_AI_MODEL = os.getenv("ASSISTANT_AI_MODEL", "gemini-2.0-flash")
 
 # ---------------------------------------------------------------------------
 # Email (Gmail API via OAuth 2.0 — backend only)

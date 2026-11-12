@@ -125,7 +125,7 @@ export default function Navbar({ onToggleSidebar }) {
               </div>
               <div className="hidden lg:block text-left">
                 <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
-                  {user?.name || 'Faculty Member'}
+                  {user?.full_name || 'Faculty Member'}
                 </p>
                 <p className="text-[10px] text-electric-600 dark:text-electric-400 font-semibold">
                   {user?.role} • {DEPARTMENT_INFO.department}
@@ -137,7 +137,7 @@ export default function Navbar({ onToggleSidebar }) {
             {showProfileMenu && (
               <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-midnight-900 border border-slate-200 dark:border-midnight-800 shadow-xl p-3 z-50 animate-in fade-in zoom-in-95 duration-150 space-y-2">
                 <div className="p-2 bg-offwhite dark:bg-midnight-800/60 rounded-xl">
-                  <p className="text-xs font-bold text-slate-900 dark:text-white">{user?.name}</p>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">{user?.full_name}</p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
                   <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-electric-100 dark:bg-electric-950 text-electric-700 dark:text-electric-300">
                     {user?.designation}

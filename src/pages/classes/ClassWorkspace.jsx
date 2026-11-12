@@ -9,6 +9,8 @@ import {
   ClipboardCheck,
   BarChart3,
   UserPlus,
+  UserMinus,
+  Crown,
   ShieldCheck,
   Trash2,
   Clock3,
@@ -74,6 +76,9 @@ export default function ClassWorkspace() {
   const [grantForm, setGrantForm] = useState({ faculty: '', permissions: ['VIEW'] });
   const [assignForm, setAssignForm] = useState({ faculty: '', subject: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Class coordinator (HOD assigns/removes — backend-enforced)
+  const [coordinator, setCoordinator] = useState(null);
+  const [coordinatorForm, setCoordinatorForm] = useState('');
 
   const loadClasses = useCallback(async () => {
     try {
@@ -164,13 +169,16 @@ export default function ClassWorkspace() {
             setSummary(summaryData);
           }
         } else if (activeTab === 'faculty' && isHod) {
-          const [facultyData, dashboardData] = await Promise.all([
+          const [facultyData, dashboardData, coordinatorData] = await Promise.all([
             classService.getFacultyView(classId),
             classService.getDashboard(classId),
+            classService.getCoordinator(classId).catch(() => null),
           ]);
           if (!cancelled) {
             setFacultyView(facultyData);
             setDashboard(dashboardData);
+            setCoordinator(coordinatorData);
+            setCoordinatorForm((current) => String(coordinatorData?.faculty || current));
             setGrantForm((current) => ({
               ...current,
               faculty: current.faculty || String(facultyData.available_faculty?.[0]?.id || ''),
@@ -240,6 +248,34 @@ export default function ClassWorkspace() {
       setRefreshKey((key) => key + 1);
     } catch (error) {
       showToast(getErrorMessage(error) || 'Could not revoke access.', 'error');
+    }
+  };
+
+  const handleAssignCoordinator = async (event) => {
+    event.preventDefault();
+    if (!selectedId || !coordinatorForm) return;
+    setIsSubmitting(true);
+    try {
+      await classService.assignCoordinator(selectedId, Number(coordinatorForm));
+      showToast('Class coordinator assigned. Their records stay scoped to this class only.');
+      setRefreshKey((key) => key + 1);
+    } catch (error) {
+      showToast(getErrorMessage(error) || 'Could not assign the coordinator.', 'error');
+      setRefreshKey((key) => key + 1);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRemoveCoordinator = async () => {
+    if (!selectedId || !coordinator) return;
+    try {
+      await classService.removeCoordinator(selectedId);
+      showToast('Class coordinator removed.');
+      setRefreshKey((key) => key + 1);
+    } catch (error) {
+      showToast(getErrorMessage(error) || 'Could not remove the coordinator.', 'error');
+      setRefreshKey((key) => key + 1);
     }
   };
 
@@ -845,6 +881,73 @@ export default function ClassWorkspace() {
           {/* Faculty Access Tab (HOD only) */}
           {activeTab === 'faculty' && isHod && (
             <div className="space-y-6">
+              {/* Class Coordinator */}
+              <div className="bg-midnight-900 dark:bg-midnight-900 text-white rounded-3xl p-6 shadow-lg border border-midnight-700/60">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Crown className="w-4 h-4 text-amber-300" />
+                    <h3 className="text-base font-bold font-['Plus_Jakarta_Sans',sans-serif]">
+                      Class Coordinator
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-midnight-300 max-w-md">
+                    Coordinators see — and manage — records of this class only. Assignment stays valid until you remove it.
+                  </p>
+                </div>
+                {coordinator ? (
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-midnight-800/70 rounded-2xl p-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 rounded-xl bg-electric-600 text-white text-xs font-bold flex items-center justify-center shrink-0">
+                        {(coordinator.faculty_name || '?').slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold truncate">{coordinator.faculty_name}</p>
+                        <p className="text-[11px] text-midnight-300 truncate">
+                          {coordinator.faculty_designation || 'Faculty'} • {coordinator.faculty_code || `ID ${coordinator.faculty}`}
+                        </p>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 shrink-0">
+                        Active
+                      </span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      icon={UserMinus}
+                      isLoading={isSubmitting}
+                      onClick={handleRemoveCoordinator}
+                      className="shrink-0"
+                    >
+                      Remove Coordinator
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleAssignCoordinator} className="flex flex-col sm:flex-row sm:items-end gap-3">
+                    <label className="block flex-1">
+                      <span className="block text-xs font-bold text-midnight-200 mb-1">Assign a coordinator from faculty</span>
+                      <select
+                        required
+                        value={coordinatorForm}
+                        onChange={(e) => setCoordinatorForm(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-midnight-800 border border-midnight-700 text-xs sm:text-sm font-bold text-white"
+                      >
+                        <option value="">Select faculty member</option>
+                        {facultyView?.available_faculty?.length
+                          ? facultyView.available_faculty.map((faculty) => (
+                              <option key={faculty.id} value={faculty.id}>
+                                {faculty.full_name} ({faculty.faculty_code || faculty.id})
+                              </option>
+                            ))
+                          : null}
+                      </select>
+                    </label>
+                    <Button size="sm" icon={Crown} type="submit" isLoading={isSubmitting} disabled={!coordinatorForm}>
+                      Assign Coordinator
+                    </Button>
+                  </form>
+                )}
+              </div>
+
               {/* Grant Access Form */}
               <div className="bg-white dark:bg-midnight-900 rounded-3xl border border-slate-200/90 dark:border-midnight-800 p-6 shadow-xs">
                 <div className="flex items-center gap-2 mb-4">

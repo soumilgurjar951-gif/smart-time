@@ -75,6 +75,18 @@ export const classService = {
     const { data } = await apiClient.delete(`/classes/${id}/faculty-access/${accessId}/`);
     return data;
   },
+  async getCoordinator(id) {
+    const { data } = await apiClient.get(`/classes/${id}/coordinator/`);
+    return data.coordinator || null;
+  },
+  async assignCoordinator(id, facultyId) {
+    const { data } = await apiClient.post(`/classes/${id}/coordinator/`, { faculty: facultyId });
+    return data;
+  },
+  async removeCoordinator(id) {
+    const { data } = await apiClient.delete(`/classes/${id}/coordinator/`);
+    return data;
+  },
   async getSummary() {
     const { data } = await apiClient.get('/classes/summary/');
     return data;

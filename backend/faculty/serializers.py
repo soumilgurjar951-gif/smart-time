@@ -176,10 +176,15 @@ class FacultyProfileSerializer(serializers.ModelSerializer):
             instance.assigned_subjects.set(subjects)
 
         # Faculty self-service onboarding: INCOMPLETE -> SUBMITTED on profile completion.
+        # When the HOD sent a CHANGES_REQUESTED review, re-saving onboarding details
+        # from the onboarding page counts as a fresh resubmission for verification.
         # Faculty may only update name/contact/onboarding details; College ID, official
         # email, designation and role stay assigned by the HOD and are not updatable here.
         request = self.context.get("request")
-        if request and request.user.is_faculty and instance.profile_status == FacultyProfile.ProfileStatus.INCOMPLETE:
+        if request and request.user.is_faculty and instance.profile_status in (
+            FacultyProfile.ProfileStatus.INCOMPLETE,
+            FacultyProfile.ProfileStatus.CHANGES_REQUESTED,
+        ):
             onboarding_fields = (
                 "full_name",
                 "contact_number",

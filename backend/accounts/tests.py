@@ -39,6 +39,7 @@ class ODRMSAPITestCase(APITestCase):
             designation="Assistant Professor",
             contact_number="9876543210",
             assigned_sections=["A"],
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
         self.other = FacultyProfile.objects.create(
             user=self.other_user,
@@ -47,6 +48,7 @@ class ODRMSAPITestCase(APITestCase):
             email="other@cdgi.edu.in",
             designation="Assistant Professor",
             assigned_sections=["B"],
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
         self.subject = Subject.objects.create(code="CS501", name="Computer Networks")
 
@@ -297,3 +299,128 @@ class ODRMSAPITestCase(APITestCase):
         self.auth(self.hod, "HodPass123!")
         ok = self.client.get("/api/reports/tasks/")
         self.assertEqual(ok.status_code, status.HTTP_200_OK)
+
+
+class ProfileApprovalGateTests(ODRMSAPITestCase):
+    """Only VERIFIED + ACTIVE faculty (or HOD) may access departmental modules."""
+
+    def _verify_profile(self, profile):
+        profile.profile_status = FacultyProfile.ProfileStatus.VERIFIED
+        profile.save(update_fields=["profile_status", "updated_at"])
+
+    def test_unapproved_faculty_blocked_with_specific_code(self):
+        self.faculty.profile_status = FacultyProfile.ProfileStatus.INCOMPLETE
+        self.faculty.save(update_fields=["profile_status", "updated_at"])
+        self.auth(self.faculty_user, "FacPass123!")
+        response = self.client.get("/api/lectures/subjects/")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.json()["error"]["code"], "profile_not_approved")
+
+        # Complete the onboarding as VERIFIED → access is granted immediately.
+        self._verify_profile(self.faculty)
+        response = self.client.get("/api/lectures/subjects/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_submitted_profile_is_still_blocked(self):
+        self.faculty.profile_status = FacultyProfile.ProfileStatus.SUBMITTED
+        self.faculty.save(update_fields=["profile_status", "updated_at"])
+        self.auth(self.faculty_user, "FacPass123!")
+        response = self.client.get("/api/lectures/subjects/")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_inactive_account_blocked_even_if_verified(self):
+        self._verify_profile(self.faculty)
+        self.faculty.account_status = FacultyProfile.AccountStatus.INACTIVE
+        self.faculty.save(update_fields=["account_status", "updated_at"])
+        self.faculty_user.refresh_from_db()
+        self.faculty_user.is_active = False
+        self.faculty_user.save(update_fields=["is_active"])
+        response = self.client.post(
+            "/api/auth/login/", {"email": self.faculty_user.email, "password": "FacPass123!"}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_hod_is_never_blocked_by_profile_gate(self):
+        self.auth(self.hod, "HodPass123!")
+        self.assertEqual(self.client.get("/api/lectures/subjects/").status_code, status.HTTP_200_OK)
+
+    def test_user_without_profile_is_blocked(self):
+        stranger = User.objects.create_user(
+            email="stranger@cdgi.edu.in",
+            password="Stranger123!",
+            full_name="Stranger No Profile",
+            role=User.Role.FACULTY,
+        )
+        self.auth(stranger, "Stranger123!")
+        response = self.client.get("/api/lectures/subjects/")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.json()["error"]["code"], "profile_not_approved")
+
+
+class CoordinatorPayloadTests(ODRMSAPITestCase):
+    """Auth payload exposes the database-backed coordinator role (Section 7)."""
+
+    def _create_class(self):
+        from classes.models import AcademicClass, Department
+
+        department = Department.objects.create(name="Computer Science & IT", code="CSIT")
+        return AcademicClass.objects.create(department=department, year=3, semester=5, section="A")
+
+    def test_payload_defaults_for_regular_faculty(self):
+        tokens = self.auth(self.faculty_user, "FacPass123!")
+        user = tokens["user"]
+        self.assertFalse(user["is_coordinator"])
+        self.assertEqual(user["coordinator_classes"], [])
+        self.assertEqual(user["designation"], "Assistant Professor")
+        self.assertEqual(user["full_name"], "Anita Sharma")
+
+    def test_payload_reflects_active_assignment(self):
+        from classes.models import ClassCoordinator
+
+        cls = self._create_class()
+        ClassCoordinator.objects.create(faculty=self.faculty, department_class=cls, assigned_by=self.hod)
+        tokens = self.auth(self.faculty_user, "FacPass123!")
+        user = tokens["user"]
+        self.assertTrue(user["is_coordinator"])
+        self.assertEqual(user["coordinator_classes"][0]["class_id"], cls.id)
+        self.assertIn("Section A", user["coordinator_classes"][0]["display_name"])
+
+
+class HODProvisioningTests(ODRMSAPITestCase):
+    """create_hod management command — env/args driven, no hardcoded credentials."""
+
+    def _run(self, **overrides):
+        from django.core.management import call_command
+
+        kwargs = {
+            "email": "newhod@cdgi.edu.in",
+            "full_name": "New HOD Person",
+            "password": "StrongHod123!",
+        }
+        kwargs.update(overrides)
+        call_command("create_hod", **kwargs)
+
+    def test_command_creates_hod_superuser(self):
+        self._run()
+        user = User.objects.get(email="newhod@cdgi.edu.in")
+        self.assertEqual(user.role, User.Role.HOD)
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_active)
+        self.assertTrue(user.check_password("StrongHod123!"))
+
+    def test_command_is_idempotent(self):
+        self._run()
+        self._run()
+        self.assertEqual(User.objects.filter(email="newhod@cdgi.edu.in").count(), 1)
+
+    def test_command_refuses_non_hod_email_collision(self):
+        # Email already exists with role FACULTY → refuse instead of overwrite.
+        with self.assertRaises(Exception):
+            self._run(email="faculty@cdgi.edu.in")
+
+    def test_command_updates_password_with_flag(self):
+        self._run()
+        self._run(update_password=True)
+        user = User.objects.get(email="newhod@cdgi.edu.in")
+        self.assertTrue(user.check_password("StrongHod123!"))

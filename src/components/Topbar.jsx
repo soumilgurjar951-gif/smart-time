@@ -81,7 +81,7 @@ export default function Topbar({ onToggleSidebar }) {
               </div>
               <div className="hidden xl:block text-left">
                 <p className="text-xs font-semibold text-slate-800 leading-tight">
-                  {user?.name}
+                  {user?.full_name}
                 </p>
                 <p className="text-[10px] text-slate-500">{user?.role} Portal</p>
               </div>

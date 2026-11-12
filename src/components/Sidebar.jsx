@@ -193,7 +193,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <p className="text-xs font-bold text-slate-800 truncate">
-                    {user?.name || 'Administrator'}
+                    {user?.full_name || 'Administrator'}
                   </p>
                   <ShieldCheck className="w-3.5 h-3.5 text-electric-500 shrink-0" />
                 </div>

@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsProfileApproved
 from rest_framework.response import Response
 
 from accounts.permissions import IsHOD
@@ -13,7 +14,7 @@ from achievements.serializers import AchievementReviewSerializer, FacultyAchieve
 
 class FacultyAchievementViewSet(viewsets.ModelViewSet):
     serializer_class = FacultyAchievementSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     http_method_names = ["get", "post", "put", "patch", "head", "options"]
     filterset_fields = ["faculty", "category", "verification_status"]

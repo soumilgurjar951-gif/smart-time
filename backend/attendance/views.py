@@ -4,6 +4,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsProfileApproved
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -25,7 +26,7 @@ def _can_mark_lecture(user, lecture: Lecture) -> bool:
 class AttendanceRosterViewSet(viewsets.ModelViewSet):
     queryset = AttendanceRoster.objects.all()
     serializer_class = AttendanceRosterSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["section", "is_active"]
     search_fields = ["roll_number", "full_name"]
 
@@ -37,7 +38,7 @@ class AttendanceRosterViewSet(viewsets.ModelViewSet):
 
 class AttendanceRecordViewSet(viewsets.ModelViewSet):
     serializer_class = AttendanceRecordSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     http_method_names = ["get", "post", "put", "patch", "head", "options"]
     filterset_fields = ["lecture", "status", "roster"]
     search_fields = ["roster__roll_number", "roster__full_name", "lecture__subject__code"]
@@ -142,7 +143,7 @@ class BulkAttendanceView(APIView):
         }
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
 
     def post(self, request):
         serializer = BulkAttendanceSerializer(data=request.data)

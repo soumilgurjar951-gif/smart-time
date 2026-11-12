@@ -7,6 +7,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsProfileApproved
 from rest_framework.response import Response
 
 from accounts.permissions import IsHOD
@@ -40,7 +41,7 @@ from odrms.utils import parse_date
 class SubjectViewSet(viewsets.ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     search_fields = ["code", "name"]
     filterset_fields = ["is_lab"]
 
@@ -53,7 +54,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class AcademicYearViewSet(viewsets.ModelViewSet):
     queryset = AcademicYear.objects.all()
     serializer_class = AcademicYearSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
 
     def get_permissions(self):
         if self.action in {"create", "update", "partial_update", "destroy"}:
@@ -64,12 +65,12 @@ class AcademicYearViewSet(viewsets.ModelViewSet):
 class SectionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
 
 
 class FacultySubjectViewSet(viewsets.ModelViewSet):
     serializer_class = FacultySubjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["faculty", "subject", "section", "academic_year", "is_verified"]
 
     def get_queryset(self):
@@ -104,7 +105,7 @@ class FacultySubjectViewSet(viewsets.ModelViewSet):
 class TimeSlotViewSet(viewsets.ModelViewSet):
     queryset = TimeSlot.objects.all()
     serializer_class = TimeSlotSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
 
     def get_permissions(self):
         if self.action in {"create", "update", "partial_update", "destroy"}:
@@ -157,7 +158,7 @@ def _notify_timetable_change(entry, *, title, message):
 
 class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["section", "date", "subject", "assigned_faculty", "status", "lecture_type"]
     search_fields = ["topic", "classroom", "subject__code", "subject__name"]
     ordering_fields = ["date", "start_time", "section"]
@@ -234,7 +235,7 @@ class LectureViewSet(viewsets.ModelViewSet):
 
 class TimetableEntryViewSet(viewsets.ModelViewSet):
     serializer_class = TimetableEntrySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProfileApproved]
     filterset_fields = ["weekday", "section", "subject", "faculty", "time_slot", "academic_year"]
     ordering_fields = ["weekday", "time_slot__period_number", "section__code"]
 

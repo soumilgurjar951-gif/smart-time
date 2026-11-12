@@ -33,6 +33,18 @@ apiClient.interceptors.response.use(
       localStorage.removeItem(STORAGE_KEYS.TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER);
     }
+    if (error.response && error.response.status === 403) {
+      // Faculty whose profile is not yet HOD-approved cannot use departmental
+      // modules — route them back to the onboarding page where the banner
+      // explains the pending approval state.
+      const code = error.response?.data?.error?.code;
+      if (code === 'profile_not_approved') {
+        const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || 'null');
+        if (user && user.role === 'FACULTY' && !window.location.pathname.startsWith('/faculty/onboarding')) {
+          window.location.assign('/faculty/onboarding');
+        }
+      }
+    }
     return Promise.reject(error);
   }
 );

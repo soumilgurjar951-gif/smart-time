@@ -27,18 +27,33 @@ export default function ClassSelector({ classes, selectedId, onSelect, isHod, on
   const { showToast } = useOdrms();
   const [showCreate, setShowCreate] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [loadingDepartments, setLoadingDepartments] = useState(false);
   const [departments, setDepartments] = useState([]);
+  const [departmentError, setDepartmentError] = useState('');
   const [form, setForm] = useState(EMPTY_CLASS_FORM);
 
   const openCreate = async () => {
     setForm(EMPTY_CLASS_FORM);
+    setDepartments([]);
+    setDepartmentError('');
     setShowCreate(true);
+    setLoadingDepartments(true);
+
     try {
       const data = await classService.getDepartments();
-      setDepartments(data);
-      setForm((current) => ({ ...current, department: String(data[0]?.id || '') }));
-    } catch {
-      showToast('Could not load departments.', 'error');
+      if (!data || data.length === 0) {
+        setDepartmentError('No departments available. Please ask your administrator to create the CSIT department first.');
+        showToast('No departments found in the system.', 'warning');
+      } else {
+        setDepartments(data);
+        setForm((current) => ({ ...current, department: String(data[0]?.id || '') }));
+      }
+    } catch (error) {
+      const errorMsg = getErrorMessage(error) || 'Could not load departments.';
+      setDepartmentError(errorMsg);
+      showToast(errorMsg, 'error');
+    } finally {
+      setLoadingDepartments(false);
     }
   };
 
@@ -96,18 +111,16 @@ export default function ClassSelector({ classes, selectedId, onSelect, isHod, on
             <button
               key={cls.id}
               onClick={() => onSelect(cls.id)}
-              className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all cursor-pointer ${
-                isSelected
-                  ? 'bg-electric-600 border-electric-600 text-white shadow-sm shadow-electric-600/30'
-                  : 'bg-offwhite dark:bg-midnight-800/60 border-slate-200 dark:border-midnight-700 hover:border-electric-300 dark:hover:border-electric-700 hover:bg-electric-50/60 dark:hover:bg-midnight-800'
-              }`}
+              className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all cursor-pointer ${isSelected
+                ? 'bg-electric-600 border-electric-600 text-white shadow-sm shadow-electric-600/30'
+                : 'bg-offwhite dark:bg-midnight-800/60 border-slate-200 dark:border-midnight-700 hover:border-electric-300 dark:hover:border-electric-700 hover:bg-electric-50/60 dark:hover:bg-midnight-800'
+                }`}
             >
               <div
-                className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                  isSelected
-                    ? 'bg-white/15 text-white'
-                    : 'bg-electric-50 dark:bg-electric-950/50 text-electric-600 dark:text-electric-400'
-                }`}
+                className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSelected
+                  ? 'bg-white/15 text-white'
+                  : 'bg-electric-50 dark:bg-electric-950/50 text-electric-600 dark:text-electric-400'
+                  }`}
               >
                 <GraduationCap className="w-5 h-5 stroke-[2.2]" />
               </div>
@@ -139,77 +152,128 @@ export default function ClassSelector({ classes, selectedId, onSelect, isHod, on
         maxWidth="max-w-lg"
       >
         <form onSubmit={handleCreate} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <label className="block">
-              <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Department</span>
-              <select
-                required
-                value={form.department}
-                onChange={(e) => setForm({ ...form, department: e.target.value })}
-                className={inputClasses}
-              >
-                {departments.map((dept) => (
-                  <option key={dept.id} value={dept.id}>
-                    {dept.name} ({dept.code})
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="block">
-              <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Academic Year (optional)</span>
-              <input
-                value={form.academic_year}
-                onChange={(e) => setForm({ ...form, academic_year: e.target.value })}
-                placeholder="e.g. 2025-26"
-                className={inputClasses}
-              />
-            </label>
-            <label className="block">
-              <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Year</span>
-              <input
-                required
-                type="number"
-                min="1"
-                max="5"
-                value={form.year}
-                onChange={(e) => setForm({ ...form, year: e.target.value })}
-                placeholder="e.g. 3"
-                className={inputClasses}
-              />
-            </label>
-            <label className="block">
-              <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Semester</span>
-              <input
-                required
-                type="number"
-                min="1"
-                max="10"
-                value={form.semester}
-                onChange={(e) => setForm({ ...form, semester: e.target.value })}
-                placeholder="e.g. 5"
-                className={inputClasses}
-              />
-            </label>
-            <label className="block">
-              <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Section (single letter)</span>
-              <input
-                required
-                maxLength={1}
-                value={form.section}
-                onChange={(e) => setForm({ ...form, section: e.target.value.toUpperCase() })}
-                placeholder="e.g. A"
-                className={inputClasses}
-              />
-            </label>
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="secondary" size="sm" onClick={() => setShowCreate(false)}>
-              Cancel
-            </Button>
-            <Button size="sm" icon={Plus} isLoading={isCreating}>
-              Create Class
-            </Button>
-          </div>
+          {loadingDepartments ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 border-3 border-electric-600 border-t-transparent rounded-full animate-spin" />
+                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Loading departments...</p>
+              </div>
+            </div>
+          ) : departmentError ? (
+            <div className="rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-xs font-bold">!</span>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-rose-900 dark:text-rose-300">Cannot Load Departments</p>
+                  <p className="text-xs text-rose-700 dark:text-rose-400 mt-1">{departmentError}</p>
+                </div>
+              </div>
+            </div>
+          ) : departments.length === 0 ? (
+            <div className="rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-xs font-bold">!</span>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-amber-900 dark:text-amber-300">No Departments Found</p>
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+                    Please contact your administrator to create the CSIT department first.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <label className="block">
+                  <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Department <span className="text-rose-500">*</span>
+                  </span>
+                  <select
+                    required
+                    value={form.department}
+                    onChange={(e) => setForm({ ...form, department: e.target.value })}
+                    className={inputClasses}
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map((dept) => (
+                      <option key={dept.id} value={dept.id}>
+                        {dept.name} ({dept.code})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Academic Year (optional)</span>
+                  <input
+                    value={form.academic_year}
+                    onChange={(e) => setForm({ ...form, academic_year: e.target.value })}
+                    placeholder="e.g. 2025-26"
+                    className={inputClasses}
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Year <span className="text-rose-500">*</span>
+                  </span>
+                  <input
+                    required
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={form.year}
+                    onChange={(e) => setForm({ ...form, year: e.target.value })}
+                    placeholder="e.g. 3"
+                    className={inputClasses}
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Semester <span className="text-rose-500">*</span>
+                  </span>
+                  <input
+                    required
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={form.semester}
+                    onChange={(e) => setForm({ ...form, semester: e.target.value })}
+                    placeholder="e.g. 5"
+                    className={inputClasses}
+                  />
+                </label>
+                <label className="block">
+                  <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Section (single letter) <span className="text-rose-500">*</span>
+                  </span>
+                  <input
+                    required
+                    maxLength={1}
+                    value={form.section}
+                    onChange={(e) => setForm({ ...form, section: e.target.value.toUpperCase() })}
+                    placeholder="e.g. A"
+                    className={inputClasses}
+                  />
+                </label>
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <Button variant="secondary" size="sm" onClick={() => setShowCreate(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  icon={Plus}
+                  isLoading={isCreating}
+                  disabled={!form.department || !form.year || !form.semester || !form.section}
+                >
+                  Create Class
+                </Button>
+              </div>
+            </>
+          )}
         </form>
       </Modal>
     </div>

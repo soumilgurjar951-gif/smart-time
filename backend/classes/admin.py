@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     AcademicClass,
+    ClassCoordinator,
     ClassFacultyAccess,
     ClassSubject,
     Department,
@@ -32,6 +33,13 @@ class ClassSubjectAdmin(admin.ModelAdmin):
 class FacultySubjectAssignmentAdmin(admin.ModelAdmin):
     list_display = ["faculty", "class_subject", "is_active", "created_at"]
     list_filter = ["is_active"]
+
+
+@admin.register(ClassCoordinator)
+class ClassCoordinatorAdmin(admin.ModelAdmin):
+    list_display = ["faculty", "department_class", "is_active", "assigned_by", "created_at"]
+    list_filter = ["is_active", "department_class"]
+    search_fields = ["faculty__full_name"]
 
 
 @admin.register(ClassFacultyAccess)

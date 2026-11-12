@@ -11,7 +11,7 @@ export default function AchievementForm({
 }) {
   const [formData, setFormData] = useState({
     facultyId: user?.id || 'fac-2',
-    facultyName: user?.name || 'Faculty Member',
+    facultyName: user?.full_name || 'Faculty Member',
     designation: user?.designation || 'Assistant Professor',
     category: 'Publications',
     title: '',

@@ -74,6 +74,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     designation = serializers.CharField(source="faculty_profile.designation", read_only=True, default=None)
     profile_status = serializers.CharField(source="faculty_profile.profile_status", read_only=True, default=None)
     contact_number = serializers.CharField(source="faculty_profile.contact_number", read_only=True, default=None)
+    is_coordinator = serializers.SerializerMethodField()
+    coordinator_classes = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -89,8 +91,41 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "designation",
             "profile_status",
             "contact_number",
+            "is_coordinator",
+            "coordinator_classes",
         )
         read_only_fields = fields
+
+    def _coordinator_rows(self, user):
+        if getattr(user, "_coordinator_rows_cache", None) is None:
+            from classes.models import ClassCoordinator
+
+            profile = getattr(user, "faculty_profile", None)
+            if profile is None:
+                setattr(user, "_coordinator_rows_cache", [])
+            else:
+                rows = (
+                    ClassCoordinator.objects.filter(faculty=profile, is_active=True)
+                    .select_related("department_class", "department_class__department")
+                    .order_by("department_class__section")
+                )
+                setattr(user, "_coordinator_rows_cache", [row.department_class for row in rows])
+        return getattr(user, "_coordinator_rows_cache")
+
+    def get_is_coordinator(self, user):
+        return bool(self._coordinator_rows(user))
+
+    def get_coordinator_classes(self, user):
+        return [
+            {
+                "class_id": cls.pk,
+                "section": cls.section,
+                "year": cls.year,
+                "semester": cls.semester,
+                "display_name": cls.display_name,
+            }
+            for cls in self._coordinator_rows(user)
+        ]
 
 
 class PasswordChangeSerializer(serializers.Serializer):

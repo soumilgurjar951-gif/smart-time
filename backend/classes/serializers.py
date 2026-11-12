@@ -7,6 +7,7 @@ from .models import (
     AcademicClass,
     AccessGrant,
     AccessRequest,
+    ClassCoordinator,
     ClassFacultyAccess,
     ClassSubject,
     Department,
@@ -130,6 +131,50 @@ class FacultySummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = FacultyProfile
         fields = ["id", "faculty_code", "full_name", "designation", "email", "user_id"]
+
+
+class ClassCoordinatorSerializer(serializers.ModelSerializer):
+    """Coordinator assignment for one class — assigned/removed by the HOD only."""
+
+    faculty_name = serializers.CharField(source="faculty.full_name", read_only=True)
+    faculty_code = serializers.CharField(source="faculty.faculty_code", read_only=True)
+    faculty_designation = serializers.CharField(source="faculty.designation", read_only=True)
+    faculty_user_id = serializers.IntegerField(source="faculty.user.id", read_only=True, default=None)
+    assigned_by_name = serializers.CharField(source="assigned_by.full_name", read_only=True, default=None)
+
+    class Meta:
+        model = ClassCoordinator
+        fields = [
+            "id",
+            "faculty",
+            "faculty_name",
+            "faculty_code",
+            "faculty_designation",
+            "faculty_user_id",
+            "is_active",
+            "assigned_by",
+            "assigned_by_name",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "assigned_by", "created_at", "updated_at"]
+
+    def validate_faculty(self, value):
+        user = self.context["request"].user
+        if not user.is_hod:
+            raise serializers.ValidationError("Only the HOD can assign the class coordinator.")
+        if value.department:
+            department_codes = Department.objects.values_list("code", flat=True)
+            if value.department not in department_codes:
+                raise serializers.ValidationError("Coordinator must belong to a valid department.")
+        # Only faculty with an active login account may act as coordinator.
+        if value.user_id is None or not value.user.is_active:
+            raise serializers.ValidationError(
+                "The faculty member must have an active login account before being assigned a coordinator."
+            )
+        if value.account_status != value.AccountStatus.ACTIVE:
+            raise serializers.ValidationError("Inactive faculty members cannot be assigned as coordinator.")
+        return value
 
 
 class ClassFacultyAccessSerializer(serializers.ModelSerializer):

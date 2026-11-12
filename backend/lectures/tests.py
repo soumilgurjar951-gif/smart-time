@@ -38,6 +38,7 @@ class TimetableApiTests(APITestCase):
             designation="Assistant Professor",
             department="CSIT",
             assigned_sections=["A", "B"],
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
         self.sections = {section.code: section for section in Section.objects.all()}
         self.subject = Subject.objects.get(code="CSIT501")
@@ -146,6 +147,7 @@ class TimetableApiTests(APITestCase):
             full_name="Other Faculty",
             email=other_user.email,
             designation="Assistant Professor",
+            profile_status=FacultyProfile.ProfileStatus.VERIFIED,
         )
         FacultySubject.objects.create(
             faculty=other,

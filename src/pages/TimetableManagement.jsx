@@ -361,7 +361,7 @@ export default function TimetableManagement() {
             Section {section.code}
           </button>
         ))}
-        {!isHod && <span className="ml-auto text-sm text-slate-500">Signed in as {user?.name || user?.email}</span>}
+        {!isHod && <span className="ml-auto text-sm text-slate-500">Signed in as {user?.full_name || user?.email}</span>}
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <div className="inline-flex rounded-lg border bg-white p-1">
